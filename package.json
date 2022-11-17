@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
     "dotenv": "^16.0.3",
     "ethers": "^5.7.2",
     "ganache": "^7.5.0",
@@ -8,6 +9,6 @@
   "scripts": {
     "ganache": "ganache --wallet.seed 1337",
     "hardhat": "hardhat",
-    "hardhat:compile":"hardhat compile"
+    "hardhat:compile": "hardhat compile"
   }
 }

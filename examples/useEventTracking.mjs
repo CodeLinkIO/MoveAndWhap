@@ -8,7 +8,7 @@ const trackingService = new EventTrackingService(chainService, 2048, 2);
 
 //USDC contract address on Avalanche
 let address = "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E";
-//Block range with garunteed transactions in it.
+//Block range with guaranteed transactions in it.
 let start = 22514100;
 let stop = 22514205;
 

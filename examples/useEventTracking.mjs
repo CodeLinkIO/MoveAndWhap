@@ -16,4 +16,8 @@ let stop = 22514205;
 let events = ["Approval(address,address,uint256)"]
 let blockTxs = await trackingService.getEventsFrom(address, start , stop, events);
 let filtered = trackingService.filterBlockTxs(events, blockTxs);
-console.log(filtered);
+let ordered = trackingService.orderBlockTxs(filtered);
+console.log(ordered);
+console.log(blockTxs.length);
+console.log(filtered.length);
+console.log(ordered.length);

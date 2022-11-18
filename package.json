@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@nomiclabs/hardhat-ganache": "^2.0.1",
+    "@nomiclabs/hardhat-ethers": "^2.2.1",
     "dotenv": "^16.0.3",
     "ethers": "^5.7.2",
     "ganache": "^7.5.0",
@@ -9,6 +9,8 @@
   "scripts": {
     "ganache": "ganache --wallet.seed 1337",
     "hardhat": "hardhat",
-    "hardhat:compile": "hardhat compile"
+    "hardhat:compile": "hardhat compile",
+    "hardhat:node": "hardhat node",
+    "hardhat:deploy:local": "hardhat run --network localhost ./contracts/scripts/deployer.js"
   }
 }

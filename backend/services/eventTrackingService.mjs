@@ -21,16 +21,16 @@ class EventTrackingService{
         let remainder = (stop - start) % this.chunkSize;
         if(remainder > 0) {
             filter.toBlock = start+remainder;
-            blocks.push(await this.chainService.getLogs(filter));
+            blocks = blocks.concat(await this.chainService.getLogs(filter));
             start += remainder;
         }
         
-        let totalChunks = (start - stop)/ this.chunkSize;
+        let totalChunks = (stop - start)/this.chunkSize;
         for(let c = 0; c < totalChunks; c++)
         {
             filter.start = start;
             filter.stop = start + this.chunkSize;
-            blocks.push(await this.chainService.getLogs(filter));
+            blocks = blocks.concat(await this.chainService.getLogs(filter));
         }
 
         return blocks;

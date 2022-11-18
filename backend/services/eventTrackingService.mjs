@@ -45,7 +45,7 @@ class EventTrackingService{
         for(let b = 0; b < blocks.length; b++) {
             for(let e = 0; e < eventIds.length; e++) {
                 if(blocks[b].topics.includes(eventIds[e])){
-                    //Sometimes tehre are duplicate entries, make sure they aren't added.
+                    //Sometimes there are duplicate entries, make sure they aren't added.
                     let dupKey = `${blocks[b].blockNumber}-${blocks[b].transactionHash}`;
                     if(duplicateChecker[dupKey] !== true) { 
                         properlyFiltered.push(blocks[b]); 

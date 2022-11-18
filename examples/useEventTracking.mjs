@@ -18,6 +18,3 @@ let blockTxs = await trackingService.getEventsFrom(address, start , stop, events
 let filtered = trackingService.filterBlockTxs(events, blockTxs);
 let ordered = trackingService.orderBlockTxs(filtered);
 console.log(ordered);
-console.log(blockTxs.length);
-console.log(filtered.length);
-console.log(ordered.length);

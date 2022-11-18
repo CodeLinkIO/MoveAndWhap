@@ -12,6 +12,8 @@ let address = "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E";
 let start = 22510004;
 let stop = 22514205;
 
-//Get blocks but don't filter for topic, get them all for that address.
-let blocks = await trackingService.getEventsFrom(address, start , stop, []);
-console.log(blocks.length);
+//Filter for events based on their actual function names and input types.
+let events = ["Approval(address,address,uint256)"]
+let blockTxs = await trackingService.getEventsFrom(address, start , stop, events);
+let filtered = trackingService.filterBlockTxs(events, blockTxs);
+console.log(filtered);

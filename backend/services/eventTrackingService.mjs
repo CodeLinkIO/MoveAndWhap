@@ -14,7 +14,7 @@ class EventTrackingService{
             address: address,
             fromBlock: start,
             toBlock: stop,
-            eventTopics: events
+            eventTopics: this.chainService.getTopicIds(events)
         };
 
         let blocks = [];
@@ -34,6 +34,21 @@ class EventTrackingService{
         }
 
         return blocks;
+    }
+
+    filterBlockTxs(events, blocks){
+        let eventIds = this.chainService.getTopicIds(events);
+        let properlyFiltered = [];
+
+        for(let b = 0; b < blocks.length; b++) {
+            for(let e = 0; e < eventIds.length; e++) {
+                if(blocks[b].topics.includes(eventIds[e])){
+                    properlyFiltered.push(blocks[b]);
+                }
+            }
+        }
+
+        return properlyFiltered;
     }
 }
 

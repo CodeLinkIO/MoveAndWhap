@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@nomiclabs/hardhat-waffle": "^2.0.3",
+    "@nomiclabs/hardhat-ganache": "^2.0.1",
     "dotenv": "^16.0.3",
     "ethers": "^5.7.2",
     "ganache": "^7.5.0",

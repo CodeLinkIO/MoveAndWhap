@@ -1,7 +1,7 @@
 class ChainService{
 
-    constructor(providerInfo, ProviderClass) {
-        this.provider = new ProviderClass(providerInfo);
+    constructor(provider) {
+        this.provider = provider;
     }
 
     async initialize() {

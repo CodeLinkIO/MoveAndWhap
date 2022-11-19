@@ -1,8 +1,8 @@
-import { EthersService} from "../backend/services/ethersService.mjs";
+import { ProviderService } from "../backend/services/ethersService.mjs";
 import { config } from "dotenv";
 config();
 
-const service = new EthersService(process.env.PROVIDER_URL);
+const service = new ProviderService(process.env.PROVIDER_URL);
 await service.initialize();
 console.log(service.chainId)
 console.log(service.chainName)

@@ -1,9 +1,9 @@
 import { EventTrackingService } from "../backend/services/eventTrackingService.mjs";
-import { EthersService } from "../backend/services/ethersService.mjs";
+import { ProviderService } from "../backend/services/ethersService.mjs";
 import { config } from "dotenv";
 config();
 
-const chainService = new EthersService(process.env.PROVIDER_URL);
+const chainService = new ProviderService(process.env.PROVIDER_URL);
 const trackingService = new EventTrackingService(chainService, 2048, 2);
 
 //USDC contract address on Avalanche

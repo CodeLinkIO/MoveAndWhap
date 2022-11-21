@@ -1,12 +1,12 @@
 import { providers, utils, Wallet } from "ethers";
 
-class ChainService {
+class EthersService {
 
     constructor(providerUrl, privateKey=null) {
         this.provider = new providers.JsonRpcProvider(providerUrl);
-        if(privateKey!=null) { 
-            this.wallet = new Wallet(privateKey); 
-            this.address = this.wallet.address;
+        if(privateKey != null) { 
+            this.signer = new Wallet(privateKey, this.provider); 
+            this.address = this.signer.address;
         }
     }
 
@@ -36,9 +36,9 @@ class ChainService {
 
     //Send an amount of native coin to another address.
     async transferCoin(toAddress, amount, gasLimit=100000, completionCallback=null) {
-        if(this.wallet === null){
-            console.error("You have not provided a private key therefore there is no wallet. \
-            You can not send a transaction without a wallet.");
+        if(this.signer === null){
+            console.error("You have not provided a private key therefore there is no signer. \
+            You can not send a transaction without a signer.");
             return;
         }
         let transaction = {
@@ -50,10 +50,10 @@ class ChainService {
             gasPrice: this.gasPrice
         };
         if(completionCallback === null) {completionCallback = console.log;}
-        try { await this.wallet.sendTransaction(transaction).then(tx => completionCallback(tx)); }
+        try { await this.signer.sendTransaction(transaction).then(tx => completionCallback(tx)); }
         catch(error){ throw `There was an error sending the transaction to ${toAddress}.\n${error}`; }
     }
 }
 
 
-export { ChainService }
+export { EthersService }

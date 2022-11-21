@@ -8,9 +8,8 @@
   },
   "scripts": {
     "ganache": "ganache --wallet.seed 1337",
-    "hardhat": "hardhat",
-    "hardhat:compile": "hardhat compile",
-    "hardhat:node": "hardhat node",
-    "hardhat:deploy:local": "hardhat run --network localhost ./contracts/scripts/deployer.js"
+    "compile": "hardhat compile",
+    "node": "hardhat node",
+    "deploy:local": "hardhat run --network localhost ./contracts/scripts/deployer.js"
   }
 }

@@ -12,11 +12,30 @@ class MawServer{
             "event PlayerMoved(address indexed player, uint256 indexed x, uint256 indexed y, uint8 dir)",
             "event PlayerAttacked(address indexed attacker, address indexed victim)",
         ];
+        
+        this.eventTriggers = {}
+        let signatures = this.chainService.getTopicIds(this.events);
+        this.eventTriggers[signatures[0]] = this.playerJoined;
+        this.eventTriggers[signatures[1]] = this.playerMoved;
+        this.eventTriggers[signatures[2]] = this.playerAttacked;
+
         this.storagePath = storagePath
         this.database = new PouchDB(storagePath);
     }
 
-    async startServer() { }
+    async startServer() {
+    }
+
+    async historicalLoad(startBlock) {
+        let blockTxs = this.eventService.getEventsFrom(this.contractAddress, startBlock, 'latest', this.events);
+        let filtered = this.eventService.filterBlockTxs(this.events, blockTxs);
+        let ordered = this.eventService.orderBlockTxs(filtered);
+
+        for(let t = 0; t < ordered.length; t++){
+            let topicSignature = ordered[t].topics[0]
+            this.eventIDs[topicSignature](1,2,3,4)
+        }
+    }
 
     async playerJoined(address, x, y, dir) {
         let player = await this.database.get(address).catch();

@@ -1,3 +1,5 @@
+import {Contract} from "ethers";
+
 class EventTrackingService{
     constructor(chainService, chunkSize, chunkTime) {
         this.chainService = chainService
@@ -5,13 +7,16 @@ class EventTrackingService{
         this.chunkTime = chunkTime
     }
 
-    async getEventsFrom(address, start, stop, events) {
+    setupContract(address, abi) {
+        this.contract = new Contract(address, abi, this.chainService.signer)
+    }
+
+    async getEventsFrom(start, stop, events) {
         const latest = await this.chainService.getHeight();
         if(start == "latest") { start = latest; }
         if(stop == "latest") { stop = latest; }
         
         let filter = {
-            address: address,
             fromBlock: start,
             toBlock: stop,
             eventTopics: this.chainService.getTopicIds(events)
@@ -21,7 +26,7 @@ class EventTrackingService{
         let remainder = (stop - start) % this.chunkSize;
         if(remainder > 0) {
             filter.toBlock = start+remainder;
-            blocks = blocks.concat(await this.chainService.getLogs(filter));
+            blocks = blocks.concat(await this.contract.queryFilter(filter, filter.fromBlock, filter.toBlock));
             start += remainder;
         }
         
@@ -30,7 +35,7 @@ class EventTrackingService{
         {
             filter.fromBlock = start;
             filter.toBlock = start + this.chunkSize;
-            blocks = blocks.concat(await this.chainService.getLogs(filter));
+            blocks = blocks.concat(await this.contract.queryFilter(filter, filter.fromBlock, filter.toBlock));
             start = filter.toBlock;
         }
 
@@ -58,9 +63,7 @@ class EventTrackingService{
         return properlyFiltered;
     }
 
-    orderBlockTxs(blocks) {
-        return blocks.sort((a, b) => this.txIsAheadOrBehind(a,b));
-    }
+    orderBlockTxs(blocks) { return blocks.sort((a, b) => this.txIsAheadOrBehind(a,b)); }
 
     //Callback for sorting.
     //Return 1 if transaction is ahead or -1 if transaction is behind.

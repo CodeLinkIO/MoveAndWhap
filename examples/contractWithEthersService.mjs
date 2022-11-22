@@ -16,6 +16,6 @@ let mawAbi = [
     "event PlayerAttacked(address indexed attacker, address indexed victim)",
 ]
 let mawContract = new ethers.Contract(process.env.MAW_CONTRACT_ADDRESS, mawAbi, service.signer);
-let response = await mawContract.move(0);
+let response = await mawContract.move(1);
 let reciept = await response.wait();
-console.log(reciept);
+console.log(reciept.events[0]);

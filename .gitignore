@@ -2,6 +2,7 @@
 node_modules
 artifacts
 cache
+database
 
 #Files
 *.env

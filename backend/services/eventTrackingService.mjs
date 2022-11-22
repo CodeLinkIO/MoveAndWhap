@@ -73,4 +73,4 @@ class EventTrackingService{
     }
 }
 
-export {EventTrackingService}
+export { EventTrackingService }

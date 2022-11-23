@@ -3,13 +3,18 @@ import { providers, utils, Wallet } from "ethers";
 class EthersService {
 
     constructor(providerUrl, privateKey=null) {
+        //The endpoint that has the EVM API we can call.
         this.provider = new providers.JsonRpcProvider(providerUrl);
+
+        //If a private key is provided we mean to make sure this service
+        //can read and write to the blockchain.
         if(privateKey != null) { 
             this.signer = new Wallet(privateKey, this.provider); 
             this.address = this.signer.address;
         }
     }
 
+    //Set the provider up and make sure everything is running.
     async initialize() {
         console.log("Initializing chain service.");
         try {
@@ -27,6 +32,7 @@ class EthersService {
     async getLogs(filter) { return await this.provider.getLogs(filter).then(); }
     async getHeight() { return await this.provider.getBlockNumber().then(); }
     
+    //Topic IDs are hashed version of your contract's functions.
     getTopicIds(topics) {
         let ids = [];
         for(let t = 0; t < topics.length; t++){ 

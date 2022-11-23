@@ -3,8 +3,8 @@ import {Contract} from "ethers";
 class EventTrackingService{
     constructor(chainService, chunkSize, chunkTime) {
         this.chainService = chainService
-        this.chunkSize = chunkSize
-        this.chunkTime = chunkTime
+        this.chunkSize = chunkSize //RPC history limit, Avalanche is 2048, Ethereum is 10000
+        this.chunkTime = chunkTime //How often in seconds you can call the RPC endpoint. Quicknode paid is 100ms
     }
 
     async setupContract(address, abi, isSigner=true) {
@@ -13,6 +13,7 @@ class EventTrackingService{
         else { this.contract = new Contract(address, abi, this.chainService.provider); }
     }
 
+    //Get event logs from start to stop given a set of filters.
     async getEventsFrom(start, stop, filters) {
         const latest = await this.chainService.getHeight();
         if(start == "latest") { start = latest; }
@@ -27,6 +28,7 @@ class EventTrackingService{
         let remainder = (stop - start) % this.chunkSize;
         if(remainder > 0) {
             toBlock = start+remainder;
+            //Go through every filter type before we move to the next chunk.
             for(let f = 0; f < filters.length; f++) {
                 let filter = filters[f];
                 let log = await this.contract.queryFilter(filter, fromBlock, toBlock).then(x => {return x;});
@@ -40,9 +42,10 @@ class EventTrackingService{
         {
             fromBlock = start;
             toBlock = start + this.chunkSize;
+            //Go through every filter type before we move to the next chunk.
             for(let f = 0; f < filters.length; f++) {
                 let filter = filters[f];
-                await new Promise(r => setTimeout(r, this.chunkTime * 1000));
+                await new Promise(r => setTimeout(r, this.chunkTime * 1000)); //Don't flood the network.
                 let log = await this.contract.queryFilter(filter, fromBlock, toBlock).then(x => {return x;});
                 blocks = blocks.concat(log);
             }
@@ -52,6 +55,7 @@ class EventTrackingService{
         return blocks;
     }
 
+    //Look for blocks that are duplicates and remove them.
     filterBlockTxs(topicIds, blocks){
         let properlyFiltered = [];
         let duplicateChecker = {};
@@ -72,6 +76,7 @@ class EventTrackingService{
         return properlyFiltered;
     }
 
+    //Sort blocks by blockNumber then transactionIndex.
     orderBlockTxs(blocks) { return blocks.sort((a, b) => this.txIsAheadOrBehind(a,b)); }
 
     //Callback for sorting.

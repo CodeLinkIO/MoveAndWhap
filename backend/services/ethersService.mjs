@@ -11,6 +11,7 @@ class EthersService {
     }
 
     async initialize() {
+        console.log("Initializing chain service.");
         try {
             const network = await this.provider.getNetwork().then();
             this.chainId = network["chainId"];

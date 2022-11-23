@@ -21,6 +21,6 @@ let mawContract = new ethers.Contract(process.env.MAW_CONTRACT_ADDRESS, mawAbi, 
 // await response.wait().then(x => console.log(x));
 for(let m = 0; m < 100; m++) {
     await new Promise(r => setTimeout(r, 2000));
-    let response = await mawContract.move(0);
+    let response = await mawContract.move(m % 4);
     await response.wait().then(x => console.log(x));
 }

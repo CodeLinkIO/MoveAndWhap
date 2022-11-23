@@ -45,6 +45,48 @@ class MawServer{
         }
     }
 
+    async listener(database) {
+        //OnPlayerJoined
+        this.eventService.contract.on(this.eventFilters[0], 
+            (player, x, y, dir) => {
+                let log = {
+                    args:{
+                        player:player,
+                        x:x,
+                        y:y,
+                        dir:dir,
+                    }
+                };
+                this.playerJoined(log, database);
+            });
+        
+        //OnPlayerMoved
+        this.eventService.contract.on(this.eventFilters[1],
+            (player, x, y, dir) => {
+                let log = {
+                    args:{
+                        player:player,
+                        x:x,
+                        y:y,
+                        dir:dir,
+                    }
+                };
+                this.playerMoved(log, database);
+            });
+        
+        //OnPlayerAttacked
+        this.eventService.contract.on(this.eventFilters[2],
+            (attacker, victim) => {
+                let log = {
+                    args:{
+                        attacker: attacker,
+                        victim:victim,
+                    }
+                };
+                this.playerAttacked(log, database);
+            });
+    }
+
     async playerJoined(log, database) {
         try{
             var player = await database.get(log.args.player);

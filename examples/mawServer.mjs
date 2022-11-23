@@ -14,3 +14,4 @@ const mawServer = new MawServer(mawAddress, abi, providerURL, "./database/MAW")
 await mawServer.startServer();
 await new Promise(r => setTimeout(r, 1000));
 await mawServer.historicalLoad(startBlock, database).then();
+await mawServer.listener(database);

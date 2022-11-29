@@ -2,6 +2,8 @@ import { EthersService } from "./ethersService.mjs";
 import { EventTrackingService } from "./eventTrackingService.mjs";
 import { BigNumber } from "ethers";
 
+const maxInt = "57896044618658097711785492504343953926634992332820282019728792003956564819968";
+
 class MawServer{
     constructor(mawAddress, abi, providerURL, storagePath) {
         this.chainService = new EthersService(providerURL);
@@ -9,7 +11,6 @@ class MawServer{
         this.contractAddress = mawAddress;
         this.contractAbi = abi;
         this.storagePath = storagePath;
-        this.maxInt = 57896044618658097711785492504343953926634992332820282019728792003956564819968;
     }
 
     async startServer() {
@@ -101,7 +102,7 @@ class MawServer{
             throw `Player with address ${log.args.player} already exists.`;
         } catch (error) { if(error.message != "missing") { throw error; } }
 
-        let biggest = BigNumber.from("57896044618658097711785492504343953926634992332820282019728792003956564819968");
+        let biggest = BigNumber.from(maxInt);
         let xNorm = log.args.x.sub(biggest);
         let yNorm = log.args.y.sub(biggest);
         player = {
@@ -125,7 +126,7 @@ class MawServer{
 
         //Remove the document so we don't have to make a revision.
         await database.remove(player);
-        let biggest = BigNumber.from("57896044618658097711785492504343953926634992332820282019728792003956564819968");
+        let biggest = BigNumber.from(maxInt);
         let xNorm = log.args.x.sub(biggest);
         let yNorm = log.args.y.sub(biggest);
         player = {

@@ -31,7 +31,7 @@ let range = 128
 let x = 0
 let y = 0
 
-//This list of all players within 128 blocks of the start position in either direction.
+//Get list of all players within 128 blocks of the start position in either direction.
 let inRange = await mawServer.getPlayersWithinRange(x, y, range, database);
 console.log(inRange);
 

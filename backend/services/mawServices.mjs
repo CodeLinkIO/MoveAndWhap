@@ -149,9 +149,37 @@ class MawServer{
 
         //Remove the player.
         await database.remove(player);
-        console.log(`Player ${player._id.slice(2,10)} killed ${log.args.victim}!`);
+        let attacker = log.args.attacker.slice(2,10);
+        let victim = log.args.victim.slice(2,10);
+        if(attacker == victim) { console.log(`Player ${attacker} killed themself.`); }
+        else { console.log(`Player ${attacker} killed ${victim}!`); }
     }
 
+    //Check if player is already in the game or not.
+    async getPlayerStatus(address, database) {
+        let result = {
+            playerLives: false,
+            x:0,
+            y:0,
+            dir:0,
+        };
+
+        let player = await database.find({ selector: { _id:address } }).then( p => {
+            return p["docs"];
+        });
+
+        if(player.length == 0) { return result; }
+        
+        result = {
+            playerLives: true,
+            x:player[0].x,
+            y:player[0].y,
+            dir:player[0].dir
+        };
+        return result;
+    }
+
+    //Get players within certain range.
     async getPlayersWithinRange(x ,y, range, database) {
         let minX = x-range;
         let maxX = x+range;

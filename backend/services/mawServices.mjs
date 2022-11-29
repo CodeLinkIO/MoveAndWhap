@@ -1,5 +1,6 @@
 import { EthersService } from "./ethersService.mjs";
 import { EventTrackingService } from "./eventTrackingService.mjs";
+import { BigNumber } from "ethers";
 
 class MawServer{
     constructor(mawAddress, abi, providerURL, storagePath) {
@@ -8,6 +9,7 @@ class MawServer{
         this.contractAddress = mawAddress;
         this.contractAbi = abi;
         this.storagePath = storagePath;
+        this.maxInt = 57896044618658097711785492504343953926634992332820282019728792003956564819968;
     }
 
     async startServer() {
@@ -50,7 +52,7 @@ class MawServer{
     }
 
     //Listen to the network for all of our events.
-    async listener(database) {
+    async listen(database) {
         //OnPlayerJoined
         this.eventService.contract.on(this.eventFilters[0], 
             (player, x, y, dir) => {
@@ -99,15 +101,18 @@ class MawServer{
             throw `Player with address ${log.args.player} already exists.`;
         } catch (error) { if(error.message != "missing") { throw error; } }
 
+        let biggest = BigNumber.from("57896044618658097711785492504343953926634992332820282019728792003956564819968");
+        let xNorm = log.args.x.sub(biggest);
+        let yNorm = log.args.y.sub(biggest);
         player = {
             _id:log.args.player,
-            x:log.args.x.toString(),
-            y:log.args.y.toString(),
+            x:parseInt(xNorm.toString()),
+            y:parseInt(yNorm.toString()),
             dir:log.args.dir
         };
 
         //Add the player's state to the database.
-        await database.post(player).then(x => {
+        await database.put(player).then(x => {
             console.log(`Player ${player._id.slice(2,10)} spawned at (${player.x},${player.y}) facing ${player.dir}.`);
         });
     }
@@ -120,15 +125,18 @@ class MawServer{
 
         //Remove the document so we don't have to make a revision.
         await database.remove(player);
+        let biggest = BigNumber.from("57896044618658097711785492504343953926634992332820282019728792003956564819968");
+        let xNorm = log.args.x.sub(biggest);
+        let yNorm = log.args.y.sub(biggest);
         player = {
             _id:log.args.player,
-            x:log.args.x.toString(),
-            y:log.args.y.toString(),
+            x:parseInt(xNorm.toString()),
+            y:parseInt(yNorm.toString()),
             dir:log.args.dir
         };
 
         //Add the new version of the player's state in.
-        await database.post(player);
+        await database.put(player);
         console.log(`Player ${player._id.slice(2,10)} moved ${player.dir}.`)
     }
 
@@ -141,6 +149,25 @@ class MawServer{
         //Remove the player.
         await database.remove(player);
         console.log(`Player ${player._id.slice(2,10)} killed ${log.args.victim}!`);
+    }
+
+    async getPlayersWithinRange(x ,y, range, database) {
+        let minX = x-range;
+        let maxX = x+range;
+        let minY = y-range;
+        let maxY = y+range;
+
+        let inRange = await database.find({
+            selector:{
+                $and:[
+                    {x: {$gt:minX} },
+                    {x: {$lt:maxX} },
+                    {y: {$gt:minY} },
+                    {y: {$lt:maxY} },
+                ]
+            }
+        }).then(result => { return result["docs"]; });
+        return inRange;
     }
 }
 

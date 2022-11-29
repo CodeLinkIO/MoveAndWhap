@@ -25,7 +25,12 @@ await response.wait().then(x => console.log(x));
 //Make random moves.
 for(let m = 0; m < movesToMake; m++) {
     await new Promise(r => setTimeout(r, 2000));            //2 second wait time.
-    let randomDirection = Math.round(Math.random(0,4));     //Get a random direction.
+    let randomDirection = Math.floor(Math.random()*4);     //Get a random direction.
     let response = await mawContract.move(randomDirection); //Do the actual move.
     await response.wait().then(x => console.log(x));        //Wait and log the transaction.
 }
+
+//Kill yourself so if you run this script again it won't crash because of double joining.
+await new Promise(r => setTimeout(r, 2000));
+response = await mawContract.whap(process.env.PRIVATE_KEY_ADDRESS); 
+await response.wait().then(x => console.log(x));   

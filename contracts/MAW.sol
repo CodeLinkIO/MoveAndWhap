@@ -103,6 +103,11 @@ contract MAW {
         emit PlayerAttacked(msg.sender, target);
     }
 
+    function getPlayer(address player) public view returns (uint256,uint256,uint8,bool) {
+        Player memory p = players[player];
+        return (p.posX, p.posY, p.direction, p.isAlive);
+    }
+
     function abs(int256 x) private pure returns (int256) {
         return x >= 0 ? x : -x;
     }

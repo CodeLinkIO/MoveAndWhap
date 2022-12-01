@@ -93,20 +93,20 @@ const GameScreen = () => {
 
       addBoatToScreen({
         playerPosition: {
-          x: currentPlayerPosition.x - 100,
+          x: currentPlayerPosition.x - 200,
           y: currentPlayerPosition.y,
         },
         address: `account2`,
-        directionNum: 0,
+        directionNum: 3,
       });
 
       addBoatToScreen({
         playerPosition: {
-          x: currentPlayerPosition.x + 100,
+          x: currentPlayerPosition.x + 400,
           y: currentPlayerPosition.y,
         },
         address: `account2`,
-        directionNum: 0,
+        directionNum: 1,
       });
 
       addBoatToScreen({
@@ -124,7 +124,7 @@ const GameScreen = () => {
           y: currentPlayerPosition.y + 200,
         },
         address: `account4`,
-        directionNum: 0,
+        directionNum: 1,
       });
 
       // Player boat will always be created last in the list

@@ -1,6 +1,10 @@
 import { boxBox } from "intersects";
 import { filter } from "lodash";
 import { DIRECTION_OPPOSITE } from "../constants/contracts";
+import {
+  ACCEPTED_HEAD_FOR_HORIZON,
+  ACCEPTED_HEAD_FOR_VERTICAL,
+} from "../constants/pixi";
 import pixiApp from "./app";
 
 class PositionMapper {
@@ -209,6 +213,15 @@ class PositionMapper {
   static checkHeadToHead = (playerBoat, targetBoat) => {
     const playerHead = playerBoat.getHeadDirection();
     const targetHead = targetBoat.getHeadDirection();
+
+    const isHorizonLineBoats = playerBoat.y === targetBoat.y;
+    const isVerticalLineBoats = playerBoat.x === targetBoat.x;
+    const isInvalidHorizonHead =
+      isHorizonLineBoats && !ACCEPTED_HEAD_FOR_HORIZON.includes(playerHead);
+    const isInvalidVerticalHead =
+      isVerticalLineBoats && !ACCEPTED_HEAD_FOR_VERTICAL.includes(playerHead);
+
+    if (isInvalidHorizonHead || isInvalidVerticalHead) return false;
 
     const directionOppositeWithPlayer = DIRECTION_OPPOSITE[playerHead];
 

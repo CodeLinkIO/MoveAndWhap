@@ -44,7 +44,6 @@ class PositionMapper {
 
   static findNearestBoatUp = (playerBoat) => {
     const { x: playerBoatX, y: playerBoatY } = playerBoat.position;
-    if (playerBoatY === 0) return null;
 
     const boatsOnX = PositionMapper.getBoatsOnX(playerBoatX);
     const topBoats = filter(boatsOnX, (boat) => {
@@ -61,6 +60,26 @@ class PositionMapper {
     });
 
     return lowestTopBoat;
+  };
+
+  static findNearestBoatDown = (playerBoat) => {
+    const { x: playerBoatX, y: playerBoatY } = playerBoat.position;
+
+    const boatsOnX = PositionMapper.getBoatsOnX(playerBoatX);
+    const bottomBoats = filter(boatsOnX, (boat) => {
+      const isBottomBoat =
+        boat.position.y > playerBoatY && boat.address !== playerBoat.address;
+      return isBottomBoat;
+    });
+
+    if (bottomBoats.length === 0) return null;
+
+    const topMostBottomBoat = bottomBoats.reduce((topMostBoat, boat) => {
+      if (boat.position.y < topMostBoat.position.y) return boat;
+      return topMostBoat;
+    });
+
+    return topMostBottomBoat;
   };
 }
 

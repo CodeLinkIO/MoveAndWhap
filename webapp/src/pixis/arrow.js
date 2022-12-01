@@ -134,9 +134,16 @@ class Arrow {
     const isReachedBottomBorder = MapBorder.reachBottomBorder(arrowHitBox);
     if (isReachedBottomBorder) return false;
 
-    return true;
+    const topMostBottomBoat = PositionMapper.findNearestBoatDown(
+      this.container
+    );
 
-    // const isCollidedWithBoatOnBottom =
+    if (!topMostBottomBoat) return true;
+
+    const isCollidedWithBoatOnBottom =
+      this.checkBoatCollisionWithPlayerBoat(topMostBottomBoat);
+
+    return !isCollidedWithBoatOnBottom;
   };
 
   canMoveToThisDirection = () => {

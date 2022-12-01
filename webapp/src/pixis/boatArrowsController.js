@@ -45,15 +45,27 @@ class BoatArrowsController {
   isMoving = false;
   headDirection = DOWN_DIRECTION;
 
-  constructor({ container, onDownArrowClick = () => {}, headDirection }) {
+  constructor({
+    container,
+    onDownArrowClick = () => {},
+    headDirection,
+    isCurrentPlayer,
+  }) {
     this.container = container;
     this.boat = this.container.getBoat();
+    this.setupDirectionController({ headDirection, isCurrentPlayer });
+  }
+
+  setupDirectionController = ({ headDirection, isCurrentPlayer }) => {
     this.setupHeadDirection(headDirection);
+
+    if (!isCurrentPlayer) return;
+
     this.setupDownArrow();
     this.setupUpArrow();
     this.setupLeftArrow();
     this.setupRightArrow();
-  }
+  };
 
   setupHeadDirection = (headDirection) => {
     this.headDirection = headDirection;

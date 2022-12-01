@@ -45,7 +45,7 @@ class Boat extends Container {
     this.isCurrentPlayer = isCurrentPlayer;
     addConfig({ pixiObject: this, config: boatContainerOptions });
     this.setupBoat(boatSpriteOptions);
-    this.setupArrows(headDirection);
+    this.setupArrows({ headDirection, isCurrentPlayer });
     this.setupHitBox();
 
     this.mapContainer = pixiApp.getMapContainer();
@@ -75,11 +75,12 @@ class Boat extends Container {
     this.boat.play();
   };
 
-  setupArrows = (headDirection) => {
+  setupArrows = ({ headDirection, isCurrentPlayer }) => {
     this.arrowsController = new BoatArrowsController({
       container: this,
       onDownArrowClick: this.moveBoatDown,
       headDirection,
+      isCurrentPlayer,
     });
   };
 

@@ -7,14 +7,16 @@ pragma solidity >=0.7.0 <0.9.0;
  * @dev A simple game where you move in a square grid, turn, and whap.
  */
 contract MAW {
-    uint256 MAX_INT = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
-    event PlayerJoined(address indexed player, uint256 indexed x, uint256 indexed y, uint8 dir);
+    int256 MAX_INT = type(int256).max;
+    int256 MIN_INT = type(int256).min;
+
+    event PlayerJoined(address indexed player, int256 indexed x, int256 indexed y, uint8 dir);
     event PlayerAttacked(address indexed attacker, address indexed victim);
-    event PlayerMoved(address indexed player, uint256 indexed x, uint256 indexed y, uint8 dir);
+    event PlayerMoved(address indexed player, int256 indexed x, int256 indexed y, uint8 dir);
 
     struct Player {
-        uint256 posX; //Position on X
-        uint256 posY;  //Position on Y
+        int256 posX; //Position on X
+        int256 posY;  //Position on Y
         uint8 direction; //Which direction you face. 0 North, 1 East, 2 South, 3 West
         bool isAlive; //Value to tell if the player exists in the game.
     }
@@ -24,13 +26,12 @@ contract MAW {
     constructor() { }
 
     //Join game at position. Start somewhere in the spawn zone that is 256x256 in the middle.
-    function join(uint8 x, uint8 y, uint8 dir) public {
+    function join(int8 x, int8 y, uint8 dir) public {
         //Make sure the player is dead before they can join.
         require(!players[msg.sender].isAlive);
 
-        uint256 middle = (MAX_INT/2)-128; //Middle of the map with 128 padding.
-        uint256 startX = middle+uint256(x); //Add x to the middle position.
-        uint256 startY = middle+uint256(y); //Add y to the middle position.
+        int256 startX = int256(x); //Add x to the middle position.
+        int256 startY = int256(y); //Add y to the middle position.
         uint8 _dir = dir % 4; //Make sure the player only has 0-4
         Player memory newPlayer = Player(startX, startY, _dir, true);
         players[msg.sender] = newPlayer;
@@ -42,37 +43,38 @@ contract MAW {
     function move(uint8 dir) public {
         Player storage movingPlayer = players[msg.sender];
         require(movingPlayer.isAlive);
+        
+        //Make sure the player direction is 0,1,2, or 3;
+        uint8 realDir = dir % 4;
 
         //Get the direction of the player. Give a space of 2 at the border
         //of the map. It is a wrap around map.
-        if(dir == 0) {
+        if(realDir == 0) {
             movingPlayer.posY += 1;
             //Check if we are at the padded border
             if(movingPlayer.posY >= MAX_INT - 2) { 
-                movingPlayer.posY = 2; //Send to other side.
+                movingPlayer.posY = MIN_INT + 2; //Send to other side.
             }
-        } else if(dir == 1)
+        } else if(realDir == 1)
         {
             movingPlayer.posX += 1;
             if(movingPlayer.posX >= MAX_INT - 2) { 
-                movingPlayer.posX = 2;
+                movingPlayer.posX = MIN_INT + 2;
             }
-        } else if(dir == 2)
+        } else if(realDir == 2)
         {
             movingPlayer.posY -= 1;
-            if(movingPlayer.posY <= 2) { 
+            if(movingPlayer.posY <= MIN_INT + 2) { 
                 movingPlayer.posY = MAX_INT - 2;
             }
         } else {
             movingPlayer.posX -= 1;
-            if(movingPlayer.posX <= 2) { 
+            if(movingPlayer.posX <= MIN_INT + 2) { 
                 movingPlayer.posX = MAX_INT - 2;
             }
         }
 
-        //We never check the direction because the player only hurts themself if
-        //they put a direction greater than 3.
-        movingPlayer.direction = dir;
+        movingPlayer.direction = realDir;
         emit PlayerMoved(msg.sender, movingPlayer.posX, movingPlayer.posY, movingPlayer.direction);
     }
 
@@ -103,7 +105,7 @@ contract MAW {
         emit PlayerAttacked(msg.sender, target);
     }
 
-    function getPlayer(address player) public view returns (uint256,uint256,uint8,bool) {
+    function getPlayer(address player) public view returns (int256,int256,uint8,bool) {
         Player memory p = players[player];
         return (p.posX, p.posY, p.direction, p.isAlive);
     }

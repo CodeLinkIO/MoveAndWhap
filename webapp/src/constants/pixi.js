@@ -62,3 +62,31 @@ export const UP_DIRECTION = "up";
 export const DOWN_DIRECTION = "down";
 export const LEFT_DIRECTION = "left";
 export const RIGHT_DIRECTION = "right";
+
+export const DIRECTIONS = [
+  UP_DIRECTION,
+  RIGHT_DIRECTION,
+  DOWN_DIRECTION,
+  LEFT_DIRECTION,
+];
+
+export const BOUNCE_DISTANCE = 3;
+export const BOUNCE_POSITION_BY_DIRECTION = {
+  [UP_DIRECTION]: {
+    x: 0,
+    y: -BOUNCE_DISTANCE,
+  },
+  [DOWN_DIRECTION]: {
+    x: 0,
+    y: BOUNCE_DISTANCE,
+  },
+
+  [LEFT_DIRECTION]: {
+    x: -BOUNCE_DISTANCE,
+    y: 0,
+  },
+  [RIGHT_DIRECTION]: {
+    x: BOUNCE_DISTANCE,
+    y: 0,
+  },
+};

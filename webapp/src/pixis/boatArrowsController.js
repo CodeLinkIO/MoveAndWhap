@@ -13,9 +13,11 @@ import {
   RIGHT_DIRECTION,
   DOWN_DIRECTION,
   LEFT_DIRECTION,
+  DIRECTIONS,
 } from "../constants/pixi";
 import { move } from "../utils/contract";
 import Arrow from "./arrow";
+import FireButton from "./fireButton";
 import PositionMapper from "./positionMapper";
 
 const MOVING_DISTANCE_Y = BOAT_CONTAINER_HEIGHT;
@@ -25,13 +27,6 @@ const ROTATING_TIME = 500; // ms
 
 // Default head of the boat image
 const IMAGE_HEAD = DOWN_DIRECTION;
-
-const DIRECTIONS = [
-  UP_DIRECTION,
-  RIGHT_DIRECTION,
-  DOWN_DIRECTION,
-  LEFT_DIRECTION,
-];
 
 class BoatArrowsController {
   downArrow = null;
@@ -43,21 +38,15 @@ class BoatArrowsController {
   movingTweeny = null;
   rotationTweeny = null;
   isMoving = false;
-  headDirection = DOWN_DIRECTION;
 
-  constructor({
-    container,
-    onDownArrowClick = () => {},
-    headDirection,
-    isCurrentPlayer,
-  }) {
+  constructor({ container, onDownArrowClick = () => {}, isCurrentPlayer }) {
     this.container = container;
     this.boat = this.container.getBoat();
-    this.setupDirectionController({ headDirection, isCurrentPlayer });
+    this.setupDirectionController({ isCurrentPlayer });
   }
 
-  setupDirectionController = ({ headDirection, isCurrentPlayer }) => {
-    this.setupHeadDirection(headDirection);
+  setupDirectionController = ({ isCurrentPlayer }) => {
+    this.setupHeadDirection();
 
     if (!isCurrentPlayer) return;
 
@@ -65,10 +54,15 @@ class BoatArrowsController {
     this.setupUpArrow();
     this.setupLeftArrow();
     this.setupRightArrow();
+
+    this.setupLeftFireButton();
+    this.setupRightFireButton();
+    this.setupUpFireButton();
+    this.setupDownFireButton();
   };
 
-  setupHeadDirection = (headDirection) => {
-    this.headDirection = headDirection;
+  setupHeadDirection = () => {
+    const headDirection = this.container.headDirection;
     const rotationDegree = this.calculateRotationDegree({
       headDirection: IMAGE_HEAD,
       targetDirection: headDirection,
@@ -116,6 +110,42 @@ class BoatArrowsController {
     this.container.addChild(this.rightArrow.getArrow());
   };
 
+  setupLeftFireButton = () => {
+    this.leftFireButton = new FireButton({
+      onClick: this.fireLeft,
+      direction: LEFT_DIRECTION,
+      container: this.container,
+    });
+    this.container.addChild(this.leftFireButton.getFireButton());
+  };
+
+  setupRightFireButton = () => {
+    this.rightFireButton = new FireButton({
+      onClick: this.fireRight,
+      direction: RIGHT_DIRECTION,
+      container: this.container,
+    });
+    this.container.addChild(this.rightFireButton.getFireButton());
+  };
+
+  setupDownFireButton = () => {
+    this.downFireButton = new FireButton({
+      onClick: this.fireDown,
+      direction: DOWN_DIRECTION,
+      container: this.container,
+    });
+    this.container.addChild(this.downFireButton.getFireButton());
+  };
+
+  setupUpFireButton = () => {
+    this.upFireButton = new FireButton({
+      onClick: this.fireUp,
+      direction: UP_DIRECTION,
+      container: this.container,
+    });
+    this.container.addChild(this.upFireButton.getFireButton());
+  };
+
   getDownArrow = () => {
     return this.downArrow;
   };
@@ -132,19 +162,16 @@ class BoatArrowsController {
     return this.rightArrow;
   };
 
-  getHeadDirection = () => {
-    return this.headDirection;
-  };
-
-  setHeadDirection = (headDirection) => {
-    this.headDirection = headDirection;
-  };
-
   emitEvent = (eventName) => {
     this.downArrow.getArrow().emit(eventName);
     this.upArrow.getArrow().emit(eventName);
     this.leftArrow.getArrow().emit(eventName);
     this.rightArrow.getArrow().emit(eventName);
+
+    this.leftFireButton.getFireButton().emit(eventName);
+    this.rightFireButton.getFireButton().emit(eventName);
+    this.upFireButton.getFireButton().emit(eventName);
+    this.downFireButton.getFireButton().emit(eventName);
   };
 
   setupBoatTweeny = (direction) => {
@@ -153,7 +180,7 @@ class BoatArrowsController {
     });
 
     const shouldRotate = this.shouldRotate({
-      headDirection: this.headDirection,
+      headDirection: this.container.headDirection,
       targetDirection: direction,
     });
 
@@ -179,7 +206,7 @@ class BoatArrowsController {
     this.setupBoatTweeny(direction);
 
     const shouldRotate = this.shouldRotate({
-      headDirection: this.headDirection,
+      headDirection: this.container.headDirection,
       targetDirection: direction,
     });
 
@@ -196,7 +223,7 @@ class BoatArrowsController {
       this.onMoveStart();
     });
     this.movingTweeny.onComplete(() => {
-      this.onMoveEnd(this.headDirection);
+      this.onMoveEnd(this.container.headDirection);
     });
 
     this.movingTweeny.to(distance, MOVING_TIME);
@@ -208,13 +235,13 @@ class BoatArrowsController {
   };
 
   onMoveEnd = (direction) => {
-    this.headDirection = direction;
+    this.container.setHeadDirection(direction);
     PositionMapper.setBoatMap(this);
     this.emitEvent(STOP_MOVING_EVENT);
   };
 
   moveWithRotation = (distance, direction) => {
-    this.rotateTweeny.onStart(async () => {
+    this.rotateTweeny.onStart(() => {
       this.onMoveStart();
     });
     this.movingTweeny.onComplete(() => {
@@ -222,7 +249,7 @@ class BoatArrowsController {
     });
 
     const degree = this.calculateRotationDegree({
-      headDirection: this.headDirection,
+      headDirection: this.container.headDirection,
       targetDirection: direction,
     });
     this.rotateTweeny.to(
@@ -281,6 +308,11 @@ class BoatArrowsController {
     const degree = currentAngle + rotationDegree;
     return degree;
   };
+
+  fireLeft = async () => {};
+  fireRight = async () => {};
+  fireUp = async () => {};
+  fireDown = async () => {};
 }
 
 export default BoatArrowsController;

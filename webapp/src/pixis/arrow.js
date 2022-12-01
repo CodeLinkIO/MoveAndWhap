@@ -1,9 +1,10 @@
-import { boxBox } from "intersects";
-import { Graphics, Sprite, Texture } from "pixi.js";
+import { Graphics, Ticker } from "pixi.js";
+import { Group, Tween } from "tweedle.js";
 import {
   ARROW_HEIGHT,
   BOAT_CONTAINER_HEIGHT,
   BOAT_CONTAINER_WIDTH,
+  BOUNCE_POSITION_BY_DIRECTION,
   DOWN_DIRECTION,
   LEFT_DIRECTION,
   RIGHT_DIRECTION,
@@ -17,12 +18,12 @@ import PositionMapper from "./positionMapper";
 
 class Arrow {
   arrow = null;
-  type = DOWN_DIRECTION;
+  direction = DOWN_DIRECTION;
 
-  constructor(path, onClick, type, container) {
+  constructor(path, onClick, direction, container) {
     this.container = container;
     this.arrow = new Graphics();
-    this.type = type;
+    this.direction = direction;
     this.arrow.beginFill(0x66ccff);
     this.arrow.drawPolygon(path);
     this.arrow.endFill();
@@ -34,6 +35,8 @@ class Arrow {
 
     setTimeout(() => this.checkArrowVisibility(), 0);
 
+    this.setupBouncingAnimation();
+
     // Listen to moving state
     this.arrow.on(START_MOVING_EVENT, this.onStartMoving);
     this.arrow.on(STOP_MOVING_EVENT, this.onStopMoving);
@@ -42,6 +45,22 @@ class Arrow {
   getArrow() {
     return this.arrow;
   }
+
+  setupBouncingAnimation = () => {
+    Ticker.shared.add(() => {
+      Group.shared.update();
+    });
+
+    this.bouncingAnimation = new Tween(this.arrow);
+    const bouncePosition = BOUNCE_POSITION_BY_DIRECTION[this.direction];
+    const x = this.arrow.x + bouncePosition.x;
+    const y = this.arrow.y + bouncePosition.y;
+    this.bouncingAnimation
+      .to({ x, y }, 400, "easeOutQuad")
+      .yoyo(true)
+      .repeat(Infinity)
+      .start();
+  };
 
   onStartMoving = () => {
     this.arrow.cursor = "default";
@@ -71,43 +90,13 @@ class Arrow {
     return this.toWorldPosition(this.container.toGlobal(this.arrow.position));
   };
 
-  calculateHitBoxWithAdditionGap = (boat) => {
-    const hitBox = boat.getHitBox();
-    const { width, height } = hitBox;
-    const { x, y } = this.toWorldPosition(boat.toGlobal(hitBox));
-
-    return {
-      x: x,
-      y: y,
-      width: width,
-      height: height,
-    };
-  };
-
-  checkBoatCollisionWithPlayerBoat = (boat) => {
-    const boatHitBox = this.calculateHitBoxWithAdditionGap(boat);
-    const playerBoatHixBox = this.calculateHitBoxWithAdditionGap(
-      this.container
-    );
-
-    const { x: x1, y: y1, width: w1, height: h1 } = boatHitBox;
-    const { x: x2, y: y2, width: w2, height: h2 } = playerBoatHixBox;
-
-    const intersected = boxBox(x1, y1, w1, h1, x2, y2, w2, h2);
-
-    return intersected;
-  };
-
   canMoveLeft = (arrowHitBox) => {
     const isReachedLeftBorder = MapBorder.reachLeftBorder(arrowHitBox);
     if (isReachedLeftBorder) return false;
 
-    const nearestLeftBoat = PositionMapper.findNearestLeftBoat(this.container);
-
-    if (!nearestLeftBoat) return true;
-
-    const isCollidedWithBoatOnLeft =
-      this.checkBoatCollisionWithPlayerBoat(nearestLeftBoat);
+    const isCollidedWithBoatOnLeft = PositionMapper.checkLeftCollision(
+      this.container
+    );
 
     return !isCollidedWithBoatOnLeft;
   };
@@ -116,14 +105,9 @@ class Arrow {
     const isReachedRightBorder = MapBorder.reachRightBorder(arrowHitBox);
     if (isReachedRightBorder) return false;
 
-    const nearestRightBoat = PositionMapper.findNearestRightBoat(
+    const isCollidedWithBoatOnRight = PositionMapper.checkRightCollision(
       this.container
     );
-
-    if (!nearestRightBoat) return true;
-
-    const isCollidedWithBoatOnRight =
-      this.checkBoatCollisionWithPlayerBoat(nearestRightBoat);
 
     return !isCollidedWithBoatOnRight;
   };
@@ -132,12 +116,9 @@ class Arrow {
     const isReachedTopBorder = MapBorder.reachTopBorder(arrowHitBox);
     if (isReachedTopBorder) return false;
 
-    const lowestTopBoat = PositionMapper.findNearestBoatUp(this.container);
-
-    if (!lowestTopBoat) return true;
-
-    const isCollidedWithBoatOnTop =
-      this.checkBoatCollisionWithPlayerBoat(lowestTopBoat);
+    const isCollidedWithBoatOnTop = PositionMapper.checkTopCollision(
+      this.container
+    );
 
     return !isCollidedWithBoatOnTop;
   };
@@ -146,14 +127,9 @@ class Arrow {
     const isReachedBottomBorder = MapBorder.reachBottomBorder(arrowHitBox);
     if (isReachedBottomBorder) return false;
 
-    const topMostBottomBoat = PositionMapper.findNearestBoatDown(
+    const isCollidedWithBoatOnBottom = PositionMapper.checkBottomCollision(
       this.container
     );
-
-    if (!topMostBottomBoat) return true;
-
-    const isCollidedWithBoatOnBottom =
-      this.checkBoatCollisionWithPlayerBoat(topMostBottomBoat);
 
     return !isCollidedWithBoatOnBottom;
   };
@@ -165,7 +141,7 @@ class Arrow {
     const hitBoxHeight = BOAT_CONTAINER_HEIGHT - ARROW_HEIGHT;
     const position = this.calculateArrowPositionToWorldMap();
 
-    switch (this.type) {
+    switch (this.direction) {
       case LEFT_DIRECTION: {
         const arrowHitBox = {
           x2: position.x,

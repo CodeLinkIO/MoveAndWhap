@@ -81,19 +81,57 @@ const GameScreen = () => {
       TileMap.initialize(currentPlayerPosition);
 
       // create boats
-      const currentPlayerBoat = addBoatToScreen({
-        playerPosition: currentPlayerPosition,
-        address: account,
-        directionNum: currentPlayer.directionNum,
-      });
 
-      const currentPlayerBoat1 = addBoatToScreen({
+      addBoatToScreen({
         playerPosition: {
           x: currentPlayerPosition.x,
           y: currentPlayerPosition.y + 100,
         },
         address: `account1`,
+        directionNum: 2,
+      });
+
+      addBoatToScreen({
+        playerPosition: {
+          x: currentPlayerPosition.x - 100,
+          y: currentPlayerPosition.y,
+        },
+        address: `account2`,
         directionNum: 0,
+      });
+
+      addBoatToScreen({
+        playerPosition: {
+          x: currentPlayerPosition.x + 100,
+          y: currentPlayerPosition.y,
+        },
+        address: `account2`,
+        directionNum: 0,
+      });
+
+      addBoatToScreen({
+        playerPosition: {
+          x: currentPlayerPosition.x,
+          y: currentPlayerPosition.y + 300,
+        },
+        address: `account3`,
+        directionNum: 0,
+      });
+
+      addBoatToScreen({
+        playerPosition: {
+          x: currentPlayerPosition.x + 200,
+          y: currentPlayerPosition.y + 200,
+        },
+        address: `account4`,
+        directionNum: 0,
+      });
+
+      // Player boat will always be created last in the list
+      const currentPlayerBoat = addBoatToScreen({
+        playerPosition: currentPlayerPosition,
+        address: account,
+        directionNum: currentPlayer.directionNum,
       });
     };
 

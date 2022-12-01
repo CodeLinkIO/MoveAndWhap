@@ -1,14 +1,4 @@
-const OPTION_KEYS = [
-  "x",
-  "y",
-  "vx",
-  "vy",
-  "width",
-  "height",
-  "scale",
-  "rotation",
-  "angle",
-];
+const OPTION_KEYS = ["x", "y", "width", "height", "scale", "rotation", "angle"];
 const OPTIONS_WITH_SET_FN = ["scale"];
 
 export const addConfig = ({ pixiObject, config = {} }) => {

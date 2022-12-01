@@ -5,7 +5,7 @@ import Boat2_water_frame3 from "../assets/Boat2_water_frame3.png";
 import Boat2_water_frame4 from "../assets/Boat2_water_frame4.png";
 import { addConfig } from "./utils/addConfig";
 import pixiApp from "./app";
-import { BOAT_SIZE_AND_POSITION } from "../constants/pixi";
+import { BOAT_SIZE_AND_POSITION, DOWN_DIRECTION } from "../constants/pixi";
 import BoatArrowsController from "./boatArrowsController";
 import PositionMapper from "./positionMapper";
 
@@ -31,6 +31,7 @@ class Boat extends Container {
   address = null;
   hitBox = null;
   isCurrentPlayer = false;
+  headDirection = DOWN_DIRECTION;
 
   constructor({
     boatSpriteOptions = {},
@@ -43,10 +44,14 @@ class Boat extends Container {
 
     this.address = address;
     this.isCurrentPlayer = isCurrentPlayer;
+    this.headDirection = headDirection;
+    if (isCurrentPlayer) {
+      this.zIndex = 100;
+    }
     addConfig({ pixiObject: this, config: boatContainerOptions });
     this.setupBoat(boatSpriteOptions);
-    this.setupArrows({ headDirection, isCurrentPlayer });
     this.setupHitBox();
+    this.setupArrows({ headDirection, isCurrentPlayer });
 
     this.mapContainer = pixiApp.getMapContainer();
     this.mapContainer.addChild(this);
@@ -61,10 +66,19 @@ class Boat extends Container {
     return this;
   };
 
+  setHeadDirection = (headDirection) => {
+    this.headDirection = headDirection;
+  };
+
+  getHeadDirection = () => {
+    return this.headDirection;
+  };
+
   setupBoat = (boatSpriteOptions) => {
     this.boat = new AnimatedSprite(
       BOAT_FRAMES.map((stringy) => Texture.from(stringy))
     );
+    this.boat.zIndex = 1;
     this.boat.animationSpeed = ANIMATION_SPEED;
     addConfig({
       pixiObject: this.boat,
@@ -75,13 +89,13 @@ class Boat extends Container {
     this.boat.play();
   };
 
-  setupArrows = ({ headDirection, isCurrentPlayer }) => {
+  setupArrows = ({ isCurrentPlayer }) => {
     this.arrowsController = new BoatArrowsController({
       container: this,
       onDownArrowClick: this.moveBoatDown,
-      headDirection,
       isCurrentPlayer,
     });
+    this.arrowsController.zIndex = 100;
   };
 
   setupHitBox = () => {

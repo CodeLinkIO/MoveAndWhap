@@ -1,4 +1,7 @@
+import { boxBox } from "intersects";
 import { filter } from "lodash";
+import { DIRECTION_OPPOSITE } from "../constants/contracts";
+import pixiApp from "./app";
 
 class PositionMapper {
   static mapPositionX = {};
@@ -120,6 +123,161 @@ class PositionMapper {
     });
 
     return leftMostRightBoat;
+  };
+
+  static toWorldPosition = (position) => {
+    return pixiApp.getViewport().toWorld(position);
+  };
+
+  static calculateHitBox = (boat) => {
+    const hitBox = boat.getHitBox();
+    const { width, height } = hitBox;
+    const { x, y } = this.toWorldPosition(boat.toGlobal(hitBox));
+
+    return {
+      x: x,
+      y: y,
+      width: width,
+      height: height,
+    };
+  };
+
+  static checkBoatCollisionWithPlayerBoat = (playerBoat, boat) => {
+    const boatHitBox = this.calculateHitBox(boat);
+    const playerBoatHixBox = this.calculateHitBox(playerBoat);
+
+    const { x: x1, y: y1, width: w1, height: h1 } = boatHitBox;
+    const { x: x2, y: y2, width: w2, height: h2 } = playerBoatHixBox;
+
+    const intersected = boxBox(x1, y1, w1, h1, x2, y2, w2, h2);
+
+    return intersected;
+  };
+
+  static checkLeftCollision = (playerBoat) => {
+    const nearestLeftBoat = this.findNearestLeftBoat(playerBoat);
+
+    if (!nearestLeftBoat) return false;
+
+    const isCollidedWithBoatOnLeft = this.checkBoatCollisionWithPlayerBoat(
+      playerBoat,
+      nearestLeftBoat
+    );
+
+    return isCollidedWithBoatOnLeft;
+  };
+
+  static checkRightCollision = (playerBoat) => {
+    const nearestRightBoat = this.findNearestRightBoat(playerBoat);
+
+    if (!nearestRightBoat) return false;
+
+    const isCollidedWithBoatOnRight = this.checkBoatCollisionWithPlayerBoat(
+      playerBoat,
+      nearestRightBoat
+    );
+
+    return isCollidedWithBoatOnRight;
+  };
+
+  static checkTopCollision = (playerBoat) => {
+    const nearestTopBoat = this.findNearestBoatUp(playerBoat);
+
+    if (!nearestTopBoat) return false;
+
+    const isCollidedWithBoatOnTop = this.checkBoatCollisionWithPlayerBoat(
+      playerBoat,
+      nearestTopBoat
+    );
+
+    return isCollidedWithBoatOnTop;
+  };
+
+  static checkBottomCollision = (playerBoat) => {
+    const nearestBottomBoat = this.findNearestBoatDown(playerBoat);
+
+    if (!nearestBottomBoat) return false;
+
+    const isCollidedWithBoatOnBottom = this.checkBoatCollisionWithPlayerBoat(
+      playerBoat,
+      nearestBottomBoat
+    );
+
+    return isCollidedWithBoatOnBottom;
+  };
+
+  static checkHeadToHead = (playerBoat, targetBoat) => {
+    const playerHead = playerBoat.getHeadDirection();
+    const targetHead = targetBoat.getHeadDirection();
+
+    const directionOppositeWithPlayer = DIRECTION_OPPOSITE[playerHead];
+
+    const isHeadToHead = directionOppositeWithPlayer === targetHead;
+    return isHeadToHead;
+  };
+
+  static getFireableBoatOnLeft = (playerBoat) => {
+    const nearestLeftBoat = this.findNearestLeftBoat(playerBoat);
+    if (!nearestLeftBoat) return null;
+
+    const isCollidedWithBoatOnLeft = this.checkBoatCollisionWithPlayerBoat(
+      playerBoat,
+      nearestLeftBoat
+    );
+
+    const isHeadToHead = this.checkHeadToHead(playerBoat, nearestLeftBoat);
+
+    if (isCollidedWithBoatOnLeft && isHeadToHead) return nearestLeftBoat;
+
+    return null;
+  };
+
+  static getFireableBoatOnRight = (playerBoat) => {
+    const nearestRightBoat = this.findNearestRightBoat(playerBoat);
+    if (!nearestRightBoat) return null;
+
+    const isCollidedWithBoatOnRight = this.checkBoatCollisionWithPlayerBoat(
+      playerBoat,
+      nearestRightBoat
+    );
+
+    const isHeadToHead = this.checkHeadToHead(playerBoat, nearestRightBoat);
+
+    if (isCollidedWithBoatOnRight && isHeadToHead) return nearestRightBoat;
+
+    return null;
+  };
+
+  static getFireableBoatOnTop = (playerBoat) => {
+    const nearestTopBoat = this.findNearestBoatUp(playerBoat);
+    if (!nearestTopBoat) return null;
+
+    const isCollidedWithBoatOnTop = this.checkBoatCollisionWithPlayerBoat(
+      playerBoat,
+      nearestTopBoat
+    );
+
+    const isHeadToHead = this.checkHeadToHead(playerBoat, nearestTopBoat);
+
+    if (isCollidedWithBoatOnTop && isHeadToHead) return nearestTopBoat;
+
+    return null;
+  };
+
+  static getFireableBoatOnBottom = (playerBoat) => {
+    const nearestBottomBoat = this.findNearestBoatDown(playerBoat);
+    if (!nearestBottomBoat) return null;
+
+    const isCollidedWithBoatOnBottom = this.checkBoatCollisionWithPlayerBoat(
+      playerBoat,
+      nearestBottomBoat
+    );
+
+    const isHeadToHead = this.checkHeadToHead(playerBoat, nearestBottomBoat);
+
+    if (isCollidedWithBoatOnBottom && isHeadToHead) return nearestBottomBoat;
+
+    return null;
   };
 }
 

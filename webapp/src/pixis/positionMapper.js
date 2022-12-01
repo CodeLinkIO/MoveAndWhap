@@ -45,8 +45,8 @@ class PositionMapper {
   static findNearestBoatUp = (playerBoat) => {
     const { x: playerBoatX, y: playerBoatY } = playerBoat.position;
 
-    const boatsOnX = PositionMapper.getBoatsOnX(playerBoatX);
-    const topBoats = filter(boatsOnX, (boat) => {
+    const boatsOnSameX = PositionMapper.getBoatsOnX(playerBoatX);
+    const topBoats = filter(boatsOnSameX, (boat) => {
       const isTopBoat =
         boat.position.y < playerBoatY && boat.address !== playerBoat.address;
       return isTopBoat;
@@ -65,8 +65,8 @@ class PositionMapper {
   static findNearestBoatDown = (playerBoat) => {
     const { x: playerBoatX, y: playerBoatY } = playerBoat.position;
 
-    const boatsOnX = PositionMapper.getBoatsOnX(playerBoatX);
-    const bottomBoats = filter(boatsOnX, (boat) => {
+    const boatsOnSameX = PositionMapper.getBoatsOnX(playerBoatX);
+    const bottomBoats = filter(boatsOnSameX, (boat) => {
       const isBottomBoat =
         boat.position.y > playerBoatY && boat.address !== playerBoat.address;
       return isBottomBoat;
@@ -80,6 +80,46 @@ class PositionMapper {
     });
 
     return topMostBottomBoat;
+  };
+
+  static findNearestLeftBoat = (playerBoat) => {
+    const { x: playerBoatX, y: playerBoatY } = playerBoat.position;
+
+    const boatsOnSameY = PositionMapper.getBoatsOnY(playerBoatY);
+    const leftBoats = filter(boatsOnSameY, (boat) => {
+      const isLeftBoat =
+        boat.position.x < playerBoatX && boat.address !== playerBoat.address;
+      return isLeftBoat;
+    });
+
+    if (leftBoats.length === 0) return null;
+
+    const rightMostLeftBoat = leftBoats.reduce((rightMostBoat, boat) => {
+      if (boat.position.x > rightMostBoat.position.x) return boat;
+      return rightMostBoat;
+    });
+
+    return rightMostLeftBoat;
+  };
+
+  static findNearestRightBoat = (playerBoat) => {
+    const { x: playerBoatX, y: playerBoatY } = playerBoat.position;
+
+    const boatsOnSameY = PositionMapper.getBoatsOnY(playerBoatY);
+    const rightBoats = filter(boatsOnSameY, (boat) => {
+      const isRightBoat =
+        boat.position.x > playerBoatX && boat.address !== playerBoat.address;
+      return isRightBoat;
+    });
+
+    if (rightBoats.length === 0) return null;
+
+    const leftMostRightBoat = rightBoats.reduce((leftMostBoat, boat) => {
+      if (boat.position.x < leftMostBoat.position.x) return boat;
+      return leftMostBoat;
+    });
+
+    return leftMostRightBoat;
   };
 }
 

@@ -102,18 +102,30 @@ class Arrow {
     const isReachedLeftBorder = MapBorder.reachLeftBorder(arrowHitBox);
     if (isReachedLeftBorder) return false;
 
-    return true;
+    const nearestLeftBoat = PositionMapper.findNearestLeftBoat(this.container);
 
-    // const isCollidedWithBoatOnLeft =
+    if (!nearestLeftBoat) return true;
+
+    const isCollidedWithBoatOnLeft =
+      this.checkBoatCollisionWithPlayerBoat(nearestLeftBoat);
+
+    return !isCollidedWithBoatOnLeft;
   };
 
   canMoveRight = (arrowHitBox) => {
     const isReachedRightBorder = MapBorder.reachRightBorder(arrowHitBox);
     if (isReachedRightBorder) return false;
 
-    return true;
+    const nearestRightBoat = PositionMapper.findNearestRightBoat(
+      this.container
+    );
 
-    // const isCollidedWithBoatOnRight =
+    if (!nearestRightBoat) return true;
+
+    const isCollidedWithBoatOnRight =
+      this.checkBoatCollisionWithPlayerBoat(nearestRightBoat);
+
+    return !isCollidedWithBoatOnRight;
   };
 
   canMoveUp = (arrowHitBox) => {

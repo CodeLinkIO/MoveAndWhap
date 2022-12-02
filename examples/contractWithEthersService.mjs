@@ -23,7 +23,7 @@ const postKill = false;
 //Kill the player if they were not killed last time so we can join.
 if(preKill) {
     await new Promise(r => setTimeout(r, 2000));
-    response = await mawContract.whap(process.env.PRIVATE_KEY_ADDRESS); 
+    let response = await mawContract.whap(process.env.PRIVATE_KEY_ADDRESS); 
     await response.wait().then(x => console.log(x));   
 }
 
@@ -42,6 +42,6 @@ for(let m = 0; m < movesToMake; m++) {
 //Kill yourself so if you run this script again it won't crash because of double joining.
 if(postKill) {
     await new Promise(r => setTimeout(r, 2000));
-    response = await mawContract.whap(process.env.PRIVATE_KEY_ADDRESS); 
+    let response = await mawContract.whap(process.env.PRIVATE_KEY_ADDRESS); 
     await response.wait().then(x => console.log(x));   
 }

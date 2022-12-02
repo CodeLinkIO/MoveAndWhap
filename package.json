@@ -6,7 +6,8 @@
     "ganache": "^7.5.0",
     "hardhat": "^2.12.2",
     "pouchdb": "^7.3.1",
-    "pouchdb-find": "^7.3.1"
+    "pouchdb-find": "^7.3.1",
+    "ws": "^8.11.0"
   },
   "scripts": {
     "ganache": "ganache --wallet.seed 1337",

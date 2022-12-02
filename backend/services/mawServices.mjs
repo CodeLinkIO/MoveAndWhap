@@ -1,5 +1,6 @@
 import { EthersService } from "./ethersService.mjs";
 import { EventTrackingService } from "./eventTrackingService.mjs";
+import { WebSocketServer } from 'ws';
 
 class MawServer{
     constructor(mawAddress, abi, providerURL, storagePath) {
@@ -10,7 +11,7 @@ class MawServer{
         this.storagePath = storagePath;
     }
 
-    async startServer() {
+    async startServer(database, port) {
         console.log("Starting server...");
         await this.chainService.initialize().then();
         await this.eventService.setupContract(this.contractAddress, this.contractAbi, false).then();
@@ -34,6 +35,55 @@ class MawServer{
         this.eventTriggers[this.eventSignatures[0]] = this.playerJoined;
         this.eventTriggers[this.eventSignatures[1]] = this.playerMoved;
         this.eventTriggers[this.eventSignatures[2]] = this.playerAttacked;
+
+        //Start web socket server.
+        this.createWebSocketServer(database, port);
+    }
+
+    //Creates a RPC WS Server which listens for json commands.
+    createWebSocketServer(database, port) {
+        this.wss = new WebSocketServer({port: port});
+        console.log(`WS Server Created on port '${port}'.`)
+        this.wss.on('connection', (ws) => {
+            console.log("WSS connected to new client.");
+            ws.on('message', (data) => {this.recievedMessage(ws, data, database)} );
+            ws.send(JSON.stringify({data:"Connected! Welcome to the MAW!!!"}));
+        });
+    }
+
+    //Parses received messages and enacts the command.
+    async recievedMessage(client, message, database) {
+        //Parse JSON
+        try { var json = JSON.parse(message); }
+        catch(error) { 
+            console.error(`Error parsing JSON message: ${message}`, error); 
+            client.send(JSON.stringify({ error: `Error parsing JSON message: ${message}. ${error}`}));
+            return;
+        }
+        
+        switch(json.command){
+            case 'getPlayerStatus':
+                const status = await this.getPlayerStatus(json.address, database).then(r => { return r; });
+                client.send(JSON.stringify({ data: status }));
+                break;
+            case 'getPlayersInRange':
+                try {
+                    var x = parseInt(json.x);
+                    var y = parseInt(json.y);
+                    var range = parseInt(json.range);
+                } catch(error) {
+                    console.error(`There was an error parsing the command: ${json.stringify()} \
+                    \nAre all of the parameters integers?`, error);
+                    break;
+                }
+                const players = await this.getPlayersWithinRange(x, y, range, database).then(r => { return r; });
+                client.send(JSON.stringify({ data: players}));
+                break;
+            default:
+                console.error(`Message did not have command: ${message}`);
+                client.send(JSON.stringify({ error: `Message did not have command: ${message}`}));
+                break;
+        }
     }
 
     //Save all event logs since startBlock into the database.

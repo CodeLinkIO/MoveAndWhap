@@ -28,7 +28,7 @@ contract MAW {
     //Join game at position. Start somewhere in the spawn zone that is 256x256 in the middle.
     function join(int8 x, int8 y, uint8 dir) public {
         //Make sure the player is dead before they can join.
-        require(!players[msg.sender].isAlive);
+        require(!players[msg.sender].isAlive, "Player already exists in world.");
 
         int256 startX = int256(x); //Add x to the middle position.
         int256 startY = int256(y); //Add y to the middle position.
@@ -42,7 +42,7 @@ contract MAW {
     //0 North, 1 East, 2 South, 3 West
     function move(uint8 dir) public {
         Player storage movingPlayer = players[msg.sender];
-        require(movingPlayer.isAlive);
+        require(movingPlayer.isAlive, "Player does not exist in the world.");
         
         //Make sure the player direction is 0,1,2, or 3;
         uint8 realDir = dir % 4;
@@ -83,22 +83,30 @@ contract MAW {
     function whap(address target) public {
         //Check if they are both alive. No point killing a deadman.
         Player storage attacker = players[msg.sender];
-        require(attacker.isAlive);
+        require(attacker.isAlive, "Attacker does not exist in the world.");
         Player storage victim = players[target];
-        require(victim.isAlive);
+        require(victim.isAlive, "Victim does not exist in the world.");
 
-        //Check if they are near by. They can be on top of each other.
-        bool adjacentVertical = abs(int256(attacker.posY - victim.posY)) <= 1;
-        bool adjacentHorizontal = abs(int256(attacker.posX - victim.posX)) <= 1;
-        bool adjacentish = adjacentVertical || adjacentHorizontal;
-        require(adjacentish);
+        //Check if the victim is in front of the player.
+        bool sameX = attacker.posX == victim.posX;
+        bool sameY = attacker.posY == victim.posY;
+        bool victimIsNorthOfAttacker = victim.posY == attacker.posY + 1 && sameX;
+        bool victimIsEastOfAttacker = victim.posX == attacker.posX + 1 && sameY;
+        bool victimIsSouthOfAttacker = victim.posY == attacker.posY - 1 && sameX;
+        bool victimIsWestOfAttacker = victim.posX == attacker.posX - 1 && sameY;
+
+        bool isInFront = attacker.direction == 0 && victimIsNorthOfAttacker;
+        isInFront = isInFront || (attacker.direction == 1 && victimIsEastOfAttacker);
+        isInFront = isInFront || (attacker.direction == 2 && victimIsSouthOfAttacker);
+        isInFront = isInFront || (attacker.direction == 3 && victimIsWestOfAttacker);
+        require(isInFront, "Victim is not in front of the attacker.");
 
         //Check to see if they are facing eachother.
         bool isFaceToFace = attacker.direction == 0 && victim.direction == 2;
         isFaceToFace = isFaceToFace || (attacker.direction == 2 && victim.direction == 0);
-        isFaceToFace = isFaceToFace || (attacker.direction == 1 && victim.direction >= 3);
-        isFaceToFace = isFaceToFace || (attacker.direction >= 3 && victim.direction == 1);
-        require(!isFaceToFace);
+        isFaceToFace = isFaceToFace || (attacker.direction == 1 && victim.direction == 3);
+        isFaceToFace = isFaceToFace || (attacker.direction == 3 && victim.direction == 1);
+        require(!isFaceToFace, "Attacker can not attack a victim facing them.");
 
         //If you made it this far, the victim is a dead boi.
         victim.isAlive = false;
@@ -108,9 +116,5 @@ contract MAW {
     function getPlayer(address player) public view returns (int256,int256,uint8,bool) {
         Player memory p = players[player];
         return (p.posX, p.posY, p.direction, p.isAlive);
-    }
-
-    function abs(int256 x) private pure returns (int256) {
-        return x >= 0 ? x : -x;
     }
 }

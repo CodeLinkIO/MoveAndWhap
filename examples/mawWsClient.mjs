@@ -13,3 +13,7 @@ ws.send(JSON.stringify({command:"getPlayerStatus"}));
 //Wait for 1 second then send the getPlayersWithinRange command and parameters.
 await new Promise(r => setTimeout(r, 1000));
 ws.send(JSON.stringify({command:"getPlayersInRange", x:0, y:0, range:128}));
+
+//Wait for 1 second then send the a non existent command to see what errors look like.
+await new Promise(r => setTimeout(r, 1000));
+ws.send(JSON.stringify({command:"fireTheLasers"}));

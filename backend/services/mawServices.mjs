@@ -47,7 +47,8 @@ class MawServer{
         this.wss.on('connection', (ws) => {
             console.log("WSS connected to new client.");
             ws.on('message', (data) => {this.recievedMessage(ws, data, database)} );
-            ws.send(JSON.stringify({data:"Connected! Welcome to the MAW!!!"}));
+            let msg = this.formatMessage("connect", "Connected! Welcome to the MAW!!!")
+            ws.send(msg);
         });
     }
 
@@ -56,15 +57,19 @@ class MawServer{
         //Parse JSON
         try { var json = JSON.parse(message); }
         catch(error) { 
-            console.error(`Error parsing JSON message: ${message}`, error); 
-            client.send(JSON.stringify({ error: `Error parsing JSON message: ${message}. ${error}`}));
+            let errMsg = `Error parsing JSON message: ${message}. ${error}`;
+            let msg = this.formatMessage('error', errMsg);
+            console.error(errMsg);
+            client.send(msg);
             return;
         }
-        
+
+        var msg = null;
         switch(json.command){
             case 'getPlayerStatus':
                 const status = await this.getPlayerStatus(json.address, database).then(r => { return r; });
-                client.send(JSON.stringify({ data: status }));
+                msg = this.formatMessage('getPlayerStatus',status);
+                client.send(msg);
                 break;
             case 'getPlayersInRange':
                 try {
@@ -72,18 +77,33 @@ class MawServer{
                     var y = parseInt(json.y);
                     var range = parseInt(json.range);
                 } catch(error) {
-                    console.error(`There was an error parsing the command: ${json.stringify()} \
-                    \nAre all of the parameters integers?`, error);
+                    let errMsg = `There was an error parsing the command: ${json.stringify()} \
+                    \nAre all of the parameters integers? \n${error}`;
+                    msg = this.formatMessage('error', errMsg);
+                    console.error(errMsg);
+                    client.send(msg);
                     break;
                 }
                 const players = await this.getPlayersWithinRange(x, y, range, database).then(r => { return r; });
-                client.send(JSON.stringify({ data: players}));
+                msg = this.formatMessage('getPlayersInRange', players);
+                client.send(msg);
                 break;
             default:
-                console.error(`Message did not have command: ${message}`);
-                client.send(JSON.stringify({ error: `Message did not have command: ${message}`}));
+                let errMsg = `Server does not have command: '${json.command}'`;
+                msg = this.formatMessage('error', errMsg);
+                console.error(errMsg);
+                client.send(msg);
                 break;
         }
+    }
+
+    formatMessage(command, data){
+        let message = {
+            command: command,
+            data: data
+        }
+
+        return JSON.stringify(message);
     }
 
     //Save all event logs since startBlock into the database.

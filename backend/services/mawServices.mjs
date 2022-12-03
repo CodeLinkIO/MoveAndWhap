@@ -140,9 +140,11 @@ class MawServer{
                     }
                 };
                 this.playerJoined(log, database);
-                log.args.x = parseInt(log.args.x.toString());
-                log.args.y = parseInt(log.args.y.toString());
-                this.broadcastEvent('playerJoined', log.args, player);
+                let data = Object.assign({}, log.args);
+                data.x = parseInt(data.x.toString());
+                data.y = parseInt(data.y.toString());
+                delete data.player;
+                this.broadcastEvent('playerJoined', data, player);
             });
         
         //OnPlayerMoved
@@ -157,9 +159,11 @@ class MawServer{
                     }
                 };
                 this.playerMoved(log, database);
-                log.args.x = parseInt(log.args.x.toString());
-                log.args.y = parseInt(log.args.y.toString());
-                this.broadcastEvent('playerMoved', log.args, player);
+                let data = Object.assign({}, log.args);
+                data.x = parseInt(data.x.toString());
+                data.y = parseInt(data.y.toString());
+                delete data.player;
+                this.broadcastEvent('playerMoved', data, player);
             });
         
         //OnPlayerAttacked
@@ -172,7 +176,8 @@ class MawServer{
                     }
                 };
                 this.playerAttacked(log, database);
-                this.broadcastEvent('playerAttacked', log, attacker);
+                let data = Object.assign({}, log.args);
+                this.broadcastEvent('playerAttacked', data, attacker);
             });
     }
 

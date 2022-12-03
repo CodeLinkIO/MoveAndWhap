@@ -18,8 +18,8 @@ const mawAbi = [
     "event PlayerAttacked(address indexed attacker, address indexed victim)",
 ];
 const mawContract = new ethers.Contract(process.env.MAW_CONTRACT_ADDRESS, mawAbi, service.signer);
-const preKill = false;
-const postKill = true;
+const preKill = true;
+const postKill = false;
 
 //Kill the player if they were not killed last time so we can join.
 if(preKill) {

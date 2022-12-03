@@ -1,6 +1,6 @@
 import { EthersService } from "./ethersService.mjs";
 import { EventTrackingService } from "./eventTrackingService.mjs";
-import { WebSocketServer } from 'ws';
+import WebSocket, { WebSocketServer } from 'ws';
 
 class MawServer{
     constructor(mawAddress, abi, providerURL, storagePath) {
@@ -68,7 +68,7 @@ class MawServer{
         switch(json.command){
             case 'getPlayerStatus':
                 const status = await this.getPlayerStatus(json.address, database).then(r => { return r; });
-                msg = this.formatMessage('getPlayerStatus',status);
+                msg = this.formatMessage('getPlayerStatus',status, json.address);
                 client.send(msg);
                 break;
             case 'getPlayersInRange':
@@ -79,28 +79,35 @@ class MawServer{
                 } catch(error) {
                     let errMsg = `There was an error parsing the command: ${json.stringify()} \
                     \nAre all of the parameters integers? \n${error}`;
-                    msg = this.formatMessage('error', errMsg);
+                    msg = this.formatMessage('error', errMsg, null);
                     console.error(errMsg);
                     client.send(msg);
                     break;
                 }
                 const players = await this.getPlayersWithinRange(x, y, range, database).then(r => { return r; });
-                msg = this.formatMessage('getPlayersInRange', players);
+                msg = this.formatMessage('getPlayersInRange', players, null);
                 client.send(msg);
+                break;
+            case 'playerJoined':
+                break;
+            case 'playerMoved':
+                break;
+            case 'playerAttacked':
                 break;
             default:
                 let errMsg = `Server does not have command: '${json.command}'`;
-                msg = this.formatMessage('error', errMsg);
+                msg = this.formatMessage('error', errMsg, null);
                 console.error(errMsg);
                 client.send(msg);
                 break;
         }
     }
 
-    formatMessage(command, data){
+    formatMessage(command, data, address){
         let message = {
             command: command,
-            data: data
+            data: data,
+            address: address
         }
 
         return JSON.stringify(message);
@@ -133,6 +140,9 @@ class MawServer{
                     }
                 };
                 this.playerJoined(log, database);
+                log.args.x = parseInt(log.args.x.toString());
+                log.args.y = parseInt(log.args.y.toString());
+                this.broadcastEvent('playerJoined', log.args, player);
             });
         
         //OnPlayerMoved
@@ -147,6 +157,9 @@ class MawServer{
                     }
                 };
                 this.playerMoved(log, database);
+                log.args.x = parseInt(log.args.x.toString());
+                log.args.y = parseInt(log.args.y.toString());
+                this.broadcastEvent('playerMoved', log.args, player);
             });
         
         //OnPlayerAttacked
@@ -159,14 +172,26 @@ class MawServer{
                     }
                 };
                 this.playerAttacked(log, database);
+                this.broadcastEvent('playerAttacked', log, attacker);
             });
+    }
+
+    broadcastEvent(eventType, data, address) {
+        let msg = this.formatMessage(eventType, data, address);
+        this.wss.clients.forEach(
+            function each(client) {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(msg);
+            }
+        });
     }
 
     async playerJoined(log, database) {
         //Make sure the player is not in the database.
         try{
             var player = await database.get(log.args.player);
-            throw `Player with address ${log.args.player} already exists.`;
+            console.error(`Player with address ${log.args.player} already exists.`);
+            return;
         } catch (error) { if(error.message != "missing") { throw error; } }
 
         player = {
@@ -185,7 +210,8 @@ class MawServer{
     async playerMoved(log, database) {
         //Make sure the player exists.
         let player = await database.get(log.args.player).catch(err => {
-            throw `Player with address ${log.args.player} does not exist in DB.`; 
+            console.error(`Player with address ${log.args.player} does not exist in DB.`);
+            return; 
         });
 
         //Remove the document so we don't have to make a revision.
@@ -205,7 +231,8 @@ class MawServer{
     async playerAttacked(log, database) {
         //Make sure the player exists.
         let player = await database.get(log.args.victim).catch(err => {
-            throw `Player with address ${log.args.victim} does not exist in DB.`; 
+            console.error(`Player with address ${log.args.victim} does not exist in DB.`);
+            return;
         });
 
         //Remove the player.
@@ -256,8 +283,20 @@ class MawServer{
                     {y: {$lt:maxY} },
                 ]
             }
-        }).then(result => { return result["docs"]; });
+        }).then(result => { return this.convertDocsToPlayers(result["docs"]); });
         return inRange;
+    }
+
+    convertDocsToPlayers(docs){
+        let converted = []
+        for(let i = 0; i < docs.length; i++){
+            let doc = docs[i];
+            doc["address"] = doc["_id"];
+            delete doc._id;
+            delete doc._rev;
+            converted.push(doc);
+        }
+        return converted;
     }
 }
 

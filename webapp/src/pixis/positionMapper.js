@@ -37,6 +37,12 @@ class PositionMapper {
     PositionMapper.setBoatMap(boat);
   };
 
+  static resetMapPosition = () => {
+    PositionMapper.mapPositionX = {};
+    PositionMapper.mapPositionY = {};
+    PositionMapper.boatMap = {};
+  };
+
   static getBoatByAddress = (address) => {
     return PositionMapper.boatMap[address];
   };

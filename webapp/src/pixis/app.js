@@ -3,6 +3,7 @@ class PixiApp {
   viewport = null;
   mapContainer = null;
   walletAddress = null;
+  socket = null;
 
   setApp = (app) => {
     this.app = app;
@@ -34,6 +35,14 @@ class PixiApp {
 
   getWalletAddress = () => {
     return this.walletAddress;
+  };
+
+  setSocket = (socket) => {
+    this.socket = socket;
+  };
+
+  getSocket = () => {
+    return this.socket;
   };
 }
 

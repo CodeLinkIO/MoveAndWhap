@@ -43,7 +43,6 @@ class AppViewport extends Viewport {
     const cull = new Simple(); // new SpatialHash()
     cull.addList(this.children);
     cull.cull(this.getVisibleBounds());
-
     // cull whenever the viewport moves
     Ticker.shared.add(() => {
       if (this.dirty) {

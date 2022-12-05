@@ -1,7 +1,10 @@
 import { Contract } from "@ethersproject/contracts";
 import { ethers } from "ethers";
 import { DIRECTION_IN_NUMBER } from "../constants/contracts";
-import { convertBigNumbersToCoordinate } from "./numbers";
+import {
+  convertBigNumbersToCoordinate,
+  convertPlayerPositionToGameCoordinate,
+} from "./numbers";
 let MaWContractCache = null;
 
 const MaWAbi = require("../contracts/MAW.json").abi;
@@ -64,4 +67,19 @@ export const move = async (direction) => {
   const contract = await getMAWContract();
   const tx = await contract.move(directionNum);
   await tx.wait();
+};
+
+export const getCurrentPlayerCoordinates = async (address) => {
+  const currentPlayer = await findBoatByAddress(address);
+
+  if (!currentPlayer || !currentPlayer.isAlive) {
+    return null;
+  }
+
+  const currentPlayerPosition = convertPlayerPositionToGameCoordinate({
+    x: currentPlayer.x,
+    y: currentPlayer.y,
+  });
+
+  return currentPlayerPosition;
 };

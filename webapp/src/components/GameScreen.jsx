@@ -1,12 +1,10 @@
 import { memo, useEffect, useRef } from "react";
 import { Application } from "pixi.js";
 import { useEthers } from "@usedapp/core";
-import pixiApp from "../pixis/app";
-import Boat from "../pixis/boat";
+import useWebSocket from "react-use-websocket";
 import { useNavigate } from "react-router-dom";
+import pixiApp from "../pixis/app";
 import {
-  BOAT_CONTAINER_HEIGHT,
-  BOAT_CONTAINER_WIDTH,
   GAME_SCREEN_HEIGHT,
   GAME_SCREEN_WIDTH,
   VIEWPORT_PADDING,
@@ -15,18 +13,30 @@ import {
 } from "../constants/pixi";
 import TileMap from "../pixis/tileMap";
 import AppViewport from "../pixis/appViewport";
-import { findBoatByAddress } from "../utils/contract";
+import {
+  findBoatByAddress,
+  getCurrentPlayerCoordinates,
+} from "../utils/contract";
 import { HOME } from "../constants/routes";
-import { convertPlayerPositionToGameCoordinate } from "../utils/numbers";
-import { CONTRACT_DIRECTION } from "../constants/contracts";
+import { getPlayersInRange, onWsMessage, onWsOpen } from "../pixis/ws";
+import { WS_READY_STATE } from "../constants/webSockets";
 
 const GameScreen = () => {
   const ref = useRef(null);
   // This always returns string because we have already check for undefined on parent component
   const { account } = useEthers();
   const navigate = useNavigate();
+  const { readyState, getWebSocket } = useWebSocket(
+    process.env.REACT_APP_WS_URL,
+    {
+      onMessage: onWsMessage,
+      onOpen: onWsOpen,
+    }
+  );
 
   useEffect(() => {
+    if (!account) return;
+
     // On first render create application
     const app = new Application({
       width: GAME_SCREEN_WIDTH,
@@ -46,95 +56,20 @@ const GameScreen = () => {
       interaction: app.renderer.plugins.interaction, // the interaction module is important for wheel to work properly when renderer.view is placed or scaled
     });
 
-    const addBoatToScreen = ({ playerPosition, address, directionNum }) => {
-      const { x, y } = playerPosition;
-      const headDirection = CONTRACT_DIRECTION[directionNum];
-
-      const boat = new Boat({
-        boatContainerOptions: {
-          x,
-          y,
-          width: BOAT_CONTAINER_WIDTH,
-          height: BOAT_CONTAINER_HEIGHT,
-        },
-        address,
-        isCurrentPlayer: address === account,
-        headDirection,
-      });
-      return boat;
-    };
-
     const initGameScreen = async () => {
-      const currentPlayer = await findBoatByAddress(account);
-      if (!currentPlayer || !currentPlayer.isAlive) {
+      const currentPlayerPosition = await getCurrentPlayerCoordinates(account);
+      if (!currentPlayerPosition) {
         navigate(HOME, { replace: true });
       }
 
-      const currentPlayerPosition = convertPlayerPositionToGameCoordinate({
-        x: currentPlayer.x,
-        y: currentPlayer.y,
-      });
-
-      viewport.moveCenter(currentPlayerPosition.x, currentPlayerPosition.y);
-      viewport.setupViewportInteraction();
-      // create background
       TileMap.initialize(currentPlayerPosition);
+      viewport.moveCenter(currentPlayerPosition.x, currentPlayerPosition.y);
 
-      // create boats
-      addBoatToScreen({
-        playerPosition: {
-          x: currentPlayerPosition.x,
-          y: currentPlayerPosition.y + 100,
-        },
-        address: `account1`,
-        directionNum: 2,
-      });
-
-      addBoatToScreen({
-        playerPosition: {
-          x: currentPlayerPosition.x + 400,
-          y: currentPlayerPosition.y,
-        },
-        address: `account2`,
-        directionNum: 3,
-      });
-
-      addBoatToScreen({
-        playerPosition: {
-          x: currentPlayerPosition.x + 400,
-          y: currentPlayerPosition.y,
-        },
-        address: `account2`,
-        directionNum: 1,
-      });
-
-      addBoatToScreen({
-        playerPosition: {
-          x: currentPlayerPosition.x,
-          y: currentPlayerPosition.y + 300,
-        },
-        address: `account3`,
-        directionNum: 0,
-      });
-
-      addBoatToScreen({
-        playerPosition: {
-          x: currentPlayerPosition.x + 200,
-          y: currentPlayerPosition.y + 200,
-        },
-        address: `account4`,
-        directionNum: 1,
-      });
-
-      // Player boat will always be created last in the list
-      const currentPlayerBoat = addBoatToScreen({
-        playerPosition: currentPlayerPosition,
-        address: account,
-        directionNum: currentPlayer.directionNum,
-      });
+      viewport.setupViewportInteraction();
     };
 
     initGameScreen();
+
     return () => {
       console.log("Unmounting");
       // On unload completely destroy the application and all of it's children
@@ -145,6 +80,32 @@ const GameScreen = () => {
   useEffect(() => {
     pixiApp.setWalletAddress(account);
   }, [account]);
+
+  useEffect(() => {
+    if (readyState === WS_READY_STATE.OPEN && account) {
+      const ws = getWebSocket();
+      pixiApp.setSocket(ws);
+
+      const getPlayers = async () => {
+        const currentPlayer = await findBoatByAddress(account);
+        if (!currentPlayer || !currentPlayer.isAlive) {
+          return;
+        }
+
+        getPlayersInRange({
+          x: currentPlayer.x,
+          y: currentPlayer.y,
+          range: 128,
+        });
+      };
+
+      getPlayers();
+    }
+
+    return () => {
+      pixiApp.setSocket(null);
+    };
+  }, [readyState, getWebSocket, account, navigate]);
 
   return <div ref={ref} />;
 };

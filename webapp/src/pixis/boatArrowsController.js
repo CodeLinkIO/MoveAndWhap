@@ -16,6 +16,7 @@ import {
   DIRECTIONS,
 } from "../constants/pixi";
 import { move, whap } from "../utils/contract";
+import pixiApp from "./app";
 import Arrow from "./arrow";
 import FireButton from "./fireButton";
 import PositionMapper from "./positionMapper";
@@ -38,6 +39,7 @@ class BoatArrowsController {
   movingTweeny = null;
   rotationTweeny = null;
   isMoving = false;
+  isFiring = false;
 
   constructor({ container, onDownArrowClick = () => {}, isCurrentPlayer }) {
     this.container = container;
@@ -201,7 +203,9 @@ class BoatArrowsController {
   };
 
   moveBoat = async (distance, direction) => {
-    await move(direction);
+    if (this.container.address === pixiApp.getWalletAddress()) {
+      await move(direction);
+    }
 
     this.setupBoatTweeny(direction);
 
@@ -264,7 +268,7 @@ class BoatArrowsController {
     this.rotateTweeny.start();
   };
 
-  moveBoatDown = async (e) => {
+  moveBoatDown = async () => {
     if (this.isMoving) {
       return;
     }
@@ -276,7 +280,7 @@ class BoatArrowsController {
     return headDirection !== targetDirection;
   };
 
-  moveBoatUp = async (e) => {
+  moveBoatUp = async () => {
     if (this.isMoving) {
       return;
     }
@@ -284,7 +288,7 @@ class BoatArrowsController {
     await this.moveBoat({ y: moveUpValue }, UP_DIRECTION);
   };
 
-  moveBoatLeft = async (e) => {
+  moveBoatLeft = async () => {
     if (this.isMoving) {
       return;
     }
@@ -292,7 +296,7 @@ class BoatArrowsController {
     await this.moveBoat({ x: moveLeftValue }, LEFT_DIRECTION);
   };
 
-  moveBoatRight = async (e) => {
+  moveBoatRight = async () => {
     if (this.isMoving) {
       return;
     }
@@ -310,8 +314,6 @@ class BoatArrowsController {
   };
 
   fire = async (targetAddress) => {
-    // Doing animation here
-
     console.log("Fire", targetAddress);
     await whap(targetAddress);
   };

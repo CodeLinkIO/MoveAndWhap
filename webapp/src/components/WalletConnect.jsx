@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useEthers } from "@usedapp/core";
 import { useNavigate } from "react-router-dom";
 import { Chain } from "../providers/walletProvider";
 import { findBoatByAddress, join, whap } from "../utils/contract";
 import { GAME_SCREEN } from "../constants/routes";
+import { random } from "lodash";
 
 const WalletConnect = () => {
   const [joining, setJoining] = useState(false);
@@ -20,12 +21,10 @@ const WalletConnect = () => {
   const joinTheGame = async () => {
     setJoining(true);
 
-    // Todo - check if the user has already joined the game
     const boat = await findBoatByAddress(account);
     if (!boat || !boat.isAlive) {
-      // Todo - random from center
-      const positionUint8X = 0;
-      const positionUint8Y = 0;
+      const positionUint8X = random(0, 3);
+      const positionUint8Y = random(0, 3);
       await join(positionUint8X, positionUint8Y);
     }
 
@@ -47,9 +46,12 @@ const WalletConnect = () => {
   if (active && !isLoading && !account) {
     return (
       <div>
-        <div>
-          <button onClick={onConnect}>Connect</button>
-        </div>
+        <button
+          className="flex p-2 mb-2 bg-gray-400 justify-center"
+          onClick={onConnect}
+        >
+          Connect
+        </button>
       </div>
     );
   }

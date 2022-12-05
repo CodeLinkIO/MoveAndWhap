@@ -10,6 +10,8 @@ import {
   BOAT_CONTAINER_HEIGHT,
   STOP_MOVING_EVENT,
   BOUNCE_POSITION_BY_DIRECTION,
+  START_FIRING_EVENT,
+  STOP_FIRING_EVENT,
 } from "../constants/pixi";
 import pixiApp from "./app";
 import FireIcon from "../assets/fire.png";
@@ -52,6 +54,9 @@ class FireButton {
 
     this.fireButton.on(START_MOVING_EVENT, this.onStartMoving);
     this.fireButton.on(STOP_MOVING_EVENT, this.onStopMoving);
+
+    this.fireButton.on(START_FIRING_EVENT, this.onStartFiring);
+    this.fireButton.on(STOP_FIRING_EVENT, this.onStopFiring);
   }
 
   onFireTriggered = async (onClick) => {
@@ -149,6 +154,14 @@ class FireButton {
     this.fireButton.cursor = "pointer";
     this.fireButton.interactive = true;
     this.fireButton.visible = true;
+  };
+
+  onStartFiring = () => {
+    this.fireButton.visible = false;
+  };
+
+  onStopFiring = () => {
+    this.checkForFireButtonVisibility();
   };
 }
 

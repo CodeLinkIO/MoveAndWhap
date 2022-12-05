@@ -43,6 +43,24 @@ class PositionMapper {
     PositionMapper.boatMap = {};
   };
 
+  static removeBoatFromMap = (boatAddress) => {
+    const boat = PositionMapper.boatMap[boatAddress];
+    const { x, y, address } = boat;
+    const boatsOnX = PositionMapper.mapPositionX[x] || [];
+    const boatsOnY = PositionMapper.mapPositionY[y] || [];
+    PositionMapper.mapPositionX[x] = filter(
+      boatsOnX,
+      (boat) => boat.address !== address
+    );
+
+    PositionMapper.mapPositionY[y] = filter(
+      boatsOnY,
+      (boat) => boat.address !== address
+    );
+
+    delete PositionMapper.boatMap[address];
+  };
+
   static getBoatByAddress = (address) => {
     return PositionMapper.boatMap[address];
   };
@@ -293,7 +311,6 @@ class PositionMapper {
     );
 
     const isHeadToHead = this.checkHeadToHead(playerBoat, nearestBottomBoat);
-
     if (isCollidedWithBoatOnBottom && isHeadToHead) return nearestBottomBoat;
 
     return null;

@@ -11,6 +11,8 @@ import {
   START_MOVING_EVENT,
   STOP_MOVING_EVENT,
   UP_DIRECTION,
+  START_FIRING_EVENT,
+  STOP_FIRING_EVENT,
 } from "../constants/pixi";
 import pixiApp from "./app";
 import MapBorder from "./mapBorder";
@@ -40,6 +42,9 @@ class Arrow {
     // Listen to moving state
     this.arrow.on(START_MOVING_EVENT, this.onStartMoving);
     this.arrow.on(STOP_MOVING_EVENT, this.onStopMoving);
+
+    this.arrow.on(START_FIRING_EVENT, this.onStartFiring);
+    this.arrow.on(STOP_FIRING_EVENT, this.onStopFiring);
   }
 
   getArrow() {
@@ -187,6 +192,14 @@ class Arrow {
       default:
         return true;
     }
+  };
+
+  onStartFiring = () => {
+    this.getArrow().visible = false;
+  };
+
+  onStopFiring = () => {
+    this.checkArrowVisibility();
   };
 }
 

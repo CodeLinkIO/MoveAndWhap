@@ -56,6 +56,8 @@ export const RIGHT_ARROW_PATH = [
 // Events
 export const START_MOVING_EVENT = "startMoving";
 export const STOP_MOVING_EVENT = "stopMoving";
+export const START_FIRING_EVENT = "startFiring";
+export const STOP_FIRING_EVENT = "stopFiring";
 
 // Arrow direction
 export const UP_DIRECTION = "up";

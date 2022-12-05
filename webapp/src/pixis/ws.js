@@ -22,6 +22,18 @@ export const onWsMessage = (event) => {
       handleReceivePlayersInRange(data);
       break;
 
+    case COMMANDS.playerJoined:
+      handlePlayerJoined(data);
+      break;
+
+    case COMMANDS.playerMoved:
+      handlePlayerMoved(data);
+      break;
+
+    case COMMANDS.playerAttacked:
+      handlePlayerAttacked(data);
+      break;
+
     case COMMANDS.error:
       console.log(data);
       break;
@@ -107,4 +119,66 @@ export const getPlayersInRange = async ({ x, y, range }) => {
     range: range,
   });
   ws.send(msg);
+};
+
+const handlePlayerJoined = (wsResponse) => {
+  const { data, address } = wsResponse;
+
+  const isCurrentPlayerJoined = isCurrentPlayerAddress(address);
+
+  addPlayerToGame({
+    player: { ...data, address },
+    currentPlayerAddress: address,
+  });
+
+  if (isCurrentPlayerJoined) {
+    const viewport = pixiApp.getViewport();
+    const { x, y } = convertPlayerPositionToGameCoordinate({
+      x: data.x,
+      y: data.y,
+    });
+
+    viewport.moveCenter(x, y);
+  }
+};
+
+const handlePlayerMoved = (wsResponse) => {
+  const { data, address } = wsResponse;
+  const playerBoat = PositionMapper.getBoatByAddress(address);
+
+  if (!playerBoat) {
+    console.log("Player boat not found on screen.");
+    return;
+  }
+  const isCurrentPlayer = isCurrentPlayerAddress(address);
+
+  // This move already been handled by the Boat class
+  if (isCurrentPlayer) {
+    return;
+  }
+
+  const { dir } = data;
+
+  playerBoat.move(dir);
+};
+
+const isCurrentPlayerAddress = (address) => {
+  const currentPlayerAddress = pixiApp.getWalletAddress();
+  const isCurrentPlayer = currentPlayerAddress === address;
+  return isCurrentPlayer;
+};
+
+const handlePlayerAttacked = (wsResponse) => {
+  const { data } = wsResponse;
+  const { attacker, victim } = data;
+  const attackerBoat = PositionMapper.getBoatByAddress(attacker);
+  const victimBoat = PositionMapper.getBoatByAddress(victim);
+
+  PositionMapper.removeBoatFromMap(victim);
+
+  attackerBoat.triggerFireAnimation({
+    onComplete: () => {
+      victimBoat.destroy();
+    },
+  });
 };

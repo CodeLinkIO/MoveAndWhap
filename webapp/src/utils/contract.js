@@ -1,5 +1,6 @@
 import { Contract } from "@ethersproject/contracts";
 import { ethers } from "ethers";
+import { random } from "lodash";
 import { DIRECTION_IN_NUMBER } from "../constants/contracts";
 import {
   convertBigNumbersToCoordinate,
@@ -27,15 +28,19 @@ export const getMAWContract = async () => {
 
 export const join = async (positionX, positionY) => {
   const contract = await getMAWContract();
-  // TODO - random direction
-  const tx = await contract.join(positionX, positionY, 0);
+  const directionNum = random(0, 3);
+  const tx = await contract.join(positionX, positionY, directionNum);
   await tx.wait();
 };
 
 export const whap = async (targetAddress) => {
-  const contract = await getMAWContract();
-  const tx = await contract.whap(targetAddress);
-  await tx.wait();
+  try {
+    const contract = await getMAWContract();
+    const tx = await contract.whap(targetAddress);
+    await tx.wait();
+  } catch (error) {
+    console.log("🚀 ~ file: contract.js:43 ~ whap ~ error", error);
+  }
 };
 
 export const findBoatByAddress = async (address) => {

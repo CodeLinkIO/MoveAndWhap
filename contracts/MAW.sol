@@ -90,27 +90,29 @@ contract MAW {
         //Check if the victim is in front of the player.
         bool sameX = attacker.posX == victim.posX;
         bool sameY = attacker.posY == victim.posY;
-        bool victimIsNorthOfAttacker = victim.posY == attacker.posY + 1 && sameX;
-        bool victimIsEastOfAttacker = victim.posX == attacker.posX + 1 && sameY;
-        bool victimIsSouthOfAttacker = victim.posY == attacker.posY - 1 && sameX;
-        bool victimIsWestOfAttacker = victim.posX == attacker.posX - 1 && sameY;
+        uint8 victimPosition = 255;
 
-        bool isInFront = attacker.direction == 0 && victimIsNorthOfAttacker;
-        isInFront = isInFront || (attacker.direction == 1 && victimIsEastOfAttacker);
-        isInFront = isInFront || (attacker.direction == 2 && victimIsSouthOfAttacker);
-        isInFront = isInFront || (attacker.direction == 3 && victimIsWestOfAttacker);
+        //Set "victimPosition" to the direction the attacker would need to be facing.
+        if(victim.posY == attacker.posY + 1 && sameX) { victimPosition = 0; }
+        else if(victim.posX == attacker.posX + 1 && sameY) { victimPosition = 1; }
+        else if(victim.posY == attacker.posY - 1 && sameX) { victimPosition = 2; }
+        else if(victim.posX == attacker.posX - 1 && sameY) { victimPosition = 3; }
+
+        bool isInFront = attacker.direction == victimPosition;
         require(isInFront, "Victim is not in front of the attacker.");
 
         //Check to see if they are facing eachother.
-        bool isFaceToFace = attacker.direction == 0 && victim.direction == 2;
-        isFaceToFace = isFaceToFace || (attacker.direction == 2 && victim.direction == 0);
-        isFaceToFace = isFaceToFace || (attacker.direction == 1 && victim.direction == 3);
-        isFaceToFace = isFaceToFace || (attacker.direction == 3 && victim.direction == 1);
+        int faceToFaceOffset = int8(attacker.direction) - int8(victim.direction);
+        bool isFaceToFace = abs(faceToFaceOffset) == 2;
         require(!isFaceToFace, "Attacker can not attack a victim facing them.");
 
         //If you made it this far, the victim is a dead boi.
         victim.isAlive = false;
         emit PlayerAttacked(msg.sender, target);
+    }
+
+    function abs(int x) private pure returns (int) {
+        return x >= 0 ? x : -x;
     }
 
     function getPlayer(address player) public view returns (int256,int256,uint8,bool) {

@@ -15,7 +15,7 @@ import {
   LEFT_DIRECTION,
   DIRECTIONS,
 } from "../constants/pixi";
-import { move } from "../utils/contract";
+import { move, whap } from "../utils/contract";
 import Arrow from "./arrow";
 import FireButton from "./fireButton";
 import PositionMapper from "./positionMapper";
@@ -112,7 +112,7 @@ class BoatArrowsController {
 
   setupLeftFireButton = () => {
     this.leftFireButton = new FireButton({
-      onClick: this.fireLeft,
+      onClick: this.fire,
       direction: LEFT_DIRECTION,
       container: this.container,
     });
@@ -121,7 +121,7 @@ class BoatArrowsController {
 
   setupRightFireButton = () => {
     this.rightFireButton = new FireButton({
-      onClick: this.fireRight,
+      onClick: this.fire,
       direction: RIGHT_DIRECTION,
       container: this.container,
     });
@@ -130,7 +130,7 @@ class BoatArrowsController {
 
   setupDownFireButton = () => {
     this.downFireButton = new FireButton({
-      onClick: this.fireDown,
+      onClick: this.fire,
       direction: DOWN_DIRECTION,
       container: this.container,
     });
@@ -139,7 +139,7 @@ class BoatArrowsController {
 
   setupUpFireButton = () => {
     this.upFireButton = new FireButton({
-      onClick: this.fireUp,
+      onClick: this.fire,
       direction: UP_DIRECTION,
       container: this.container,
     });
@@ -309,10 +309,12 @@ class BoatArrowsController {
     return degree;
   };
 
-  fireLeft = async () => {};
-  fireRight = async () => {};
-  fireUp = async () => {};
-  fireDown = async () => {};
+  fire = async (targetAddress) => {
+    // Doing animation here
+
+    console.log("Fire", targetAddress);
+    await whap(targetAddress);
+  };
 }
 
 export default BoatArrowsController;

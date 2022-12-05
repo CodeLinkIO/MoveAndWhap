@@ -81,7 +81,6 @@ const GameScreen = () => {
       TileMap.initialize(currentPlayerPosition);
 
       // create boats
-
       addBoatToScreen({
         playerPosition: {
           x: currentPlayerPosition.x,
@@ -93,7 +92,7 @@ const GameScreen = () => {
 
       addBoatToScreen({
         playerPosition: {
-          x: currentPlayerPosition.x - 200,
+          x: currentPlayerPosition.x + 400,
           y: currentPlayerPosition.y,
         },
         address: `account2`,

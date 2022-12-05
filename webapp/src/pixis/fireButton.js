@@ -29,6 +29,11 @@ const GET_FIREABLE_BOAT = {
 
 class FireButton {
   isMoving = false;
+  viewport = null;
+  direction = DOWN_DIRECTION;
+  fireButton = null;
+  bouncingAnimation = null;
+  fireableBoat = null;
 
   constructor({ onClick, direction, container, controller }) {
     this.container = container;
@@ -36,7 +41,7 @@ class FireButton {
     this.viewport = pixiApp.getViewport();
 
     this.fireButton = Sprite.from(FireIcon);
-    this.fireButton.on("pointertap", onClick);
+    this.fireButton.on("pointertap", async () => this.onFireTriggered(onClick));
     this.fireButton.cursor = "pointer";
     this.fireButton.anchor.set(0.5);
     this.fireButton.width = FIRE_WIDTH;
@@ -48,6 +53,11 @@ class FireButton {
     this.fireButton.on(START_MOVING_EVENT, this.onStartMoving);
     this.fireButton.on(STOP_MOVING_EVENT, this.onStopMoving);
   }
+
+  onFireTriggered = async (onClick) => {
+    if (!this.fireableBoat) return;
+    await onClick(this.fireableBoat.address);
+  };
 
   setupFireButtonPositionByDirection = () => {
     let x = 0;

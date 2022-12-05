@@ -89,6 +89,12 @@ class Boat extends Container {
     this.boat.play();
   };
 
+  setupBoatCanon = () => {
+    this.cannon = new AnimatedSprite(
+      BOAT_FRAMES.map((stringy) => Texture.from(stringy))
+    );
+  };
+
   setupArrows = ({ isCurrentPlayer }) => {
     this.arrowsController = new BoatArrowsController({
       container: this,

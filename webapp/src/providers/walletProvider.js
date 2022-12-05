@@ -27,7 +27,8 @@ const CHAIN_LIST = {
 };
 
 export const Chain =
-  CHAIN_LIST[process.env.REACT_APP_CHAIN_ID] || CHAIN_LIST[Hardhat.chainId];
+  CHAIN_LIST[parseInt(process.env.REACT_APP_CHAIN_ID)] ||
+  CHAIN_LIST[Hardhat.chainId];
 
 const FujiWalletProviderConfig = {
   readOnlyChainId: Fuji.chainId,

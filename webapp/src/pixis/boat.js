@@ -1,4 +1,4 @@
-import { Container, AnimatedSprite, Texture, Rectangle } from "pixi.js";
+import { Container, AnimatedSprite, Texture, Rectangle, Ticker } from "pixi.js";
 import Boat2_water_frame1 from "../assets/Boat2_water_frame1.png";
 import Boat2_water_frame2 from "../assets/Boat2_water_frame2.png";
 import Boat2_water_frame3 from "../assets/Boat2_water_frame3.png";
@@ -9,6 +9,12 @@ import Cannon2_color3_3 from "../assets/Cannon2_color3_3.png";
 import Fire1_1 from "../assets/Fire1_1.png";
 import Fire1_2 from "../assets/Fire1_2.png";
 import Fire1_3 from "../assets/Fire1_3.png";
+import Explosion_1 from "../assets/explode_1.png";
+import Explosion_2 from "../assets/explode_2.png";
+import Explosion_3 from "../assets/explode_3.png";
+import Explosion_4 from "../assets/explode_4.png";
+import Explosion_5 from "../assets/explode_5.png";
+import Explosion_6 from "../assets/explode_6.png";
 import { addConfig } from "./utils/addConfig";
 import pixiApp from "./app";
 import {
@@ -16,6 +22,7 @@ import {
   BOAT_CONTAINER_WIDTH,
   BOAT_HEIGHT,
   BOAT_SIZE_AND_POSITION,
+  BOAT_WIDTH,
   DOWN_DIRECTION,
   LEFT_DIRECTION,
   RIGHT_DIRECTION,
@@ -26,6 +33,7 @@ import {
 import BoatArrowsController from "./boatArrowsController";
 import PositionMapper from "./positionMapper";
 import { CONTRACT_DIRECTION } from "../constants/contracts";
+import { Group, Tween } from "tweedle.js";
 
 const BOAT_FRAMES = [
   Boat2_water_frame1,
@@ -37,8 +45,22 @@ const BOAT_FRAMES = [
 const CANNON_FRAMES = [Cannon2_color3_1, Cannon2_color3_2, Cannon2_color3_3];
 
 const FIRE_FRAMES = [Fire1_1, Fire1_2, Fire1_3];
+const EXPLOSION_FRAMES = [
+  Explosion_1,
+  Explosion_2,
+  Explosion_3,
+  Explosion_2,
+  Explosion_3,
+  Explosion_1,
+  Explosion_2,
+  Explosion_3,
+  Explosion_4,
+  Explosion_5,
+  Explosion_6,
+];
 
 const ANIMATION_SPEED = 0.198;
+const EXPLOSION_ANIMATION_SPEED = 0.1;
 const FIRE_TIME = 2000;
 
 class Boat extends Container {
@@ -112,6 +134,7 @@ class Boat extends Container {
     this.boat.play();
 
     this.setupCannon();
+    this.setupExplosionAnimation();
   };
 
   setupCannon = () => {
@@ -187,7 +210,7 @@ class Boat extends Container {
     }
   };
 
-  triggerFireAnimation = ({ onComplete }) => {
+  triggerFireAnimation = ({ onComplete } = {}) => {
     const arrowController = this.getArrowController();
 
     arrowController.emitEvent(START_FIRING_EVENT);
@@ -200,7 +223,42 @@ class Boat extends Container {
       this.fireFrames.gotoAndStop(0);
       this.fireFrames.visible = false;
       arrowController.emitEvent(STOP_FIRING_EVENT);
-      onComplete();
+      onComplete && onComplete();
+    }, FIRE_TIME);
+  };
+
+  setupExplosionAnimation = () => {
+    this.explosion = new AnimatedSprite(
+      EXPLOSION_FRAMES.map((stringy) => Texture.from(stringy))
+    );
+    this.explosion.zIndex = 2;
+    this.explosion.anchor.set(0.5);
+    this.explosion.animationSpeed = EXPLOSION_ANIMATION_SPEED;
+    this.explosion.visible = false;
+    this.explosion.width = BOAT_WIDTH;
+    this.explosion.height = BOAT_HEIGHT;
+
+    this.boat.addChild(this.explosion);
+  };
+
+  boatDisappearedAnimation = () => {
+    Ticker.shared.add(() => {
+      Group.shared.update();
+    });
+
+    const disappearAnimation = new Tween(this);
+    disappearAnimation.to({ alpha: 0 }, 500);
+    disappearAnimation.start();
+  };
+
+  triggerExplosionAnimation = ({ onComplete } = {}) => {
+    this.explosion.visible = true;
+    this.explosion.play();
+    setTimeout(() => {
+      this.explosion.gotoAndStop(0);
+      this.explosion.visible = false;
+      this.boatDisappearedAnimation();
+      onComplete && onComplete();
     }, FIRE_TIME);
   };
 }

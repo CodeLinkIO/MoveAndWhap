@@ -176,7 +176,8 @@ const handlePlayerAttacked = (wsResponse) => {
 
   PositionMapper.removeBoatFromMap(victim);
 
-  attackerBoat.triggerFireAnimation({
+  attackerBoat.triggerFireAnimation();
+  victimBoat.triggerExplosionAnimation({
     onComplete: () => {
       victimBoat.destroy();
     },

@@ -1,5 +1,6 @@
 import { EthersService } from "./ethersService.mjs";
 import { EventTrackingService } from "./eventTrackingService.mjs";
+import WebSocket, { WebSocketServer } from 'ws';
 
 class MawServer{
     constructor(mawAddress, abi, providerURL, storagePath) {
@@ -10,7 +11,7 @@ class MawServer{
         this.storagePath = storagePath;
     }
 
-    async startServer() {
+    async startServer(database, port) {
         console.log("Starting server...");
         await this.chainService.initialize().then();
         await this.eventService.setupContract(this.contractAddress, this.contractAbi, false).then();
@@ -34,6 +35,82 @@ class MawServer{
         this.eventTriggers[this.eventSignatures[0]] = this.playerJoined;
         this.eventTriggers[this.eventSignatures[1]] = this.playerMoved;
         this.eventTriggers[this.eventSignatures[2]] = this.playerAttacked;
+
+        //Start web socket server.
+        this.createWebSocketServer(database, port);
+    }
+
+    //Creates a RPC WS Server which listens for json commands.
+    createWebSocketServer(database, port) {
+        this.wss = new WebSocketServer({port: port});
+        console.log(`WS Server Created on port '${port}'.`)
+        this.wss.on('connection', (ws) => {
+            console.log("WSS connected to new client.");
+            ws.on('message', (data) => {this.recievedMessage(ws, data, database)} );
+            let msg = this.formatMessage("connect", "Connected! Welcome to the MAW!!!")
+            ws.send(msg);
+        });
+    }
+
+    //Parses received messages and enacts the command.
+    async recievedMessage(client, message, database) {
+        //Parse JSON
+        try { var json = JSON.parse(message); }
+        catch(error) { 
+            let errMsg = `Error parsing JSON message: ${message}. ${error}`;
+            let msg = this.formatMessage('error', errMsg);
+            console.error(errMsg);
+            client.send(msg);
+            return;
+        }
+
+        var msg = null;
+        switch(json.command){
+            case 'getPlayerStatus':
+                const status = await this.getPlayerStatus(json.address, database).then(r => { return r; });
+                msg = this.formatMessage('getPlayerStatus',status, json.address);
+                client.send(msg);
+                break;
+            case 'getPlayersInRange':
+                try {
+                    var x = parseInt(json.x);
+                    var y = parseInt(json.y);
+                    var range = parseInt(json.range);
+                } catch(error) {
+                    let errMsg = `There was an error parsing the command: ${json.stringify()} \
+                    \nAre all of the parameters integers? \n${error}`;
+                    msg = this.formatMessage('error', errMsg, null);
+                    console.error(errMsg);
+                    client.send(msg);
+                    break;
+                }
+                const players = await this.getPlayersWithinRange(x, y, range, database).then(r => { return r; });
+                msg = this.formatMessage('getPlayersInRange', players, null);
+                client.send(msg);
+                break;
+            case 'playerJoined':
+                break;
+            case 'playerMoved':
+                break;
+            case 'playerAttacked':
+                break;
+            default:
+                let errMsg = `Server does not have command: '${json.command}'`;
+                msg = this.formatMessage('error', errMsg, null);
+                console.error(errMsg);
+                client.send(msg);
+                break;
+        }
+    }
+
+    formatMessage(command, data, address){
+        let message = {
+            command: command,
+            data: data,
+            address: address
+        }
+
+        return JSON.stringify(message);
     }
 
     //Save all event logs since startBlock into the database.
@@ -50,7 +127,7 @@ class MawServer{
     }
 
     //Listen to the network for all of our events.
-    async listener(database) {
+    async listen(database) {
         //OnPlayerJoined
         this.eventService.contract.on(this.eventFilters[0], 
             (player, x, y, dir) => {
@@ -63,6 +140,11 @@ class MawServer{
                     }
                 };
                 this.playerJoined(log, database);
+                let data = Object.assign({}, log.args);
+                data.x = parseInt(data.x.toString());
+                data.y = parseInt(data.y.toString());
+                delete data.player;
+                this.broadcastEvent('playerJoined', data, player);
             });
         
         //OnPlayerMoved
@@ -77,6 +159,11 @@ class MawServer{
                     }
                 };
                 this.playerMoved(log, database);
+                let data = Object.assign({}, log.args);
+                data.x = parseInt(data.x.toString());
+                data.y = parseInt(data.y.toString());
+                delete data.player;
+                this.broadcastEvent('playerMoved', data, player);
             });
         
         //OnPlayerAttacked
@@ -89,25 +176,38 @@ class MawServer{
                     }
                 };
                 this.playerAttacked(log, database);
+                let data = Object.assign({}, log.args);
+                this.broadcastEvent('playerAttacked', data, attacker);
             });
+    }
+
+    broadcastEvent(eventType, data, address) {
+        let msg = this.formatMessage(eventType, data, address);
+        this.wss.clients.forEach(
+            function each(client) {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(msg);
+            }
+        });
     }
 
     async playerJoined(log, database) {
         //Make sure the player is not in the database.
         try{
             var player = await database.get(log.args.player);
-            throw `Player with address ${log.args.player} already exists.`;
+            console.error(`Player with address ${log.args.player} already exists.`);
+            return;
         } catch (error) { if(error.message != "missing") { throw error; } }
 
         player = {
             _id:log.args.player,
-            x:log.args.x.toString(),
-            y:log.args.y.toString(),
+            x:parseInt(log.args.x.toString()),
+            y:parseInt(log.args.y.toString()),
             dir:log.args.dir
         };
 
         //Add the player's state to the database.
-        await database.post(player).then(x => {
+        await database.put(player).then(x => {
             console.log(`Player ${player._id.slice(2,10)} spawned at (${player.x},${player.y}) facing ${player.dir}.`);
         });
     }
@@ -115,32 +215,93 @@ class MawServer{
     async playerMoved(log, database) {
         //Make sure the player exists.
         let player = await database.get(log.args.player).catch(err => {
-            throw `Player with address ${log.args.player} does not exist in DB.`; 
+            console.error(`Player with address ${log.args.player} does not exist in DB.`);
+            return; 
         });
 
         //Remove the document so we don't have to make a revision.
         await database.remove(player);
         player = {
             _id:log.args.player,
-            x:log.args.x.toString(),
-            y:log.args.y.toString(),
+            x:parseInt(log.args.x.toString()),
+            y:parseInt(log.args.y.toString()),
             dir:log.args.dir
         };
 
         //Add the new version of the player's state in.
-        await database.post(player);
+        await database.put(player);
         console.log(`Player ${player._id.slice(2,10)} moved ${player.dir}.`)
     }
 
     async playerAttacked(log, database) {
         //Make sure the player exists.
         let player = await database.get(log.args.victim).catch(err => {
-            throw `Player with address ${log.args.victim} does not exist in DB.`; 
+            console.error(`Player with address ${log.args.victim} does not exist in DB.`);
+            return;
         });
 
         //Remove the player.
         await database.remove(player);
-        console.log(`Player ${player._id.slice(2,10)} killed ${log.args.victim}!`);
+        let attacker = log.args.attacker.slice(2,10);
+        let victim = log.args.victim.slice(2,10);
+        if(attacker == victim) { console.log(`Player ${attacker} killed themself.`); }
+        else { console.log(`Player ${attacker} killed ${victim}!`); }
+    }
+
+    //Check if player is already in the game or not.
+    async getPlayerStatus(address, database) {
+        let result = {
+            playerLives: false,
+            x:0,
+            y:0,
+            dir:0,
+        };
+
+        let player = await database.find({ selector: { _id:address } }).then( p => {
+            return p["docs"];
+        });
+
+        if(player.length == 0) { return result; }
+        
+        result = {
+            playerLives: true,
+            x:player[0].x,
+            y:player[0].y,
+            dir:player[0].dir
+        };
+        return result;
+    }
+
+    //Get players within certain range.
+    async getPlayersWithinRange(x ,y, range, database) {
+        let minX = x-range;
+        let maxX = x+range;
+        let minY = y-range;
+        let maxY = y+range;
+
+        let inRange = await database.find({
+            selector:{
+                $and:[
+                    {x: {$gt:minX} },
+                    {x: {$lt:maxX} },
+                    {y: {$gt:minY} },
+                    {y: {$lt:maxY} },
+                ]
+            }
+        }).then(result => { return this.convertDocsToPlayers(result["docs"]); });
+        return inRange;
+    }
+
+    convertDocsToPlayers(docs){
+        let converted = []
+        for(let i = 0; i < docs.length; i++){
+            let doc = docs[i];
+            doc["address"] = doc["_id"];
+            delete doc._id;
+            delete doc._rev;
+            converted.push(doc);
+        }
+        return converted;
     }
 }
 

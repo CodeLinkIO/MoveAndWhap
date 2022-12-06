@@ -1,0 +1,21 @@
+import WebSocket from "ws";
+import { config } from "dotenv";
+config();
+
+//Connect to websocket server.
+const ws = new WebSocket('ws://localhost:7070');
+
+//Listen for messages from the server and log them.
+ws.on("message", (data) => { console.log(data.toString()); });
+
+//Wait for 1 second then send the getPlayerStatus command.
+await new Promise(r => setTimeout(r, 1000));
+ws.send(JSON.stringify({command:"getPlayerStatus", address: process.env.PRIVATE_KEY_ADDRESS}));
+
+//Wait for 1 second then send the getPlayersWithinRange command and parameters.
+await new Promise(r => setTimeout(r, 1000));
+ws.send(JSON.stringify({command:"getPlayersInRange", x:0, y:0, range:128}));
+
+//Wait for 1 second then send a non existent command to see what errors look like.
+await new Promise(r => setTimeout(r, 1000));
+ws.send(JSON.stringify({command:"fireTheLasers"}));

@@ -41,9 +41,10 @@ class BoatArrowsController {
   isMoving = false;
   isFiring = false;
 
-  constructor({ container, onDownArrowClick = () => {}, isCurrentPlayer }) {
+  constructor({ container, isCurrentPlayer }) {
     this.container = container;
     this.boat = this.container.getBoat();
+    this.isCurrentPlayer = isCurrentPlayer;
     this.setupDirectionController({ isCurrentPlayer });
   }
 
@@ -235,13 +236,13 @@ class BoatArrowsController {
   };
 
   onMoveStart = () => {
-    this.emitEvent(START_MOVING_EVENT);
+    this.isCurrentPlayer && this.emitEvent(START_MOVING_EVENT);
   };
 
   onMoveEnd = (direction) => {
     this.container.setHeadDirection(direction);
     PositionMapper.setBoatMap(this);
-    this.emitEvent(STOP_MOVING_EVENT);
+    this.isCurrentPlayer && this.emitEvent(STOP_MOVING_EVENT);
   };
 
   moveWithRotation = (distance, direction) => {

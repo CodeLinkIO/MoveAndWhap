@@ -142,7 +142,6 @@ class Boat extends Container {
   setupArrows = ({ isCurrentPlayer }) => {
     this.arrowsController = new BoatArrowsController({
       container: this,
-      onDownArrowClick: this.moveBoatDown,
       isCurrentPlayer,
     });
     this.arrowsController.zIndex = 100;

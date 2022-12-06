@@ -4,6 +4,10 @@ import { DIRECTION_OPPOSITE } from "../constants/contracts";
 import {
   ACCEPTED_HEAD_FOR_HORIZON,
   ACCEPTED_HEAD_FOR_VERTICAL,
+  LEFT_DIRECTION,
+  RIGHT_DIRECTION,
+  UP_DIRECTION,
+  DOWN_DIRECTION,
 } from "../constants/pixi";
 import pixiApp from "./app";
 
@@ -253,6 +257,21 @@ class PositionMapper {
     return isHeadToHead;
   };
 
+  static isHeadPointToDirection = (playerBoat, direction) => {
+    const playerHead = playerBoat.getHeadDirection();
+    return playerHead === direction;
+  };
+
+  static canPlayerFire = ({
+    isCollidedWithBoat,
+    isHeadToHead: isHeadToHeadWithTarget,
+    isHeadPointToDirection,
+  }) => {
+    return (
+      isCollidedWithBoat && isHeadPointToDirection && !isHeadToHeadWithTarget
+    );
+  };
+
   static getFireableBoatOnLeft = (playerBoat) => {
     const nearestLeftBoat = this.findNearestLeftBoat(playerBoat);
     if (!nearestLeftBoat) return null;
@@ -263,8 +282,17 @@ class PositionMapper {
     );
 
     const isHeadToHead = this.checkHeadToHead(playerBoat, nearestLeftBoat);
+    const isPlayerHeadPointToLeft = this.isHeadPointToDirection(
+      playerBoat,
+      LEFT_DIRECTION
+    );
+    const canFire = this.canPlayerFire({
+      isCollidedWithBoat: isCollidedWithBoatOnLeft,
+      isHeadToHead,
+      isHeadPointToDirection: isPlayerHeadPointToLeft,
+    });
 
-    if (isCollidedWithBoatOnLeft && isHeadToHead) return nearestLeftBoat;
+    if (canFire) return nearestLeftBoat;
 
     return null;
   };
@@ -279,8 +307,17 @@ class PositionMapper {
     );
 
     const isHeadToHead = this.checkHeadToHead(playerBoat, nearestRightBoat);
+    const isHeadPointToRight = this.isHeadPointToDirection(
+      playerBoat,
+      RIGHT_DIRECTION
+    );
+    const canFire = this.canPlayerFire({
+      isCollidedWithBoat: isCollidedWithBoatOnRight,
+      isHeadToHead,
+      isHeadPointToDirection: isHeadPointToRight,
+    });
 
-    if (isCollidedWithBoatOnRight && isHeadToHead) return nearestRightBoat;
+    if (canFire) return nearestRightBoat;
 
     return null;
   };
@@ -295,8 +332,17 @@ class PositionMapper {
     );
 
     const isHeadToHead = this.checkHeadToHead(playerBoat, nearestTopBoat);
+    const isHeadPointToDirection = this.isHeadPointToDirection(
+      playerBoat,
+      UP_DIRECTION
+    );
+    const canFire = this.canPlayerFire({
+      isCollidedWithBoat: isCollidedWithBoatOnTop,
+      isHeadToHead,
+      isHeadPointToDirection,
+    });
 
-    if (isCollidedWithBoatOnTop && isHeadToHead) return nearestTopBoat;
+    if (canFire) return nearestTopBoat;
 
     return null;
   };
@@ -311,7 +357,17 @@ class PositionMapper {
     );
 
     const isHeadToHead = this.checkHeadToHead(playerBoat, nearestBottomBoat);
-    if (isCollidedWithBoatOnBottom && isHeadToHead) return nearestBottomBoat;
+    const isHeadPointToDirection = this.isHeadPointToDirection(
+      playerBoat,
+      DOWN_DIRECTION
+    );
+    const canFire = this.canPlayerFire({
+      isCollidedWithBoat: isCollidedWithBoatOnBottom,
+      isHeadToHead,
+      isHeadPointToDirection,
+    });
+
+    if (canFire) return nearestBottomBoat;
 
     return null;
   };

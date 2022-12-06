@@ -38,8 +38,8 @@ for(let i = 0; i < playerCount; i++) {
 for(let i = 0; i < playerCount; i++){
     try {
         //Get random spawn zone and direction.
-        let rX = Math.floor(Math.max(64,Math.random()*128));
-        let rY = Math.floor(Math.max(64,Math.random()*128));
+        let rX = Math.floor(Math.max(64,Math.random()*192));
+        let rY = Math.floor(Math.max(64,Math.random()*192));
         let rD = Math.floor(Math.random()*4);
         let response = await contracts[i].join(rX,rY,rD);
         await response.wait().then(x => console.log(`Bot ${i} joined.`));

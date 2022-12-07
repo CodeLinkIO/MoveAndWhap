@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useLocation, Navigate } from "react-router-dom";
 import GameScreen from "./components/GameScreen";
 import { HOME } from "./constants/routes";
+import "./popupS.css";
 
 const App = () => {
   const [loadingAccount, setLoadingAccount] = useState(true);

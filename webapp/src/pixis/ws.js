@@ -2,6 +2,7 @@ import { isEmpty, remove } from "lodash";
 import popupS from "popups";
 import { CONTRACT_DIRECTION } from "../constants/contracts";
 import { BOAT_CONTAINER_HEIGHT, BOAT_CONTAINER_WIDTH } from "../constants/pixi";
+import { HOME } from "../constants/routes";
 import { COMMANDS } from "../constants/webSockets";
 import { formatBoatData } from "../utils/contract";
 import { convertPlayerPositionToGameCoordinate } from "../utils/numbers";
@@ -176,8 +177,26 @@ const handlePlayerAttacked = (wsResponse) => {
   // Fire animation has been handled by the BoatArrowsController class for the current player
   if (isCurrentPlayerAddress(attacker)) return;
 
+  const handleGameOver = () => {
+    // Only game over if the current player is the victim
+    if (!isCurrentPlayerAddress(victim)) return;
+
+    popupS.alert({
+      title: "Game Over",
+      content: "You have been defeated! <br /> Try again next time!",
+      labelOk: "Take me back to the lobby",
+      onSubmit: () => {
+        window.location.href = HOME;
+      },
+      additionalButtonOkClass: "flex p-2 mb-2 mt-2 bg-gray-400 justify-center",
+      additionalPopupClass: "flex justify-center flex-col items-center",
+      additionalCloseBtnClass: "hidden",
+    });
+  };
+
   PositionMapper.attackAndRemovedTargetBoat({
     attackerBoatAddress: attacker,
     victimBoatAddress: victim,
+    onExplodeAnimationComplete: handleGameOver,
   });
 };

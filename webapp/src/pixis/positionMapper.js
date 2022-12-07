@@ -375,7 +375,7 @@ class PositionMapper {
   static attackAndRemovedTargetBoat = ({
     attackerBoatAddress,
     victimBoatAddress,
-    // onExplodeAnimationComplete
+    onExplodeAnimationComplete,
   }) => {
     const attackerBoat = PositionMapper.getBoatByAddress(attackerBoatAddress);
     const victimBoat = PositionMapper.getBoatByAddress(victimBoatAddress);
@@ -385,7 +385,7 @@ class PositionMapper {
     attackerBoat.triggerFireAnimation();
     victimBoat.triggerExplosionAnimation({
       onComplete: () => {
-        // onExplodeAnimationComplete && onExplodeAnimationComplete();
+        onExplodeAnimationComplete && onExplodeAnimationComplete();
         victimBoat.destroy();
       },
     });

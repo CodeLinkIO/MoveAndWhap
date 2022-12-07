@@ -315,8 +315,15 @@ class BoatArrowsController {
   };
 
   fire = async (targetAddress) => {
-    console.log("Fire", targetAddress);
-    await whap(targetAddress);
+    try {
+      await whap(targetAddress);
+      PositionMapper.attackAndRemovedTargetBoat(
+        this.container.address,
+        targetAddress
+      );
+    } catch (error) {
+      console.log("Fire failed", error);
+    }
   };
 }
 

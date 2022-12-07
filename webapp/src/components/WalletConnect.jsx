@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { useEthers } from "@usedapp/core";
 import { useNavigate } from "react-router-dom";
+import { random } from "lodash";
 import { Chain } from "../providers/walletProvider";
 import { findBoatByAddress, join, whap } from "../utils/contract";
 import { GAME_SCREEN } from "../constants/routes";
-import { random } from "lodash";
+import { CENTER_POSITION, DISTANCE_FROM_CENTER } from "../constants/pixi";
+
+const MIN_INIT_POSITION = CENTER_POSITION - DISTANCE_FROM_CENTER;
+const MAX_INIT_POSITION = CENTER_POSITION + DISTANCE_FROM_CENTER;
 
 const WalletConnect = () => {
   const [joining, setJoining] = useState(false);
@@ -23,8 +27,8 @@ const WalletConnect = () => {
 
     const boat = await findBoatByAddress(account);
     if (!boat || !boat.isAlive) {
-      const positionUint8X = random(0, 3);
-      const positionUint8Y = random(0, 3);
+      const positionUint8X = random(MIN_INIT_POSITION, MAX_INIT_POSITION);
+      const positionUint8Y = random(MIN_INIT_POSITION, MAX_INIT_POSITION);
       await join(positionUint8X, positionUint8Y);
     }
 
@@ -45,7 +49,9 @@ const WalletConnect = () => {
 
   if (active && !isLoading && !account) {
     return (
-      <div>
+      <div className="flex justify-center flex-col items-center">
+        <h1 className="text-2xl">Move and Whap</h1>
+        <h2 className="text-xl mb-2 mt-2">Connect and Join our battle</h2>
         <button
           className="flex p-2 mb-2 bg-gray-400 justify-center"
           onClick={onConnect}

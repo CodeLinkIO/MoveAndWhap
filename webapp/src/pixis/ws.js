@@ -171,15 +171,9 @@ const isCurrentPlayerAddress = (address) => {
 const handlePlayerAttacked = (wsResponse) => {
   const { data } = wsResponse;
   const { attacker, victim } = data;
-  const attackerBoat = PositionMapper.getBoatByAddress(attacker);
-  const victimBoat = PositionMapper.getBoatByAddress(victim);
 
-  PositionMapper.removeBoatFromMap(victim);
+  // Fire animation has been handled by the BoatArrowsController class for the current player
+  if (isCurrentPlayerAddress(attacker)) return;
 
-  attackerBoat.triggerFireAnimation();
-  victimBoat.triggerExplosionAnimation({
-    onComplete: () => {
-      victimBoat.destroy();
-    },
-  });
+  PositionMapper.attackAndRemovedTargetBoat(attacker, victim);
 };

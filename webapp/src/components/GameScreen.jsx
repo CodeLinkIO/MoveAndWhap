@@ -63,7 +63,8 @@ const GameScreen = () => {
       }
 
       TileMap.initialize(currentPlayerPosition);
-      viewport.moveCenter(currentPlayerPosition.x, currentPlayerPosition.y);
+      currentPlayerPosition &&
+        viewport.moveCenter(currentPlayerPosition.x, currentPlayerPosition.y);
 
       viewport.setupViewportInteraction();
     };

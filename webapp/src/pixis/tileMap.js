@@ -1,5 +1,6 @@
 import { Texture, TilingSprite } from "pixi.js";
 import tileWater from "../assets/tile_water.png";
+import { CENTER_POSITION } from "../constants/pixi";
 import pixiApp from "./app";
 import MapBorder from "./mapBorder";
 
@@ -13,8 +14,16 @@ class TileMap {
       this.viewport.worldWidth,
       this.viewport.worldHeight
     );
-    this.tile.x = currentPlayerPosition.x - this.viewport.worldWidth / 2;
-    this.tile.y = currentPlayerPosition.y - this.viewport.worldHeight / 2;
+
+    const currentX = currentPlayerPosition
+      ? currentPlayerPosition.x
+      : CENTER_POSITION;
+    const currentY = currentPlayerPosition
+      ? currentPlayerPosition.y
+      : CENTER_POSITION;
+
+    this.tile.x = currentX - this.viewport.worldWidth / 2;
+    this.tile.y = currentY - this.viewport.worldHeight / 2;
     this.viewport.addChild(this.tile);
 
     this.setupViewportOnMoveEvent();

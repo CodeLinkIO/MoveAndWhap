@@ -371,6 +371,25 @@ class PositionMapper {
 
     return null;
   };
+
+  static attackAndRemovedTargetBoat = (
+    attackerBoatAddress,
+    victimBoatAddress
+    // onExplodeAnimationComplete
+  ) => {
+    const attackerBoat = PositionMapper.getBoatByAddress(attackerBoatAddress);
+    const victimBoat = PositionMapper.getBoatByAddress(victimBoatAddress);
+
+    PositionMapper.removeBoatFromMap(victimBoatAddress);
+
+    attackerBoat.triggerFireAnimation();
+    victimBoat.triggerExplosionAnimation({
+      onComplete: () => {
+        // onExplodeAnimationComplete && onExplodeAnimationComplete();
+        victimBoat.destroy();
+      },
+    });
+  };
 }
 
 export default PositionMapper;

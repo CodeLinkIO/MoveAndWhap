@@ -317,10 +317,10 @@ class BoatArrowsController {
   fire = async (targetAddress) => {
     try {
       await whap(targetAddress);
-      PositionMapper.attackAndRemovedTargetBoat(
-        this.container.address,
-        targetAddress
-      );
+      PositionMapper.attackAndRemovedTargetBoat({
+        attackerBoatAddress: this.container.address,
+        victimBoatAddress: targetAddress,
+      });
     } catch (error) {
       console.log("Fire failed", error);
     }

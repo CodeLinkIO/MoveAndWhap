@@ -372,11 +372,11 @@ class PositionMapper {
     return null;
   };
 
-  static attackAndRemovedTargetBoat = (
+  static attackAndRemovedTargetBoat = ({
     attackerBoatAddress,
-    victimBoatAddress
+    victimBoatAddress,
     // onExplodeAnimationComplete
-  ) => {
+  }) => {
     const attackerBoat = PositionMapper.getBoatByAddress(attackerBoatAddress);
     const victimBoat = PositionMapper.getBoatByAddress(victimBoatAddress);
 

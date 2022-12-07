@@ -211,9 +211,8 @@ class Boat extends Container {
   };
 
   triggerFireAnimation = ({ onComplete } = {}) => {
-    const arrowController = this.getArrowController();
-
-    arrowController.emitEvent(START_FIRING_EVENT);
+    this.isCurrentPlayer &&
+      this.getArrowController().emitEvent(START_FIRING_EVENT);
     this.cannon.play();
     this.fireFrames.visible = true;
     this.fireFrames.play();
@@ -222,7 +221,8 @@ class Boat extends Container {
       this.cannon.gotoAndStop(0);
       this.fireFrames.gotoAndStop(0);
       this.fireFrames.visible = false;
-      arrowController.emitEvent(STOP_FIRING_EVENT);
+      this.isCurrentPlayer &&
+        this.getArrowController().emitEvent(STOP_FIRING_EVENT);
       onComplete && onComplete();
     }, FIRE_TIME);
   };

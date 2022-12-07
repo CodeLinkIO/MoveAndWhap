@@ -1,4 +1,5 @@
 import { isEmpty, remove } from "lodash";
+import popupS from "popups";
 import { CONTRACT_DIRECTION } from "../constants/contracts";
 import { BOAT_CONTAINER_HEIGHT, BOAT_CONTAINER_WIDTH } from "../constants/pixi";
 import { COMMANDS } from "../constants/webSockets";
@@ -175,5 +176,8 @@ const handlePlayerAttacked = (wsResponse) => {
   // Fire animation has been handled by the BoatArrowsController class for the current player
   if (isCurrentPlayerAddress(attacker)) return;
 
-  PositionMapper.attackAndRemovedTargetBoat(attacker, victim);
+  PositionMapper.attackAndRemovedTargetBoat({
+    attackerBoatAddress: attacker,
+    victimBoatAddress: victim,
+  });
 };

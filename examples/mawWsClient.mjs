@@ -3,7 +3,7 @@ import { config } from "dotenv";
 config();
 
 //Connect to websocket server.
-const ws = new WebSocket('ws://localhost:7070');
+const ws = new WebSocket(`ws://localhost:${process.env.WS_PORT}`);
 
 //Listen for messages from the server and log them.
 ws.on("message", (data) => { console.log(data.toString()); });

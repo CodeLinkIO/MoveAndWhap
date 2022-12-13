@@ -94,6 +94,8 @@ class MawServer{
                 break;
             case 'playerAttacked':
                 break;
+            case 'error':
+                break;
             default:
                 let errMsg = `Server does not have command: '${json.command}'`;
                 msg = this.formatMessage('error', errMsg, null);

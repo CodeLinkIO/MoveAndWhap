@@ -15,7 +15,7 @@ let start = 22510004;
 let stop = 22514205;
 
 //Filter for events.
-let filter = trackingService.contract.filters.Approval();
+let filter = trackingService.contract.filters.Approval();                 //Get filters for the Approval function.
 let blockTxs = await trackingService.getEventsFrom(start , stop, filter); //Get the transaction logs.
 let filtered = trackingService.filterBlockTxs(filter.topics, blockTxs);   //Filter out duplicates.
 let ordered = trackingService.orderBlockTxs(filtered);                    //Order them properly.

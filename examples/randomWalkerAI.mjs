@@ -44,7 +44,8 @@ for(let i = 0; i < playerCount; i++){
         let response = await contracts[i].join(rX,rY,rD);
         await response.wait().then(x => console.log(`Bot ${i} joined.`));
     } catch(error) {
-        console.log(`Bot ${i} couldn't join. Likely already exists within the game.`);
+        console.log(`Bot ${i} couldn't join. Likely already exists within the game or out of funds.`);
+        console.error(error);
     }
 }
 
@@ -58,7 +59,8 @@ while(true) {
             let response = await contracts[i].move(randomDirection); //Do the actual move.
             await response.wait().then(x => console.log(`Bot ${i} moved ${directions[randomDirection]}`));
         } catch(error) {
-            console.log(`Bot ${i} couldn't move. Likely dead or out of funds.`)
+            console.log(`Bot ${i} couldn't move. Likely dead or out of funds.`);
+            console.error(error);
         }
     }
 }

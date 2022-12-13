@@ -8,6 +8,7 @@ import {
   RIGHT_DIRECTION,
   UP_DIRECTION,
   DOWN_DIRECTION,
+  ENEMY_STOP_FIRING_EVENT,
 } from "../constants/pixi";
 import pixiApp from "./app";
 
@@ -387,8 +388,26 @@ class PositionMapper {
       onComplete: () => {
         onExplodeAnimationComplete && onExplodeAnimationComplete();
         victimBoat.destroy();
+        const currentPlayerBoat = PositionMapper.getCurrentPlayerBoat();
+
+        // Player is victim so no boat is found and no need to emit event
+        if (!currentPlayerBoat) return;
+
+        // if the current player is the attacker, do not emit event
+        if (currentPlayerBoat.address === attackerBoatAddress) return;
+
+        currentPlayerBoat
+          .getArrowController()
+          .emitEvent(ENEMY_STOP_FIRING_EVENT);
       },
     });
+  };
+
+  static getCurrentPlayerBoat = () => {
+    const currentPlayerAddress = pixiApp.getWalletAddress();
+    const currentPlayerBoat =
+      PositionMapper.getBoatByAddress(currentPlayerAddress);
+    return currentPlayerBoat;
   };
 }
 

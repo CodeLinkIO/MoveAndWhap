@@ -14,6 +14,7 @@ import {
   DOWN_DIRECTION,
   LEFT_DIRECTION,
   DIRECTIONS,
+  ENEMY_STOP_MOVING_EVENT,
 } from "../constants/pixi";
 import { move, whap } from "../utils/contract";
 import pixiApp from "./app";
@@ -237,12 +238,21 @@ class BoatArrowsController {
 
   onMoveStart = () => {
     this.isCurrentPlayer && this.emitEvent(START_MOVING_EVENT);
+    PositionMapper.removeBoatFromMap(this.container.address);
   };
 
   onMoveEnd = (direction) => {
     this.container.setHeadDirection(direction);
-    PositionMapper.setBoatMap(this);
-    this.isCurrentPlayer && this.emitEvent(STOP_MOVING_EVENT);
+    PositionMapper.setBoatPositionToMap(this.container);
+
+    if (this.isCurrentPlayer) {
+      this.emitEvent(STOP_MOVING_EVENT);
+    } else {
+      const currentPlayerBoat = PositionMapper.getCurrentPlayerBoat();
+      currentPlayerBoat
+        ?.getArrowController()
+        .emitEvent(ENEMY_STOP_MOVING_EVENT);
+    }
   };
 
   moveWithRotation = (distance, direction) => {

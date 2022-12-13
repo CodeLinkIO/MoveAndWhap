@@ -13,6 +13,8 @@ import {
   UP_DIRECTION,
   START_FIRING_EVENT,
   STOP_FIRING_EVENT,
+  ENEMY_STOP_MOVING_EVENT,
+  ENEMY_STOP_FIRING_EVENT,
 } from "../constants/pixi";
 import pixiApp from "./app";
 import MapBorder from "./mapBorder";
@@ -45,6 +47,9 @@ class Arrow {
 
     this.arrow.on(START_FIRING_EVENT, this.onStartFiring);
     this.arrow.on(STOP_FIRING_EVENT, this.onStopFiring);
+
+    this.arrow.on(ENEMY_STOP_MOVING_EVENT, this.onEnemyStopMoving);
+    this.arrow.on(ENEMY_STOP_FIRING_EVENT, this.onEnemyStopFiring);
   }
 
   getArrow() {
@@ -199,6 +204,14 @@ class Arrow {
   };
 
   onStopFiring = () => {
+    this.checkArrowVisibility();
+  };
+
+  onEnemyStopMoving = () => {
+    this.checkArrowVisibility();
+  };
+
+  onEnemyStopFiring = () => {
     this.checkArrowVisibility();
   };
 }

@@ -4,13 +4,17 @@ import { config } from "dotenv";
 config();
 
 /*
- * This script is used to kill a player if the attacker is in the correct position.
- * The first argument is the private key of the attacker.
- * The second argument is the address of the victim.
- * e.g. node whapService.mjs 0x12341adf23xys_privatekey 0x12341adf23xys_address
+ * This script is used to move a player in direction.
+ * The first argument is the private key of the player.
+ * The following argument is the direction to move (0-3).
+ * 0: DOWN_DIRECTION,
+ * 1: RIGHT_DIRECTION,
+ * 2: UP_DIRECTION,
+ * 3: LEFT_DIRECTION,
+ * e.g. node moveService.mjs 0x12341adf23xys 0
  */
 
-const KILL_WAIT_TIME = 10000;
+const MOVE_WAIT_TIME = 1000;
 const mawAbi = [
   "constructor()",
   "function join(int8 x, int8 y, uint8 dir)",
@@ -22,33 +26,29 @@ const mawAbi = [
 ];
 
 const args = process.argv.slice(2);
-const attackerPrivateAddress = args[0];
-const victimAddress = args[1];
+const privateAddress = args[0];
+const moveDirection = args[1];
 
-const attackerService = new EthersService(
-  process.env.PROVIDER_URL,
-  attackerPrivateAddress
-);
+const service = new EthersService(process.env.PROVIDER_URL, privateAddress);
+await service.initialize();
 
-await attackerService.initialize();
-
-const attackerContract = new ethers.Contract(
+const contract = new ethers.Contract(
   process.env.MAW_CONTRACT_ADDRESS,
   mawAbi,
-  attackerService.signer
+  service.signer
 );
 
-let countDown = KILL_WAIT_TIME / 1000;
+let countDown = MOVE_WAIT_TIME / 1000;
 const interval = setInterval(async () => {
-  countDown >= 0 && console.log(`Kill in ${countDown} seconds...`);
+  countDown >= 0 && console.log(`Move in ${countDown} seconds...`);
   countDown -= 1;
 
   if (countDown <= 0) {
     try {
-      await attackerContract.whap(victimAddress);
-      console.log(`Whap ${victimAddress}`);
+      await contract.move(moveDirection);
+      console.log(`Move ${moveDirection}`);
     } catch (error) {
-      console.log("Cannot kill player", error);
+      console.log("Cannot move player", error);
     } finally {
       clearInterval(interval);
       process.exit(0);

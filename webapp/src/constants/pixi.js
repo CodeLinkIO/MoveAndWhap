@@ -58,6 +58,8 @@ export const START_MOVING_EVENT = "startMoving";
 export const STOP_MOVING_EVENT = "stopMoving";
 export const START_FIRING_EVENT = "startFiring";
 export const STOP_FIRING_EVENT = "stopFiring";
+export const ENEMY_STOP_MOVING_EVENT = "enemyStartMoving";
+export const ENEMY_STOP_FIRING_EVENT = "enemyStartFiring";
 
 // Arrow direction
 export const UP_DIRECTION = "up";

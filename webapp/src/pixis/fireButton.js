@@ -12,6 +12,8 @@ import {
   BOUNCE_POSITION_BY_DIRECTION,
   START_FIRING_EVENT,
   STOP_FIRING_EVENT,
+  ENEMY_STOP_MOVING_EVENT,
+  ENEMY_STOP_FIRING_EVENT,
 } from "../constants/pixi";
 import pixiApp from "./app";
 import FireIcon from "../assets/fire.png";
@@ -57,6 +59,9 @@ class FireButton {
 
     this.fireButton.on(START_FIRING_EVENT, this.onStartFiring);
     this.fireButton.on(STOP_FIRING_EVENT, this.onStopFiring);
+
+    this.fireButton.on(ENEMY_STOP_MOVING_EVENT, this.onEnemyStopMoving);
+    this.fireButton.on(ENEMY_STOP_FIRING_EVENT, this.onEnemyStartFiring);
   }
 
   onFireTriggered = async (onClick) => {
@@ -161,6 +166,14 @@ class FireButton {
   };
 
   onStopFiring = () => {
+    this.checkForFireButtonVisibility();
+  };
+
+  onEnemyStopMoving = () => {
+    this.checkForFireButtonVisibility();
+  };
+
+  onEnemyStartFiring = () => {
     this.checkForFireButtonVisibility();
   };
 }

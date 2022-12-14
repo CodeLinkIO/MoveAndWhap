@@ -38,13 +38,15 @@ for(let i = 0; i < playerCount; i++) {
 for(let i = 0; i < playerCount; i++){
     try {
         //Get random spawn zone and direction.
-        let rX = Math.floor(Math.max(64,Math.random()*192));
-        let rY = Math.floor(Math.max(64,Math.random()*192));
-        let rD = Math.floor(Math.random()*4);
+        let rX = parseInt(Math.floor(Math.max(8,Math.random()*16)));
+        let rY = parseInt(Math.floor(Math.max(8,Math.random()*16)));
+        let rD = parseInt(Math.floor(Math.random()*4));
+        console.log(`X: ${rX}, Y: ${rY}, Dir: ${rD}`);
         let response = await contracts[i].join(rX,rY,rD);
         await response.wait().then(x => console.log(`Bot ${i} joined.`));
     } catch(error) {
-        console.log(`Bot ${i} couldn't join. Likely already exists within the game.`);
+        console.log(`Bot ${i} couldn't join. Likely already exists within the game or out of funds.`);
+        console.error(error);
     }
 }
 
@@ -58,7 +60,8 @@ while(true) {
             let response = await contracts[i].move(randomDirection); //Do the actual move.
             await response.wait().then(x => console.log(`Bot ${i} moved ${directions[randomDirection]}`));
         } catch(error) {
-            console.log(`Bot ${i} couldn't move. Likely dead or out of funds.`)
+            console.log(`Bot ${i} couldn't move. Likely dead or out of funds.`);
+            console.error(error);
         }
     }
 }

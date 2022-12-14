@@ -102,6 +102,7 @@ contract MAW {
         require(isInFront, "Victim is not in front of the attacker.");
 
         //Check to see if they are facing eachother.
+        //Simple math check to see if the directions are exact opposite.
         int faceToFaceOffset = int8(attacker.direction) - int8(victim.direction);
         bool isFaceToFace = abs(faceToFaceOffset) == 2;
         require(!isFaceToFace, "Attacker can not attack a victim facing them.");

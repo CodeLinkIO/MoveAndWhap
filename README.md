@@ -1,8 +1,8 @@
 # Move and Whap
-A simple solidity game where you move and whap!
+A simple PixiJS game where you move and whap!
 
 ### Install Backend
-- Ensure you have npm version **19.0.0** installed. No other version has been tested.
+- Ensure you have node version **19.0.0** installed. No other version has been tested.
 - In the root of the project: **npm** *install*
 
 ### Environment Config Backend

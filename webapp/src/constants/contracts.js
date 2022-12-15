@@ -25,3 +25,8 @@ export const DIRECTION_OPPOSITE = {
   [UP_DIRECTION]: DOWN_DIRECTION,
   [LEFT_DIRECTION]: RIGHT_DIRECTION,
 };
+
+export const CONNECTOR_TYPE = {
+  metamask: "metamask",
+  sequence: "sequence",
+};

@@ -71,6 +71,10 @@ class SequenceWalletConnector implements Connector {
     return parseChainId(walletChainId);
   };
 
+  getSigner = async () => {
+    return this.sequenceWallet.getSigner();
+  };
+
   async getAccounts() {
     return this.provider.request({ method: "eth_accounts" });
   }

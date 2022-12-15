@@ -1,9 +1,12 @@
 import { DAppProvider, Hardhat, MetamaskConnector } from "@usedapp/core";
 import SequenceConnector from "../connectors/sequenceConnector";
+import { CONNECTOR_TYPE } from "../constants/contracts";
 
 const FUJI_BLOCK_EXPLORER = "https://testnet.snowtrace.io";
 
-export const connectorType = process.env.REACT_APP_CONNECTOR_TYPE || "metamask";
+export const connectorType =
+  CONNECTOR_TYPE[process.env.REACT_APP_CONNECTOR_TYPE] ||
+  CONNECTOR_TYPE.metamask;
 
 export const Fuji = {
   chainId: 43113,

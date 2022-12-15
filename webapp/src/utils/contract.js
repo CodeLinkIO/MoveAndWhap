@@ -1,7 +1,8 @@
 import { Contract } from "@ethersproject/contracts";
 import { ethers } from "ethers";
 import { random } from "lodash";
-import { DIRECTION_IN_NUMBER } from "../constants/contracts";
+import { CONNECTOR_TYPE, DIRECTION_IN_NUMBER } from "../constants/contracts";
+import { connectorType, sequenceConnector } from "../providers/walletProvider";
 import {
   convertBigNumbersToCoordinate,
   convertPlayerPositionToGameCoordinate,
@@ -10,9 +11,29 @@ let MaWContractCache = null;
 
 const MaWAbi = require("../contracts/MAW.json").abi;
 
+export const getWalletSigner = async () => {
+  switch (connectorType) {
+    case CONNECTOR_TYPE.metamask: {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      return signer;
+    }
+    case CONNECTOR_TYPE.sequence: {
+      const signer = await sequenceConnector.getSigner();
+      return signer;
+    }
+    default:
+      return null;
+  }
+};
+
 export const findContractByAddress = async (contractAddress, abi) => {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
+  const signer = await getWalletSigner();
+  if (!signer) {
+    throw new Error("No signer found");
+  }
+
   const contract = new Contract(contractAddress, abi, signer);
   return contract;
 };

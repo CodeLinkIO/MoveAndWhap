@@ -1,6 +1,6 @@
-import { boxBox, boxPolygon, linePolygon } from "intersects";
+import { boxBox } from "intersects";
 import { Container, Graphics } from "pixi.js";
-import { ARROW_HEIGHT, VIEWPORT_PADDING } from "../constants/pixi";
+import { VIEWPORT_PADDING } from "../constants/pixi";
 import pixiApp from "./app";
 
 const MAP_BORDER_WIDTH = 10;

@@ -1,11 +1,42 @@
-# Move and Whap
-A simple solidity game where you move and whap!
+# Move And Whap (MaW)
 
-### Install Backend
-- Ensure you have npm version **19.0.0** installed. No other version has been tested.
-- In the root of the project: **npm** *install*
+A game demo showcasing how to build a simple, multiplayer game where all user actions are on-chain. Game engine is [PixiJS](https://pixijs.com/)
 
-### Environment Config Backend
+## Description
+
+This game demo was made to help developers understand how to code a web3 game on an EVM chain, in this case Avalanche. 
+
+## Getting Started
+
+### Dependencies
+
+* QuickNode account
+* nvm 
+* npm 
+* Node 19.0.0 
+* Yarn (version?)
+* Hardhat (version?)
+
+### Installing
+* It is recommneded using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) (node version manager) to install Node and NPM
+* Install Node.js and npm using nvm 
+```
+nvm install --lts
+```
+* Install downloads dependencies defined in package.json
+```
+cd projectroot
+
+npm install
+```
+* Install Yarn in the webapp directory of the project 
+```
+cd webapp
+
+npm install yarn
+```
+### Backend Environment setup
+
 - In the root of the project, make a file called **.env**
 - Add these parameters:
     - **PROVIDER_URL**: Your Avalanche provider url.
@@ -31,5 +62,39 @@ A simple solidity game where you move and whap!
     - **WS_PORT**=7070
         - This the Web Socker Server port for the EventTracking service. It is used to feed events to a client.
         - If you end up needing that port, you can change the Web Socket Server port here. There is no particular reason for being 7070.
+* Any modifications needed to be made to files/folders
 
-### Running Backend Examples.
+### Executing program
+
+* How to run the program
+* Step-by-step bullets
+```
+code blocks for commands
+```
+
+## Help
+
+Any advise for common problems or issues.
+```
+command to run if program contains helper info
+```
+
+## Authors
+
+Codie Petersen [Codie-Petersen](https://github.com/Codie-Petersen)
+
+Loc Le [huylocit14054](https://github.com/huylocit14054)
+
+
+## Version History
+
+* 0.1
+    * Initial Release
+
+## License
+
+This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+
+## Acknowledgments
+
+Inspiration, code snippets, etc.

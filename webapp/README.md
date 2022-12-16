@@ -1,70 +1,107 @@
-# Getting Started with Create React App
+# Move And Whap Webapp (MaW)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Webapp for Move And Whap (MaW) game demo showcasing how to build a game where all user actions are on-chain.
 
-## Available Scripts
+## Description
 
-In the project directory, you can run:
+This was make to help developers understand how to code a web3 game with ReactJs and PixiJs engine.
 
-### `npm start`
+- Framework is [ReactJs](https://reactjs.org/)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Game engine is [PixiJS](https://pixijs.com/).
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Getting Started
 
-### `npm test`
+### Dependencies
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- nvm
+- node version `>=18.0.0` or `19.0.0`
+- yarn (This webapp uses yarn as package manager no npm)
 
-### `npm run build`
+### Installing
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Installing all the packages
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+cd webapp
+yarn install
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Webapp env config:
 
-### `npm run eject`
+- In the webapp folder of the project, make a file called **.env**
+- Add these parameters (Showed in **env.example**):
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+  - **REACT_APP_MAW_CONTRACT_ADDRESS**: Your deployed contract address. <br> This must be the same as **MAW_CONTRACT_ADDRESS** in the backend.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+  - **REACT_APP_CHAIN_ID**: This is the network chain ID to config [@userdapp](https://usedapp-docs.netlify.app/docs). <br/>
+    Currently we are supporting 2 networks: 43114 (Fuji) and 31337 (HardHat). <br> If you are using a different network, you will need to modify logic in `webapp/src/providers/walletProvider.js`.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+  - **REACT_APP_WS_URL**: Your backend websocket url example: `ws://localhost:3001`.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+  - **REACT_APP_CONNECTOR_TYPE**: This is the type of connector the app can use to connect to the wallet. <br/>
+    Currently, the app support 2 kind of connector: `metamask` and `sequence`.
+    <br>
+    For `metamask` connector, you will need to install [Metamask](https://metamask.io/) extension on your browser.
+    <br>
+    For `sequence` connector, you no need to install any extension. The [Sequence app](https://sequence.app/) will handle it.
+    <br>
 
-## Learn More
+    **_NOTE_**:
+    For local HardHat network, only use `metamask` connector. The sequence connector does not support local network.
+    <br>
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+    If you are using a different connector, you will need to modify logic in `webapp/src/providers/walletProvider.js`. More details on [@userdapp connector](https://usedapp-docs.netlify.app/docs/Guides/Connecting/Wallet%20Connectors).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Run on local machine
 
-### Code Splitting
+- **NOTE**: Make sure you have already deployed the contract on HardHat local network, run the backend server, and add all the necessary env vars.
+- In the webapp folder run:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```
+yarn start
+```
 
-### Analyzing the Bundle Size
+The app will run on `http://localhost:3000`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Connect and join with Metamask and HartHat local network
 
-### Making a Progressive Web App
+**Import a Hardhat account to Metamask**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- Open Metamask extension
+- Click on top right corner
+- Click on `Import account`
+  <br>
+  <br>
+  <img width="358" alt="Screen Shot 2022-12-16 at 12 54 41" src="https://user-images.githubusercontent.com/28186870/208032031-b5a124e9-f20b-4301-9d59-5f47e19c575c.png">
+  <br>
 
-### Advanced Configuration
+- Copy the private key of one of the HardHat accounts (You can find it in the terminal when you run `npm run node` on the root folder)
+- Paste the private key to Metamask
+- Click on `Import`
+  <br>
+  <br>
+  <img width="357" alt="Screen Shot 2022-12-16 at 12 55 24" src="https://user-images.githubusercontent.com/28186870/208032510-969f6bc1-9270-4694-a6d7-8160269d22ba.png">
+  <br>
+- You will see the account imported
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+**Connect to HardHat local network**
 
-### Deployment
+- If you do not have the HardHat network configured in Metamask, you will need to add it or metamask will add it for you after you connect.
+  <br>
+  <br>
+  <img width="359" alt="Screen Shot 2022-12-16 at 13 00 12" src="https://user-images.githubusercontent.com/28186870/208035238-1a4160af-90f9-44b4-acb3-19d47679f872.png">
+  <br>
+  <br>
+  <img width="359" alt="Screen Shot 2022-12-16 at 13 20 43" src="https://user-images.githubusercontent.com/28186870/208035364-39ccf127-cb91-4230-9014-ef84d326a665.png">
+  <br>
+  <br>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- If the app do not change network automatically, you can change it manually by clicking on the network name on the top right corner of Metamask.
 
-### `npm run build` fails to minify
+**Joining the game**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Click on connect button
+- Approve the connection
+- Click on join button
+- Approve the transaction

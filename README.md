@@ -4,7 +4,20 @@ A game demo showcasing how to build a simple, multiplayer game where all user ac
 
 ## Description
 
-This game demo was made to help developers understand how to code a web3 game on an EVM chain, in this case Avalanche. 
+This game demo was made to help developers understand how to code a web3 game on an EVM chain, in this case Avalanche. The rules of the game are quite simple. All moves are on chain moves. Players can move up, down, left, and right. The contract board is 2^256 x 2^256 spaces. If you get to the edge of the board it wraps around. However that is rather unlikely.
+
+You can attack a player if you are adjacent, facing them, AND they are not facing you. On the frontend, there is a red boarder. Normal players using the provided frontend can not travel outside of the red border but bots, people who make their own frontend, or anyone directly interacting with the contract can. 
+
+The red boarder exists for simplicity, but it also denotes the spawn zone on the contract. When a player enters the game, they can spawn anywhere in the 256x256 center of the map. All players, regardless of frontend or other custom implementations, must spawn within this zone. You can modify the *join* function on the contract if you want to make multiple join locations or expand or shrink the current one. Or, as long as it is within the -128,127 range, you can modify the frontend to have multiple spawn areas within the main spawn zone.
+
+### Game Contract Logic Recap
+
+- Players can join anywhere within the -128,127 for x and y.
+- Players can move North (0), East (1), South (2), and West (3) one space.
+- Players can move all the way to 2^256-1 before wrapping around to the other side.
+    - This is likely will never happen based on how long a block takes to confirm. Because of this, the board is effectively infinite.
+- Players can attack adjacent victims if the player is facing them and the victim is not facing the player.
+- You must rejoin after you die.
 
 ## Getting Started
 
@@ -110,6 +123,16 @@ Any advise for common problems or issues.
 ```
 command to run if program contains helper info
 ```
+
+## Game Design Comments
+
+One of the biggest issues with this game is the fact that you have to confirm every move. This is the nature of blockchain. Anything tracked on the blockchain must but be verified by the smart contract, this requires a signature and a gas fee. However, you don't necessarily need to track every single move a player makes. You can centralize some aspects that may not be economically important. The point of decentralization should be to protect a player's assets and the point of crypto currencies in games should be to monetize their assets or make payments between the dev and player smooth. 
+
+You could centralize all player movements to traditional server based gaming. You could instead keep things like upgrades, game currency balance, item, and land ownership all on chain and things like chat, movement, and combat off chain. It will really depend on your game type. Some games will do fine or maybe even benefit from on chain moves, like board, card, or other turn based games. You'll have to take into consideration what is important to your players and what has value that players may want to monetize.
+
+Remember, the game still has to be fun. So don't get bogged down in decentralizing everything. You could definitely make the appropriate infrastructure and tokenomics to incentivize fully decentralized realtime gaming. But verify your game idea first, then start giving the player what they want. Gamers are tough customers and you don't want to spend too long on a game that doesn't capture their attention. 
+
+Good luck with your dApp.
 
 ## Authors
 

@@ -55,6 +55,8 @@ yarn install
 
 ### Run on local machine
 
+- Your can read more about how to run the FE with specific network (HardHat or FUJI) in the next section.
+
 - **NOTE**: Make sure you have already deployed the contract on HardHat local network, run the backend server, and add all the necessary env vars.
 - In the webapp folder run:
 
@@ -63,6 +65,49 @@ yarn start
 ```
 
 The app will run on `http://localhost:3000`
+
+### Config to run with HardHat in Local:
+
+- **NOTE**: Make sure you have already deployed the contract on HardHat local network, run the backend server. <br>
+  If you have not done it yet, please follow the instruction in the root README.md file.
+
+- Create a new env file named `.env.hardhat` in the webapp folder:
+
+  - **REACT_APP_MAW_CONTRACT_ADDRESS**: Your deployed contract address. <br> This must be the same as **MAW_CONTRACT_ADDRESS** in the root .env file.
+  - **REACT_APP_CHAIN_ID**: 31337 (HardHat local network)
+  - **REACT_APP_WS_URL**: `ws://localhost:3001` (Backend websocket url this value is based one the ws port in the root folder .env file)
+  - **REACT_APP_CONNECTOR_TYPE**: `metamask` (Only support metamask for local network HardHat)
+
+- Run the app with:
+
+  ```
+    yarn start:hardhat
+  ```
+
+- The app will copy everything in .env.hardhat to .env and run the app with the new .env file.
+- The app will run on `http://localhost:3000`
+
+### Config to run with FUJI testnet in local:
+
+- **NOTE**: Make sure you have already deployed the contract on FUJI testnet, run the backend server. <br>
+  If you have not done it yet, please follow the instruction in the root README.md file.
+
+- Create a new env file named `.env.fuji` in the webapp folder:
+
+  - **REACT_APP_MAW_CONTRACT_ADDRESS**: Your deployed contract address on FUJI network. <br> This must be the same as **MAW_CONTRACT_ADDRESS** in the root .env file.
+  - **REACT_APP_CHAIN_ID**: 43114 (FUJI testnet)
+  - **REACT_APP_WS_URL**: `ws://localhost:3001` (Backend websocket url this value is based one the ws port in the root folder .env file)
+  - **REACT_APP_CONNECTOR_TYPE**: `sequence` (Use Sequence for test network)
+
+- Run the app with:
+
+  ```
+    yarn start:fuji
+  ```
+
+- The app will copy everything in .env.fuji to .env and run the app with the new .env file.
+
+- The app will run on `http://localhost:3000`
 
 ### Connect and join with Metamask and HartHat local network
 
@@ -99,9 +144,30 @@ The app will run on `http://localhost:3000`
 
 - If the app do not change network automatically, you can change it manually by clicking on the network name on the top right corner of Metamask.
 
+**Reset metamask account**
+
+- Sometimes when you import an account to Metamask, or try to disconnect and re-connect wallet to the app, Metamask raise an `can not calculate nonce error` and show you a loading screen. To fix this, you can reset the account.
+
+- If you want to reset the account, you can click on the account name on the top right corner of Metamask.
+
+- Setting > Advance > Reset Account > Reset.
+  <br><br><img width="359" alt="Screen Shot 2022-12-19 at 10 48 35" src="https://user-images.githubusercontent.com/28186870/208344031-6b6136c2-b752-4c9a-a624-91cacbc9210f.png">
+  <br><br>
+- Then you are good to go
+
 **Joining the game**
 
 - Click on connect button
 - Approve the connection
 - Click on join button
 - Approve the transaction
+
+**Add new env file**
+
+- The bash script `change-env.sh` will responsible for copying the content of the env file to the `.env` file.
+- To run the bash:
+  ```
+    bash change-env.sh fuji (or hardhat)
+  ```
+- Currently it only support `hardhat` and `fuji` as argument.
+- If you want to add a new env file, you can add the condition code to the `change-env.sh` file.

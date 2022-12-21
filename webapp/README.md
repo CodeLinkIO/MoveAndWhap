@@ -109,7 +109,7 @@ The app will run on `http://localhost:3000`.
 
 - The app will run on `http://localhost:3000`.
 
-### Connect and join with Metamask and HartHat local network
+### Connect and join with Metamask and HardHat local network
 
 **Import a Hardhat account to Metamask**
 

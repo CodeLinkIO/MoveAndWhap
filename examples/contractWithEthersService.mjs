@@ -28,7 +28,7 @@ const postKill = false;
 if(preKill) {
     try {
         await new Promise(r => setTimeout(r, timeout));
-        let response = await mawContract.whap(process.env.PRIVATE_KEY_ADDRESS); 
+        let response = await mawContract.whap(process.env.ACCOUNT); 
         await response.wait().then(x => console.log(x));   
     } catch(error) {
         console.Error(error);
@@ -58,7 +58,7 @@ for(let m = 0; m < movesToMake; m++) {
 if(postKill) {
     try {
         await new Promise(r => setTimeout(r, timeout));
-        let response = await mawContract.whap(process.env.PRIVATE_KEY_ADDRESS); 
+        let response = await mawContract.whap(process.env.ACCOUNT); 
         await response.wait().then(x => console.log(x));   
     } catch(error) {
         console.error(error);

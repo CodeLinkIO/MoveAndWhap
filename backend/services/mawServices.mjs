@@ -130,6 +130,7 @@ class MawServer{
 
     //Listen to the network for all of our events.
     async listen(database) {
+        console.log("Listening for live moves.")
         //OnPlayerJoined
         this.eventService.contract.on(this.eventFilters[0], 
             (player, x, y, dir) => {

@@ -1,6 +1,12 @@
-import { DAppProvider, Hardhat } from "@usedapp/core";
+import { DAppProvider, Hardhat, MetamaskConnector } from "@usedapp/core";
+import SequenceConnector from "../connectors/sequenceConnector";
+import { CONNECTOR_TYPE } from "../constants/contracts";
 
 const FUJI_BLOCK_EXPLORER = "https://testnet.snowtrace.io";
+
+export const connectorType =
+  CONNECTOR_TYPE[process.env.REACT_APP_CONNECTOR_TYPE] ||
+  CONNECTOR_TYPE.metamask;
 
 export const Fuji = {
   chainId: 43113,
@@ -26,6 +32,11 @@ const CHAIN_LIST = {
   [Hardhat.chainId]: Hardhat,
 };
 
+export const sequenceConnector = new SequenceConnector({
+  chainId: Fuji.chainId,
+  appName: "Move and Whap",
+});
+
 export const Chain =
   CHAIN_LIST[parseInt(process.env.REACT_APP_CHAIN_ID)] ||
   CHAIN_LIST[Hardhat.chainId];
@@ -33,11 +44,14 @@ export const Chain =
 const FujiWalletProviderConfig = {
   readOnlyChainId: Fuji.chainId,
   readOnlyUrls: {
-    [Fuji.chainId]:
-      "https://patient-yolo-wave.avalanche-testnet.quiknode.pro/896a4076ea14a0f32ac6c99ff1488cec1672bb2b/ext/bc/C/rpc",
+    [Fuji.chainId]: "https://api.avax-test.network/ext/bc/C/rpc",
   },
 
   networks: [Fuji],
+  connectors: {
+    metamask: new MetamaskConnector(),
+    sequence: sequenceConnector,
+  },
 };
 
 const localhostWalletProviderConfig = {

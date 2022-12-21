@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useEthers } from "@usedapp/core";
 import { useNavigate } from "react-router-dom";
 import { random } from "lodash";
-import { Chain } from "../providers/walletProvider";
+import { Chain, connectorType } from "../providers/walletProvider";
 import { findBoatByAddress, join, whap } from "../utils/contract";
 import { GAME_SCREEN } from "../constants/routes";
 import { CENTER_POSITION, DISTANCE_FROM_CENTER } from "../constants/pixi";
@@ -12,14 +12,22 @@ const MAX_INIT_POSITION = CENTER_POSITION + DISTANCE_FROM_CENTER;
 
 const WalletConnect = () => {
   const [joining, setJoining] = useState(false);
-  const { activateBrowserWallet, account, switchNetwork, active, isLoading } =
-    useEthers();
+  const {
+    activateBrowserWallet,
+    account,
+    active,
+    isLoading,
+    switchNetwork,
+    chainId,
+  } = useEthers();
 
   const navigate = useNavigate();
 
   const onConnect = async () => {
-    await activateBrowserWallet();
-    await switchNetwork(Chain.ChainId);
+    await activateBrowserWallet({ type: connectorType });
+    if (chainId !== Chain.chainId) {
+      await switchNetwork(Chain.chainId);
+    }
   };
 
   const joinTheGame = async () => {

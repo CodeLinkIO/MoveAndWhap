@@ -35,7 +35,7 @@ yarn install
   - **REACT_APP_MAW_CONTRACT_ADDRESS**: Your deployed contract address. <br> This must be the same as **MAW_CONTRACT_ADDRESS** in the backend.
 
   - **REACT_APP_CHAIN_ID**: This is the network chain ID to config [@userdapp](https://usedapp-docs.netlify.app/docs). <br/>
-    Currently we support 2 networks: 43114 (Fuji) and 31337 (HardHat). <br> If you are using a different network, you will need to modify logic in `webapp/src/providers/walletProvider.js`.
+    Currently we support 2 networks: 43113 (Fuji) and 31337 (HardHat). <br> If you are using a different network, you will need to modify logic in `webapp/src/providers/walletProvider.js`.
 
   - **REACT_APP_WS_URL**: Your backend websocket url example: `ws://localhost:7070`.
 
@@ -95,7 +95,7 @@ The app will run on `http://localhost:3000`.
 - Create a new env file named `.env.fuji` in the webapp folder:
 
   - **REACT_APP_MAW_CONTRACT_ADDRESS**: Your deployed contract address on FUJI network. <br> This must be the same as **MAW_CONTRACT_ADDRESS** in the root .env file.
-  - **REACT_APP_CHAIN_ID**: 43114 (FUJI testnet)
+  - **REACT_APP_CHAIN_ID**: 43113 (FUJI testnet)
   - **REACT_APP_WS_URL**: `ws://localhost:7070` (Backend websocket url, this value is based on the ws port in the root folder .env file)
   - **REACT_APP_CONNECTOR_TYPE**: `sequence` (Use Sequence for test network)
 

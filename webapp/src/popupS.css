@@ -4,11 +4,13 @@
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
   position: relative;
   border-radius: 6px;
-  background-color: #fff;
+  background-color: #11202e;
   margin: 20px;
   z-index: 1000;
   min-width: 40vw;
   min-height: 30vh;
+  border: solid 1px #fff;
+  border-radius: 8px;
 }
 .popupS-resetFocus {
   border: 0;
@@ -44,6 +46,7 @@
   font-size: 30px;
   font-weight: bold;
   padding-top: 20px;
+  padding-bottom: 20px;
 }
 .popupS-content {
   display: flex;
@@ -57,7 +60,8 @@
   padding-right: 20px;
   border-radius: 6px;
   padding-bottom: 20px;
-  font-size: 20px;
+  font-size: 14px;
+  text-align: center;
 }
 .popupS-content img {
   max-width: 100%;
@@ -197,4 +201,23 @@
   -o-animation: spinner 0.6s linear infinite;
   -webkit-animation: spinner 0.6s linear infinite;
   animation: spinner 0.6s linear infinite;
+}
+
+.popupS-button-ok-custom {
+  background-color: #e07025;
+  border: none;
+  border-radius: 32px;
+  padding: 20px 32px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 2px 2px 1px #000;
+  margin-top: 40px;
+}
+
+.popupS-button-ok-custom:hover {
+  background-color: #495df8;
+}
+
+.popupS-button-ok-custom:active {
+  background-color: #5425e0;
 }

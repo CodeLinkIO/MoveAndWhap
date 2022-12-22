@@ -184,11 +184,11 @@ const handlePlayerAttacked = (wsResponse) => {
     popupS.alert({
       title: "Game Over",
       content: "You have been defeated! <br /> Try again next time!",
-      labelOk: "Take me back to the lobby",
+      labelOk: "Back to Lobby",
       onSubmit: () => {
         window.location.href = HOME;
       },
-      additionalButtonOkClass: "flex p-2 mb-2 mt-2 bg-gray-400 justify-center",
+      additionalButtonOkClass: "popupS-button-ok-custom",
       additionalPopupClass: "flex justify-center flex-col items-center",
       additionalCloseBtnClass: "hidden",
     });

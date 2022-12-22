@@ -6,7 +6,7 @@ const DOT_TIME = 200;
 
 const LoadingScreen = () => {
   return (
-    <Background>
+    <Background hasBoatAnimation={false}>
       <div className="flex justify-center items-center text-lg text-white drop-shadow-game-title mt-10 mb-10 w-full h-[50vh] flex-row">
         <div className="text-[50px] ml-[75px]">LOADING</div>
         <TypeAnimation

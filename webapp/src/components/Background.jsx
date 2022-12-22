@@ -28,7 +28,7 @@ const BOAT_FRAMES = [
 const WIDTH = 140;
 const HEIGHT = 140;
 
-const Background = ({ children }) => {
+const Background = ({ children, hasBoatAnimation = true }) => {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -57,12 +57,14 @@ const Background = ({ children }) => {
     boat.addChild(cannon);
 
     // Animation
-    const oscillationAnimation1 = new Tween(boat);
-    oscillationAnimation1.to({ x: 0, y: 20 }, 1000);
-    oscillationAnimation1.start().yoyo().repeat();
-    Ticker.shared.add(() => {
-      Group.shared.update();
-    });
+    if (hasBoatAnimation) {
+      Ticker.shared.add(() => {
+        Group.shared.update();
+      });
+      const oscillationAnimation1 = new Tween(boat);
+      oscillationAnimation1.to({ x: 0, y: 20 }, 1000);
+      oscillationAnimation1.start().yoyo().repeat();
+    }
 
     background.stage.addChild(boat);
 

@@ -2,6 +2,7 @@ import { useEthers } from "@usedapp/core";
 import { useEffect, useState } from "react";
 import { useLocation, Navigate } from "react-router-dom";
 import GameScreen from "./components/GameScreen";
+import LoadingScreen from "./components/LoadingScreen";
 import { HOME } from "./constants/routes";
 import "./popupS.css";
 
@@ -18,7 +19,7 @@ const App = () => {
   }, []);
 
   if (!active || isLoading || loadingAccount) {
-    return <div>Loading</div>;
+    return <LoadingScreen />;
   }
 
   if (active && !isLoading && !loadingAccount && !account) {

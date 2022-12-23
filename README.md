@@ -90,7 +90,8 @@ npm install yarn
     - Import the private key to your MetaMask wallet. This will be the account you can use to join and move your character with.
       - This is obviously not needed in a production environment, your players will join with their own wallet and accounts.
   - In _./examples/randomWalkerAI.mjs_ make sure line 22 - 26 match up with _Account #1 - #5_ private keys. If they don't, replace them.
-    - These are used to make moves for random accounts on the network. There can be as many as you want.
+    - These are used to make moves for random accounts on the network. There doesn't need to be exactly 5 keys, you can have 1 or 2 or 10.
+    - You actually don't need to be running the AI, but the world is just an infinite ocean. We suggest that you have at least 1 AI running so you can test the other functionality. The more AI on the map the easier it will be to test.
 - Next compile the MAW.sol contract. In a new terminal enter:
   - `npm run compile`
 - After it is compiled, deploy it to the local network. We've made a command that deploys this for you. In a new terminal, run this command:
@@ -118,7 +119,7 @@ npm install yarn
 - Next, to make sure everything is running and to populate the world, we'll launch the AI script to see some activity on the MAW server and network. In a new terminal, type in this command:
   - `node ./examples/randomWalkerAI.mjs`
   - You should see a bunch of text notifying you of AI join positions and movements.
-
+- At this point, your local instance and backend is fully setup and you can start playing with it. Head to the [webapp README.md](/webapp/README.md) to launch the front end. 
 ---
 <br>
 
@@ -135,8 +136,8 @@ npm install yarn
   - **WS_PORT**=7070
     - This is the Web Socker Server port for the EventTracking service. It is used to feed events to a client.
     - If you end up needing that port, you can change the Web Socket Server port here. There is no particular reason for being 7070.
-  
-- For these variables, you will need to launch the environment before you can fill them in. Add them and keep them blank for now.
+
+- For these variables, you will need to run hardhat and deploy contracts before you can fill them in. Add them and keep them blank for now.
   - **MAW_CONTRACT_ADDRESS**: The address where the contract was deployed.
   - **MAW_START**: The first block that the contract was deployed on.
   - **PRIVATE_KEY**: A private key to an address you control.

@@ -2,8 +2,8 @@
 require("@nomiclabs/hardhat-ethers");
 require("dotenv").config();
 
-const fujiURL = process.env.FUJI_URL;
-const fujiKey = process.env.FUJI_DEPLOY_KEY;
+const fujiURL = process.env.PROVIDER_URL;
+const fujiKey = process.env.PRIVATE_KEY;
 
 module.exports = {
   solidity: "0.8.17",

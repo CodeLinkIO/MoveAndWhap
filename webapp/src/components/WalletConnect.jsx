@@ -28,15 +28,20 @@ const WalletConnect = () => {
 
   const navigate = useNavigate();
 
-  const onConnect = async () => {
-    await activateBrowserWallet({ type: connectorType });
+  const switchToCorrectNetwork = async () => {
     if (chainId !== Chain.chainId) {
       await switchNetwork(Chain.chainId);
     }
   };
 
+  const onConnect = async () => {
+    await activateBrowserWallet({ type: connectorType });
+    await switchToCorrectNetwork();
+  };
+
   const joinTheGame = async () => {
     setJoining(true);
+    await switchToCorrectNetwork();
 
     const boat = await findBoatByAddress(account);
     if (!boat || !boat.isAlive) {

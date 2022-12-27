@@ -8,7 +8,7 @@ class EventTrackingService{
     }
 
     async setupContract(address, abi, isSigner=true) {
-        console.log(`Setting up MAW.sol contract at ${address}.`);
+        console.log(`Setting up contract at ${address}.`);
         if(isSigner) { this.contract = new Contract(address, abi, this.chainService.signer); }
         else { this.contract = new Contract(address, abi, this.chainService.provider); }
     }

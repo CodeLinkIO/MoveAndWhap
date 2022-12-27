@@ -29,7 +29,7 @@ The red boarder exists for simplicity, but it also denotes the spawn zone on the
 There are several pieces to this project, primarily **backend** and **webapp** which is the frontend. The backend is responsible for monitoring and maintaining an accurate representation of the smart contract state and serving that state to the frontend. In this particular case, the state is just player positional data. This can easily be tracked fully on chain and the player data can be emitted on contract update. So, all our server does is look for event data and update an in-memory database.
 
 The frontend is responsible for interacting with the on-chain contract via a wallet, listening to changes about the state of the contract from the 
-MaW server, then dispaying the data as something interesting to viewers. There is some frontend logic that makes sure the user can't make certain moves. Even though the user can't make certain moves in the contract and the contract will properly check for and handle it, its a better experience if your player never has to think about the contract rules and the frontend just implies and enforces them.
+MaW server, then dispaying the data as something interesting to viewers. There is some frontend logic that makes sure the user can't make certain moves. Even though the user can't make these moves in the contract and the contract will properly check for and handle it, it's a better experience if your player never has to think about the contract rules and the frontend just implies and enforces them.
 
 This is a simple diagram of the information flow between the different parts of the system.
 

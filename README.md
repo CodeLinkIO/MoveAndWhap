@@ -33,6 +33,7 @@ MaW server, then dispaying the data as something interesting to viewers. There i
 
 This is a simple diagram of the information flow between the different parts of the system.
 
+![MoveAndWhapLayout](https://user-images.githubusercontent.com/19739051/209604148-c276e4e0-d2b3-47b2-8297-9f80ba723d7f.png)
 
 ### Dependencies
 

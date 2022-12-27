@@ -73,16 +73,17 @@ const Background = ({ children, hasBoatAnimation = true }) => {
     }, 200);
 
     return () => {
-      console.log("Unmounting");
+      console.log("Unmounting Loading");
       // On unload completely destroy the application and all of it's children
       background.destroy(true, false);
     };
-  }, []);
+  }, [hasBoatAnimation]);
+
   return (
     <div
       className={`bg-game-tile flex-col bg-repeat min-h-screen w-full min-w-[100vw] flex items-center relative pt-12 pb-10`}
     >
-      <div ref={ref} className={`h-[${HEIGHT}px]`} />
+      <div ref={ref} className={`h-[150px]`} />
       {children}
     </div>
   );

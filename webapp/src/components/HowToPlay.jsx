@@ -5,7 +5,7 @@ import BlackContainer from "./BlackContainer";
 
 const HowToPlay = () => {
   return (
-    <BlackContainer className="flex flex-col items-center w-[500px] h-[190px] mt-14">
+    <BlackContainer className="flex flex-col items-center w-[500px] min-h-[190px] mt-14">
       <h2 className=" underline mb-4">HOW TO PLAY</h2>
       <TypeAnimation
         className="text-xs"

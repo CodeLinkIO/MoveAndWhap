@@ -1,4 +1,7 @@
 {
+  "name": "move-and-whap",
+  "description": "Move and Whap BE",
+  "version": "1.0.0",
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.2.1",
     "dotenv": "^16.0.3",
@@ -14,6 +17,7 @@
     "compile": "hardhat compile",
     "node": "hardhat node",
     "deploy:local": "hardhat run --network localhost ./contracts/scripts/deployer.js",
-    "deploy:fuji": "hardhat run --network fuji ./contracts/scripts/deployer.js"
+    "deploy:fuji": "hardhat run --network fuji ./contracts/scripts/deployer.js",
+    "start": "node ./examples/mawServer.mjs"
   }
 }

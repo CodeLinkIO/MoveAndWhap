@@ -47,6 +47,7 @@ class EventTrackingService {
           });
         blocks = blocks.concat(log);
       }
+      console.log(`Finished pulling from ${start} to ${toBlock} blocks.`);
       start += remainder;
     }
 
@@ -65,6 +66,7 @@ class EventTrackingService {
           });
         blocks = blocks.concat(log);
       }
+      console.log(`Finished pulling from ${start} to ${toBlock} blocks.`);
       start = toBlock;
     }
 

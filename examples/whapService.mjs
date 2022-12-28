@@ -1,6 +1,8 @@
 import * as ethers from "ethers";
 import { EthersService } from "../backend/services/ethersService.mjs";
-import { config } from "dotenv";
+import dotenv from "dotenv";
+
+const { config } = dotenv;
 config();
 
 /*

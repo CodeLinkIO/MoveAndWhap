@@ -1,7 +1,7 @@
 import { memo, useEffect, useRef } from "react";
 import { Application } from "pixi.js";
 import { useEthers } from "@usedapp/core";
-import useWebSocket from "react-use-websocket";
+import { useSocketIO } from "react-use-websocket";
 import { useNavigate } from "react-router-dom";
 import pixiApp from "../pixis/app";
 import {
@@ -26,7 +26,7 @@ const GameScreen = () => {
   // This always returns string because we have already check for undefined on parent component
   const { account } = useEthers();
   const navigate = useNavigate();
-  const { readyState, getWebSocket } = useWebSocket(
+  const { readyState, getWebSocket } = useSocketIO(
     process.env.REACT_APP_WS_URL,
     {
       onMessage: onWsMessage,

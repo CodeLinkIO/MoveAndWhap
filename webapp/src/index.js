@@ -6,7 +6,6 @@ import reportWebVitals from "./reportWebVitals";
 import WalletProvider from "./providers/walletProvider";
 import WalletConnect from "./components/WalletConnect";
 import "./index.css";
-import WalletListener from "./components/WalletListener";
 import { GAME_SCREEN, HOME } from "./constants/routes";
 
 const router = createBrowserRouter([
@@ -24,7 +23,6 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <WalletProvider>
-      <WalletListener />
       <RouterProvider router={router} />
     </WalletProvider>
   </React.StrictMode>

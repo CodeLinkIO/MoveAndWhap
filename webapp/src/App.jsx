@@ -2,12 +2,14 @@ import { useEthers } from "@usedapp/core";
 import { useEffect, useState } from "react";
 import { useLocation, Navigate } from "react-router-dom";
 import GameScreen from "./components/GameScreen";
+import LoadingScreen from "./components/LoadingScreen";
 import { HOME } from "./constants/routes";
 import "./popupS.css";
+import { Chain } from "./providers/walletProvider";
 
 const App = () => {
   const [loadingAccount, setLoadingAccount] = useState(true);
-  const { active, isLoading, account } = useEthers();
+  const { active, isLoading, account, chainId } = useEthers();
   const location = useLocation();
 
   useEffect(() => {
@@ -18,10 +20,14 @@ const App = () => {
   }, []);
 
   if (!active || isLoading || loadingAccount) {
-    return <div>Loading</div>;
+    return <LoadingScreen />;
   }
 
   if (active && !isLoading && !loadingAccount && !account) {
+    return <Navigate to={HOME} state={{ from: location }} replace />;
+  }
+
+  if (chainId !== Chain.chainId) {
     return <Navigate to={HOME} state={{ from: location }} replace />;
   }
 

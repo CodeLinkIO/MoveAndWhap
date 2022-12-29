@@ -76,12 +76,20 @@ export const addPlayerToGame = ({ player, currentPlayerAddress }) => {
     y: playerBoat.y,
   });
 
+  const isCurrentPlayer = address === currentPlayerAddress;
+
   const boat = addBoatToScreen({
     playerPosition: playerBoatPosition,
     address,
-    isCurrentPlayer: address === currentPlayerAddress,
+    isCurrentPlayer,
     directionNum: playerBoat.directionNum,
   });
+
+  if (isCurrentPlayer) {
+    console.log("ZOOM");
+    const viewport = pixiApp.getViewport();
+    viewport.zoom(1000, true);
+  }
 
   return boat;
 };

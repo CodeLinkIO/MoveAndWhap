@@ -100,3 +100,5 @@ export const ACCEPTED_HEAD_FOR_VERTICAL = [UP_DIRECTION, DOWN_DIRECTION];
 
 export const CENTER_POSITION = 14;
 export const DISTANCE_FROM_CENTER = 2;
+
+export const INITIAL_ZOOM = 200;

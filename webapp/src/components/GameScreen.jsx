@@ -100,7 +100,9 @@ const GameScreen = () => {
         });
       };
 
-      getPlayers();
+      setTimeout(() => {
+        getPlayers();
+      }, 1000);
     }
 
     return () => {

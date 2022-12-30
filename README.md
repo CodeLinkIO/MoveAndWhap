@@ -87,6 +87,19 @@ npm install yarn
 ---
 <br>
 
+### Hardhat Config
+
+Hardhat has it's own configuration method and you will need to adjust it accordingly.
+
+- In the root of the project, in hardhat.config.js, under networks:
+  - In Fuji, add any private keys to the accounts:["private_key...", "one_more...."].
+    - You don't need a lot of keys but you do need at least one.
+    - Make sure the key is funded. It is the account that deploys the contract so it needs to have a balance. Shouldn't need much.
+    - Don't use the one in there, it is fake.
+    - **DEFINITELY DO NOT PUSH YOUR HARDHAT CONFIG JS FILE. IF YOU HAVE CONFIGURED IT PROPERLY IT SHOULD HAVE YOUR PRIVATE KEYS IN IT. JUST BECAUSE IT IS ON THE TESTNET DOES NOT MEAN IT IS SAFE. IF YOU HAVE THE PRIVATE KEY TO THE TESTNET, OR EVEN THE LOCAL HARDHAT, YOU HAVE THE KEYS TO THE MAINNET.** 
+    - For safety, you can add hardhat.config.js to the git ignore if you plan on using this project as a basis for something.
+
+<br>
 
 ### Local (Hardhat) Environment Setup
 
@@ -147,9 +160,9 @@ npm install yarn
   - `node ./examples/randomWalkerAI.mjs`
   - You should see a bunch of text notifying you of AI join positions and movements.
 - At this point, your local instance and backend is fully setup and you can start playing with it. Head to the [webapp README.md](/webapp/README.md) to launch the front end. 
+
 ---
 <br>
-
 
 ### Avalanche Testnet (Fuji) Environment Setup
 

@@ -242,7 +242,7 @@ Good luck with your dApp.
 
 ## Authors
 
-Codie Petersen [Codie-Petersen](https://github.com/Codie-Petersen)
+Codie Petersen - [Asteres Technologies LLC](https://www.linkedin.com/company/asteres-technologies)
 
 Loc Le [huylocit14054](https://github.com/huylocit14054)
 

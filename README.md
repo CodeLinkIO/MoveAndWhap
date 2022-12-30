@@ -1,10 +1,10 @@
 # Move And Whap (MaW)
 
-A game demo showcasing how to build a simple, multiplayer game where all user actions are on-chain. The front end game engine is built in [PixiJS](https://pixijs.com/).
+A game demo showcasing how to build a simple, multiplayer game where all user actions are on-chain.
 
 ## Description
 
-This game demo was made to help developers understand how to code a web3 game on an EVM chain, in this case Avalanche. The rules of the game are quite simple. All moves are on chain moves. Players can move up, down, left, and right. The contract board is 2^256 x 2^256 spaces. If you get to the edge of the board it wraps around. However that is rather unlikely.
+This game demo was made to help developers understand how to program a web3 game on an EVM chain, in this case Avalanche. The rules of the game are quite simple. All moves are on chain moves. Players can move up, down, left, and right. The contract board is 2^256 x 2^256 spaces. If you get to the edge of the board it wraps around. However that is rather unlikely.
 
 You can attack a player if you are adjacent, facing them, AND they are not facing you. On the frontend, there is a red boarder. Normal players using the provided frontend can not travel outside of the red border but bots, people who make their own frontend, or anyone directly interacting with the contract can.
 
@@ -24,7 +24,7 @@ The red boarder exists for simplicity, but it also denotes the spawn zone on the
 
 ## Getting Started
 
-### Mile High view
+### Mile High View
 
 There are several pieces to this project, primarily **backend** and **webapp** which is the frontend. The backend is responsible for monitoring and maintaining an accurate representation of the smart contract state and serving that state to the frontend. In this particular case, the state is just player positional data. This can easily be tracked fully on chain and the player data can be emitted on contract update. So, all our server does is look for event data and update an in-memory database.
 
@@ -37,10 +37,27 @@ This is a simple diagram of the information flow between the different parts of 
 
 ### Dependencies
 
-- QuickNode account
-- nvm
-- npm
+- QuickNode Free Account (not needed but recommended)
+- NVM
+- NPM
 - Node 19.0.0
+
+### Technologies Being Used
+
+This project is pretty light on packages and NPM handles all of them in the backend and Yarn for the frontend. There are a couple of key packages that the project leans on a bit. Here is a list and a short description of how they are used.
+
+- NodeJs
+  - All of the backend was designed around NodeJs and its features.
+- EthersJs
+  - All blockchain scripts are based on EthersJs, but if you were to replace references in EventTrackingService and MawServices, you change it too Web3Js if you wanted to.
+- PouchDb
+  - PouchDb is only used in mawServer.msj but MawServices assumes the database being handed to it is a PouchDB object.  If you wish to use a different backend you will need to refactor some of the functions that accept PouchDB objects as arguments.
+- Hardhat
+  - Hardhat is used for all of the local blockchain simulation.
+- React
+  - React is used for all of the front end development.
+- PixiJs
+  - PixiJs is responsible for rendering the 2D game graphics.
 
 ### Installing
 

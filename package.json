@@ -13,11 +13,12 @@
     "ws": "^8.11.0"
   },
   "scripts": {
-    "ganache": "ganache --wallet.seed 1337",
     "compile": "hardhat compile",
     "node": "hardhat node",
     "deploy:local": "hardhat run --network localhost ./contracts/scripts/deployer.js",
     "deploy:fuji": "hardhat run --network fuji ./contracts/scripts/deployer.js",
-    "start": "node ./examples/mawServer.mjs"
+    "deploy:local_subnet": "hardhat run --network local_subnet ./contracts/scripts/deployer.js",
+    "server": "node ./examples/mawServer.mjs",
+    "ai": "node ./examples/randomWalkerAI.mjs"
   }
 }

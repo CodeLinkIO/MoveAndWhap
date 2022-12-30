@@ -9,13 +9,10 @@ class EventTrackingService {
     this.chunkTime = chunkTime; //How often in seconds you can call the RPC endpoint. Quicknode paid is 100ms
   }
 
-  async setupContract(address, abi, isSigner = true) {
-    console.log(`Setting up MAW.sol contract at ${address}.`);
-    if (isSigner) {
-      this.contract = new Contract(address, abi, this.chainService.signer);
-    } else {
-      this.contract = new Contract(address, abi, this.chainService.provider);
-    }
+  async setupContract(address, abi, isSigner=true) {
+      console.log(`Setting up contract at ${address}.`);
+      if(isSigner) { this.contract = new Contract(address, abi, this.chainService.signer); }
+      else { this.contract = new Contract(address, abi, this.chainService.provider); }
   }
 
   //Get event logs from start to stop given a set of filters.

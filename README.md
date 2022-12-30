@@ -1,10 +1,10 @@
 # Move And Whap (MaW)
 
-A game demo showcasing how to build a simple, multiplayer game where all user actions are on-chain. The front end game engine is built in [PixiJS](https://pixijs.com/).
+A game demo showcasing how to build a simple, multiplayer game where all user actions are on-chain.
 
 ## Description
 
-This game demo was made to help developers understand how to code a web3 game on an EVM chain, in this case Avalanche. The rules of the game are quite simple. All moves are on chain moves. Players can move up, down, left, and right. The contract board is 2^256 x 2^256 spaces. If you get to the edge of the board it wraps around. However that is rather unlikely.
+This game demo was made to help developers understand how to program a web3 game on an EVM chain, in this case Avalanche. The rules of the game are quite simple. All moves are on chain moves. Players can move up, down, left, and right. The contract board is 2^256 x 2^256 spaces. If you get to the edge of the board it wraps around. However that is rather unlikely.
 
 You can attack a player if you are adjacent, facing them, AND they are not facing you. On the frontend, there is a red boarder. Normal players using the provided frontend can not travel outside of the red border but bots, people who make their own frontend, or anyone directly interacting with the contract can.
 
@@ -24,13 +24,40 @@ The red boarder exists for simplicity, but it also denotes the spawn zone on the
 
 ## Getting Started
 
+### Mile High View
+
+There are several pieces to this project, primarily **backend** and **webapp** which is the frontend. The backend is responsible for monitoring and maintaining an accurate representation of the smart contract state and serving that state to the frontend. In this particular case, the state is just player positional data. This can easily be tracked fully on chain and the player data can be emitted on contract update. So, all our server does is look for event data and update an in-memory database.
+
+The frontend is responsible for interacting with the on-chain contract via a wallet, listening to changes about the state of the contract from the 
+MaW server, then dispaying the data as something interesting to viewers. There is some frontend logic that makes sure the user can't make certain moves. Even though the user can't make these moves in the contract and the contract will properly check for and handle it, it's a better experience if your player never has to think about the contract rules and the frontend just implies and enforces them.
+
+This is a simple diagram of the information flow between the different parts of the system.
+
+![MoveAndWhapLayout](https://user-images.githubusercontent.com/19739051/209604148-c276e4e0-d2b3-47b2-8297-9f80ba723d7f.png)
+
 ### Dependencies
 
-- QuickNode account
-- nvm
-- npm
+- QuickNode Free Account (not needed but recommended)
+- NVM
+- NPM
 - Node 19.0.0
-- Yarn (version?)
+
+### Technologies Being Used
+
+This project is pretty light on packages and NPM handles all of them in the backend and Yarn for the frontend. There are a couple of key packages that the project leans on a bit. Here is a list and a short description of how they are used.
+
+- NodeJs
+  - All of the backend was designed around NodeJs and its features.
+- EthersJs
+  - All blockchain scripts are based on EthersJs, but if you were to replace references in EventTrackingService and MawServices, you change it too Web3Js if you wanted to.
+- PouchDb
+  - PouchDb is only used in mawServer.msj but MawServices assumes the database being handed to it is a PouchDB object.  If you wish to use a different backend you will need to refactor some of the functions that accept PouchDB objects as arguments.
+- Hardhat
+  - Hardhat is used for all of the local blockchain simulation.
+- React
+  - React is used for all of the front end development.
+- PixiJs
+  - PixiJs is responsible for rendering the 2D game graphics.
 
 ### Installing
 
@@ -60,6 +87,19 @@ npm install yarn
 ---
 <br>
 
+### Hardhat Config
+
+Hardhat has it's own configuration method and you will need to adjust it accordingly.
+
+- In the root of the project, in hardhat.config.js, under networks:
+  - In Fuji, add any private keys to the accounts:["private_key...", "one_more...."].
+    - You don't need a lot of keys but you do need at least one.
+    - Make sure the key is funded. It is the account that deploys the contract so it needs to have a balance. Shouldn't need much.
+    - Don't use the one in there, it is fake.
+    - **DEFINITELY DO NOT PUSH YOUR HARDHAT CONFIG JS FILE. IF YOU HAVE CONFIGURED IT PROPERLY IT SHOULD HAVE YOUR PRIVATE KEYS IN IT. JUST BECAUSE IT IS ON THE TESTNET DOES NOT MEAN IT IS SAFE. IF YOU HAVE THE PRIVATE KEY TO THE TESTNET, OR EVEN THE LOCAL HARDHAT, YOU HAVE THE KEYS TO THE MAINNET.** 
+    - For safety, you can add hardhat.config.js to the git ignore if you plan on using this project as a basis for something.
+
+<br>
 
 ### Local (Hardhat) Environment Setup
 
@@ -120,9 +160,9 @@ npm install yarn
   - `node ./examples/randomWalkerAI.mjs`
   - You should see a bunch of text notifying you of AI join positions and movements.
 - At this point, your local instance and backend is fully setup and you can start playing with it. Head to the [webapp README.md](/webapp/README.md) to launch the front end. 
+
 ---
 <br>
-
 
 ### Avalanche Testnet (Fuji) Environment Setup
 
@@ -215,7 +255,7 @@ Good luck with your dApp.
 
 ## Authors
 
-Codie Petersen [Codie-Petersen](https://github.com/Codie-Petersen)
+Codie Petersen - [Asteres Technologies LLC](https://www.linkedin.com/company/asteres-technologies)
 
 Loc Le [huylocit14054](https://github.com/huylocit14054)
 

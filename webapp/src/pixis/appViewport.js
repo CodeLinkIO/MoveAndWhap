@@ -1,6 +1,7 @@
 import { Simple } from "pixi-cull";
 import { Viewport } from "pixi-viewport";
 import { Ticker } from "pixi.js";
+import { INITIAL_ZOOM } from "../constants/pixi";
 import pixiApp from "./app";
 
 const MIN_ZOOM = 500;
@@ -33,6 +34,7 @@ class AppViewport extends Viewport {
       maxWidth: MAX_ZOOM,
       maxHeight: MAX_ZOOM,
     });
+    this.zoom(INITIAL_ZOOM, true);
   };
 
   setupViewportInteraction = () => {

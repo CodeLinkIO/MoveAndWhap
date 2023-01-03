@@ -28,10 +28,17 @@ const BOAT_FRAMES = [
 const WIDTH = 140;
 const HEIGHT = 140;
 
-const Background = ({ children, hasBoatAnimation = true }) => {
+const Background = ({
+  children,
+  hasBoatAnimation = true,
+  className,
+  withBoat = true,
+}) => {
   const ref = useRef(null);
 
   useEffect(() => {
+    if (!withBoat) return;
+
     const background = new Application({
       width: WIDTH,
       height: HEIGHT,
@@ -39,49 +46,54 @@ const Background = ({ children, hasBoatAnimation = true }) => {
       autoDensity: true,
     });
 
-    // Add Background match with screen Bg
-    const tile = new TilingSprite(Texture.from(tileWater), WIDTH, HEIGHT);
-    background.stage.addChild(tile);
-
-    // Boat
-    const boat = new AnimatedSprite(
-      BOAT_FRAMES.map((stringy) => Texture.from(stringy))
-    );
-    boat.animationSpeed = ANIMATION_SPEED;
-    boat.width = WIDTH;
-    boat.height = HEIGHT;
-    boat.play();
-
-    // Canon
-    const cannon = Sprite.from(Cannon2_color3_1);
-    boat.addChild(cannon);
-
-    // Animation
-    if (hasBoatAnimation) {
-      Ticker.shared.add(() => {
-        Group.shared.update();
-      });
-      const oscillationAnimation1 = new Tween(boat);
-      oscillationAnimation1.to({ x: 0, y: 20 }, 1000);
-      oscillationAnimation1.start().yoyo().repeat();
-    }
-
-    background.stage.addChild(boat);
-
     setTimeout(() => {
-      ref.current.appendChild(background.view);
+      // Add Background match with screen Bg
+      const tile = new TilingSprite(Texture.from(tileWater), WIDTH, HEIGHT);
+      background.stage && background.stage.addChild(tile);
+
+      // Boat
+      const boat = new AnimatedSprite(
+        BOAT_FRAMES.map((stringy) => Texture.from(stringy))
+      );
+      boat.animationSpeed = ANIMATION_SPEED;
+      boat.width = WIDTH;
+      boat.height = HEIGHT;
+      boat.play();
+
+      // Canon
+      const cannon = Sprite.from(Cannon2_color3_1);
+      boat.addChild(cannon);
+
+      // Animation
+      if (hasBoatAnimation) {
+        Ticker.shared.add(() => {
+          Group.shared.update();
+        });
+        const oscillationAnimation1 = new Tween(boat);
+        oscillationAnimation1.to({ x: 0, y: 20 }, 1000);
+        oscillationAnimation1.start().yoyo().repeat();
+      }
+
+      background.stage && background.stage.addChild(boat);
+
+      try {
+        ref.current.appendChild(background.view);
+      } catch (error) {
+        // prevent canvas not initialized error
+      }
     }, 200);
 
     return () => {
       console.log("Unmounting Loading");
       // On unload completely destroy the application and all of it's children
-      background.destroy(true, false);
+      clearTimeout();
+      background && background.destroy(true, false);
     };
-  }, [hasBoatAnimation]);
+  }, [hasBoatAnimation, withBoat]);
 
   return (
     <div
-      className={`bg-game-tile flex-col bg-repeat min-h-screen w-full min-w-[100vw] flex items-center relative pt-12 pb-10`}
+      className={`bg-game-tile flex-col bg-repeat min-h-screen w-full min-w-[100vw] flex items-center relative pt-12 pb-10 ${className}`}
     >
       <div ref={ref} className={`h-[150px]`} />
       {children}

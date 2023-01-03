@@ -4,9 +4,9 @@ import Background from "./Background";
 
 const DOT_TIME = 200;
 
-const LoadingScreen = () => {
+const LoadingScreen = ({ className }) => {
   return (
-    <Background hasBoatAnimation={false}>
+    <Background hasBoatAnimation={false} className={className} withBoat={false}>
       <div className="flex justify-center items-center text-lg text-white drop-shadow-game-title mt-10 mb-10 w-full h-[50vh] flex-row">
         <div className="text-[50px] ml-[75px]">LOADING</div>
         <TypeAnimation

@@ -1,7 +1,11 @@
 import { isEmpty, remove } from "lodash";
 import popupS from "popups";
 import { CONTRACT_DIRECTION } from "../constants/contracts";
-import { BOAT_CONTAINER_HEIGHT, BOAT_CONTAINER_WIDTH } from "../constants/pixi";
+import {
+  BOAT_CONTAINER_HEIGHT,
+  BOAT_CONTAINER_WIDTH,
+  INITIAL_ZOOM,
+} from "../constants/pixi";
 import { HOME } from "../constants/routes";
 import { COMMANDS } from "../constants/webSockets";
 import { formatBoatData } from "../utils/contract";
@@ -76,12 +80,19 @@ export const addPlayerToGame = ({ player, currentPlayerAddress }) => {
     y: playerBoat.y,
   });
 
+  const isCurrentPlayer = address === currentPlayerAddress;
+
   const boat = addBoatToScreen({
     playerPosition: playerBoatPosition,
     address,
-    isCurrentPlayer: address === currentPlayerAddress,
+    isCurrentPlayer,
     directionNum: playerBoat.directionNum,
   });
+
+  if (isCurrentPlayer) {
+    const viewport = pixiApp.getViewport();
+    viewport.zoom(INITIAL_ZOOM, true);
+  }
 
   return boat;
 };

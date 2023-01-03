@@ -332,7 +332,7 @@ class BoatArrowsController {
         victimBoatAddress: targetAddress,
       });
     } catch (error) {
-      console.log("Fire failed", error);
+      console.log("Fire failed or Rejected", error);
     }
   };
 }

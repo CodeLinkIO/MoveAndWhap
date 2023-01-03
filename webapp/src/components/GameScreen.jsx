@@ -20,6 +20,7 @@ import {
 import { HOME } from "../constants/routes";
 import { getPlayersInRange, onWsMessage, onWsOpen } from "../pixis/ws";
 import { WS_READY_STATE } from "../constants/webSockets";
+import LoadingScreen from "./LoadingScreen";
 
 const GameScreen = () => {
   const ref = useRef(null);
@@ -108,7 +109,14 @@ const GameScreen = () => {
     };
   }, [readyState, getWebSocket, account, navigate]);
 
-  return <div ref={ref} />;
+  const isLoading = !account || readyState !== WS_READY_STATE.OPEN;
+
+  return (
+    <>
+      <LoadingScreen className={isLoading ? `` : `hidden`} />
+      <div ref={ref} className={isLoading ? `invisible` : ``} />
+    </>
+  );
 };
 
 export default memo(GameScreen);

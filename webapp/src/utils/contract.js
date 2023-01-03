@@ -55,13 +55,9 @@ export const join = async (positionX, positionY) => {
 };
 
 export const whap = async (targetAddress) => {
-  try {
-    const contract = await getMAWContract();
-    const tx = await contract.whap(targetAddress);
-    await tx.wait();
-  } catch (error) {
-    console.log("🚀 ~ file: contract.js:43 ~ whap ~ error", error);
-  }
+  const contract = await getMAWContract();
+  const tx = await contract.whap(targetAddress);
+  await tx.wait();
 };
 
 export const findBoatByAddress = async (address) => {

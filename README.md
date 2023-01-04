@@ -314,23 +314,20 @@ These instructions are for a Unix environment. If you have been doing this proje
 - Start the local network:
     - `avalanche network start`
     - You should see something like this:
-<br>
     ```
     Starting previously deployed and stopped snapshot 
-    Booting Network. Wait until healthy..............
+    Booting Network. Wait until healthy.
     ```
-<br>
 - Deploy the configuration:
     - `avalanche subnet deploy mawNet`
 - An in-terminal menu should have popped up.
     - Choose a network to deploy on:
         - Select `Local Network`
     - You should see something like this:
-<br>
     ```
     Deploying [mawNet] to Local Network
     VMs ready.
-    Blockchain has been deployed. Wait until network acknowledges........
+    Blockchain has been deployed. Wait until network acknowledges.
     Network ready to use. Local network node endpoints:
     node2 mawNet http://127.0.0.1:9652/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
     node3 mawNet http://127.0.0.1:9654/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
@@ -397,6 +394,7 @@ In a new terminal, in the root of the MaW project:
 - Congratulations, you have deployed a local subnet.
 ---
 <br>
+
 ## Game Design Comments
 
 One of the biggest issues with this game is the fact that you have to confirm every move. This is the nature of blockchain. Anything tracked on the blockchain must but be verified by the smart contract, this requires a signature and a gas fee. However, you don't necessarily need to track every single move a player makes. You can centralize some aspects that may not be economically important. The point of decentralization should be to protect a player's assets and the point of crypto currencies in games should be to monetize their assets or make payments between the dev and player smooth.

@@ -121,7 +121,7 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
 
 <br>
 
-### Launching Hardhat and Deploying the MaW Contract Locally
+#### Launching Hardhat and Deploying the MaW Contract Locally
 
 - In a terminal in the root of the project, start a hardhat node. We've made a simple command you can use:
   - `npm run node`
@@ -143,7 +143,7 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
 
 <br>
 
-### Running the Backend Locally
+#### Running the Backend Locally
 
 - Next we will launch the server. Type the following command in a free terminal:
   - `node ./examples/mawServer.mjs `
@@ -186,7 +186,7 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
 
 <br>
 
-### Funding an Account on Fuji
+#### Funding an Account on Fuji
 
 - In the local instance, Hardhat automatically creditted coins to all of the accounts. On the Fuji net, this will not happen for you. In order to deploy the contract you will need to go to a faucet and request funds from the faucet owner. This is an automatic process and only takes a few moments. You'll need this to deploy the contract.
 - First, in your MetaMask wallet, make sure you are connected to the Fuji Network.
@@ -205,7 +205,7 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
 
 <br>
 
-### Deploying The MaW Contract to Fuji
+#### Deploying The MaW Contract to Fuji
 
 - Now we can finally deploy the contract to the network.
 - In a terminal in the root of the project, compile the MAW.sol contract:
@@ -221,7 +221,7 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
 
 <br>
 
-### Running the Backend Locally Using the Fuji Net
+#### Running the Backend Locally Using the Fuji Net
 
 - Next we will launch the server. Type the following command in a free terminal:
   - `node ./examples/mawServer.mjs `

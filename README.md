@@ -246,7 +246,7 @@ This section is specifically geared towards deploying contracts on Avalanche Sub
 
 ### Local Subnet Deploy
 
-These instructions are for a Unix environment. If you have been doing this project in Windows up until this point, you'll need make sure you set up your own WSL environment and then install of the necessary prerequisites in the WSL environment as well. These are the install [instructions](https://learn.microsoft.com/en-us/windows/wsl/install) for WSL 1 as well as how to upgrade it to WSL 2. Additionally, Sequence only supports subnets for their paid developer tier, so you will need to make sure you are using Metamask.
+These instructions are for a Unix environment. If you have been doing this project in Windows up until this point, you'll need make sure you set up your own WSL environment and then install of the necessary prerequisites in the WSL environment as well. These are the install [instructions](https://learn.microsoft.com/en-us/windows/wsl/install) for WSL 1 as well as how to upgrade it to WSL 2. Additionally, Sequence only supports subnets for their paid developer tier, so you will need to make sure you are using Metamask. 
 
 #### Install Avalanche CLI
 - Open a terminal.
@@ -258,7 +258,8 @@ These instructions are for a Unix environment. If you have been doing this proje
     - `export PATH=~/bin:$PATH >> .zshrc` (Mac)
 - Restart your terminal.
 - Test your Avalanche CLI install.
-    - `avalanche --version` 
+    - `avalanche --version`
+    - We've tested this with version `1.0.4`. If you have problems with other versions, please make an issue and let us know with which version you are having the particular issue.
 
 #### Create a Subnet Configuration
 
@@ -362,13 +363,14 @@ These instructions are for a Unix environment. If you have been doing this proje
 
 #### Subnet Environment Setup for MaW Tutorial
 
-You should have a fully deployed subnet at this, now we need to test it and see the fruits of your labor.
-- In your `hardhat.config.js` under `networks` locate `local_subnet`. This is a config option for hardhat to know which network to deploy to. In your own code you can name it anything you want, but we've named it 'local_subnet' and our scripts are using it, so don't change the name of this one.
+You should have a fully deployed subnet at this point, now we need to test it and see the fruits of your labor.
+- In the root of the MaW project, in your `hardhat.config.js` under `networks` locate `local_subnet`. This is a config option for hardhat to know which network to deploy contracts to. In your own code you can name it anything you want, but we've named it `local_subnet` and our scripts are using it, so don't change the name of this one.
 - For the `url` change the existing one to the same RPC URL you used to setup your Metmask Wallet.
 - Under `accounts` make sure it is still `["ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"]`
     - You can add as many as you want, but it isn't necessary for this tutorial.
+- After this, save `hardhat.config.js`.
 - In the `.env` file in the root of this project, change the `PROVIDER_URL` to the same RPC URL you just added to hardhat.config.js.
-- Your `.env` file should look like this.
+- Your `.env` file should look like this:
 ```
 PROVIDER_URL="http://127.0.0.1:9656/ext/bc/.../rpc" (RPC URL from your terminal information)
 PRIVATE_KEY=ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
@@ -377,15 +379,16 @@ MAW_CONTRACT_ADDRESS=0x5FbDB2315678afecb367f032d93F642f64180aa3
 MAW_START=0
 WS_PORT=7070
 ```
+- Save your `.env` file.
 
 #### Deploy and Check Tutorial
 In a new terminal, in the root of the MaW project:
 - Deploy the contract: `npm run deploy:local_subnet`
 - Run the server: `npm run server`
-- Start the bots: `npm run ai`
+- In another terminal, start the bots: `npm run ai`
 - Your server should be running and the AI should be able to make real moves on the subnet. 
 - Congratulations, you have deployed a local subnet.
-
+- If you are done and don't want to play around with it anymore make sure to stop the network with `avalanche network stop`.
 <br>
 
 ## Game Design Comments

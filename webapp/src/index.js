@@ -5,8 +5,8 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import WalletProvider from "./providers/walletProvider";
 import WalletConnect from "./components/WalletConnect";
-import "./index.css";
 import { GAME_SCREEN, HOME } from "./constants/routes";
+import "./index.css";
 
 const router = createBrowserRouter([
   {

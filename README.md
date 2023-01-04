@@ -418,7 +418,7 @@ CodeLink Limited - [CodeLink.io](https://www.codelink.io/our-team)
 
 ## Version History
 
-- 0.1
+- 1.0
   - Initial Release
 
 <br>

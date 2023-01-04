@@ -15,7 +15,7 @@ The red boarder exists for simplicity, but it also denotes the spawn zone on the
 - Players can join anywhere within the -128,127 for x and y.
 - Players can move North (0), East (1), South (2), and West (3) one space.
 - Players can move all the way to 2^256-1 before wrapping around to the other side.
-  - This is likely will never happen based on how long a block takes to confirm. Because of this, the board is effectively infinite.
+  - This likely will never happen based on how long a block takes to confirm. Because of this, the board is effectively infinite.
 - Players can attack adjacent victims if the player is facing them and the victim is not facing the player.
 - You must rejoin after you die.
 
@@ -49,9 +49,9 @@ This project is pretty light on packages and NPM handles all of them in the back
 - NodeJs
   - All of the backend was designed around NodeJs and its features.
 - EthersJs
-  - All blockchain scripts are based on EthersJs, but if you were to replace references in EventTrackingService and MawServices, you change it too Web3Js if you wanted to.
+  - All blockchain scripts are based on EthersJs, but if you were to replace references in EventTrackingService and MawServices, you can change it to Web3Js if you wanted to.
 - PouchDb
-  - PouchDb is only used in mawServer.msj but MawServices assumes the database being handed to it is a PouchDB object.  If you wish to use a different backend you will need to refactor some of the functions that accept PouchDB objects as arguments.
+  - PouchDb is only used in mawServer.msj but MawServices assumes the database being handed to it is a PouchDB object.  If you wish to use a different database you will need to refactor some of the functions that accept PouchDB objects as arguments.
 - Hardhat
   - Hardhat is used for all of the local blockchain simulation.
 - React
@@ -241,6 +241,171 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
 ---
 <br>
 
+## Subnet Deploy
+
+This section is specifically geared towards deploying contracts on Avalanche Subnets. This document is not intended to educate you on what a subnet is or how they work. While the concept is not too dificult to understand, it is important that you do in fact understand it before you begin experimenting with it. If you don't, you may not understand why some of the steps are needed and if you run into problems you will not be able to troubleshoot them yourself because you are missing key pieces of information. Here is a list of resources you can take a look at before moving on:
+
+- [Horizontal Scaling Quick Overview - John Wu, Ava Labs 12:07-14:00](https://youtu.be/eI70yF1eOnM?t=727)
+- [Thorough Overview of Subnets - Giacomo Barbieri, Avascan 41 minutes. (Recommended)](https://www.youtube.com/watch?v=qAkJN0UBgSE&ab_channel=Avalanche)
+- [Subnet Overview Documentation](https://docs.avax.network/subnets)
+- [Subnet Justification Article](https://docs.avax.network/subnets/when-to-use-subnet-vs-c-chain)
+
+### Local Subnet Deploy
+
+These instructions are for a Unix environment. If you have been doing this project in Windows up until this point, you'll need make sure you set up your own WSL environment and then install of the necessary prerequisites in the WSL environment as well. These are the install [instructions](https://learn.microsoft.com/en-us/windows/wsl/install) for WSL 1 as well as how to upgrade it to WSL 2. Additionally, Sequence only supports subnets for their paid developer tier, so you will need to make sure you are using Metamask.
+
+#### Install Avalanche CLI
+- Open a terminal.
+- Type: `cd ~` if you are not already there.
+- Download and run the Avalanche CLI install script.
+    - `curl -sSfL https://raw.githubusercontent.com/ava-labs/avalanche-cli/main/scripts/install.sh | sh -s`
+- Depending on your shell, type the following.
+    - `export PATH=~/bin:$PATH >> .bashrc` (Ubuntu and WSL)
+    - `export PATH=~/bin:$PATH >> .zshrc` (Mac)
+- Restart your terminal.
+- Test your Avalanche CLI install.
+    - `avalanche --version` 
+
+#### Create a Subnet Configuration
+
+- Start the subnet creation process by typing:
+    - `avalanche subnet create mawNet`
+- An in-terminal menu will prompt you with configuration options:
+    - **Choose your VM**:
+        - Select `Subnet-EVM`
+        - This is an Ethereum based VM and is needed to run contracts like the one we have created.
+    - **Enter your subnet's ChainId. It can be any positive integer.**
+        - Enter ChainID: `13123`
+        - This can be any unique number that is not already taken in the Avalanche ecosystem. For this tutorial just keep this number so you don't accidently forget that you made your own number in down stream instructions.
+    - **Select a symbol for your subnet's native token**
+        - Enter Token Symbol: `MAW`
+        - This is the currency ticker that will show up in your wallet when you connect to it.
+    - **What version of Subnet-EVM would you like?**
+        - Select `Use latest version`
+    - **How would you like to set fees:**
+        - Select  `Low disk use / Low Throughput 1.5 mil gas/s (C-Chain's setting)`
+        - This, and the other two named options, is a preset that defines the characteristics of your chain.
+        - It determines parameters for users and validators. You can play around with them later, but for this tutorial it doesn't really matter. In a real environment though, they will determine transaction speeds, transaction costs, and validator hardware requirements.
+    - **How would you like to distribute funds:**
+        - Click the down arrow to select `Customize your airdrop`. 
+        - **Address to airdrop to:** `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266`
+            - This is the account you should have imported into your wallet to test in the Hardhat environment.
+            - If you did not do that, there are instructions to add it at the end.
+        - **Amount to airdrop (in AVAX units):** `10000`
+            - This is the same amount hardhat gives to this account, but you can add more.
+        - **Would you like to airdrop more tokens?:**
+            - Click the down arrow to select `Yes` .
+        - Repeat this process for all of these remaining addresses.
+            - `0x70997970C51812dc3A010C7d01b50e0d17dc79C8`
+            - `0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC`
+            - `0x90F79bf6EB2c4f870365E785982E1f101E93b906`
+            - `0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65`
+            - `0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc`
+            - These addresses all belong to the private keys in the randomWalkerAI.mjs example.
+    - **Advanced:** Would you like to add a custom precompile to modify the EVM?:
+        - Select `No`.
+    - You have completed a full subnet configuration and you should see the ceremonious text of:
+        - `Successfully created subnet configuration`
+    - Verify this before deploying the subnet by entering:
+        - `avalanche subnet describe`
+        - You should see a bunch of infromation and ascii art regarding the network configuration you just created.
+
+#### Deploy Subnet with Configuration
+- Start the local network:
+    - `avalanche network start`
+    - You should see something like this:
+<br>
+    ```
+    Starting previously deployed and stopped snapshot 
+    Booting Network. Wait until healthy..............
+    ```
+<br>
+- Deploy the configuration:
+    - `avalanche subnet deploy mawNet`
+- An in-terminal menu should have popped up.
+    - Choose a network to deploy on:
+        - Select `Local Network`
+    - You should see something like this:
+<br>
+    ```
+    Deploying [mawNet] to Local Network
+    VMs ready.
+    Blockchain has been deployed. Wait until network acknowledges...
+    .....
+    Network ready to use. Local network node endpoints:
+    +-------+--------+-------------------------------------------------------------------------------------+
+    | NODE |  VM  |                     URL                     |
+    +-------+--------+-------------------------------------------------------------------------------------+
+    | node2 | mawNet | http://127.0.0.1:9652/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc |
+    +-------+--------+-------------------------------------------------------------------------------------+
+    | node3 | mawNet | http://127.0.0.1:9654/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc |
+    +-------+--------+-------------------------------------------------------------------------------------+
+    | node4 | mawNet | http://127.0.0.1:9656/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc |
+    +-------+--------+-------------------------------------------------------------------------------------+
+    | node5 | mawNet | http://127.0.0.1:9658/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc |
+    +-------+--------+-------------------------------------------------------------------------------------+
+    | node1 | mawNet | http://127.0.0.1:9650/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc |
+    +-------+--------+-------------------------------------------------------------------------------------+
+    Browser Extension connection details (any node URL from above works):
+    RPC URL:     http://127.0.0.1:9650/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
+    Network name:   mawNet
+    Chain ID:     13123
+    Currency Symbol: MAW
+    ```
+<br>
+- Keep this window open for connection details or copy them into a note pad.
+
+#### Add the Subnet to Your Wallet
+- Open your Metamask Wallet.
+- Click the account profile icon in the top right.
+- Click **Settings**.
+- Click **Networks**.
+- Click **Add network**.
+- At the bottom, click **Add a network manually**.
+- Add a network name.
+- From your subnet information, add the **RPC URL** to the **New RPC URL** in the network setup.
+- In **Chain ID** in the network setup, add `13123`.
+- In **Currency Symbol** in the network setup, add `MAW`
+- Click **Save**.
+
+#### Import Main Account
+- If you haven't already, import the first key we airdropped MAW to.
+- Open your Metamask Wallet.
+- Click the account profile icon in the top right.
+- Click **Import Account**
+    - **Enter your private key string here:**
+    - Copy and paste: `ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80`
+- Click **Save**
+- You've imported address `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266`.
+- You should see `10000 MAW` in the account balance.
+
+#### Subnet Environment Setup for MaW Tutorial
+
+You should have a fully deployed subnet at this, now we need to test it and see the fruits of your labor.
+- In your `hardhat.config.js` under `networks` locate `local_subnet`. This is a config option for hardhat to know which network to deploy to. In your own code you can name it anything you want, but we've named it 'local_subnet' and our scripts are using it, so don't change the name of this one.
+- For the `url` change the existing one to the same RPC URL you used to setup your Metmask Wallet.
+- Under `accounts` make sure it is still `["ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"]`
+    - You can add as many as you want, but it isn't necessary for this tutorial.
+- In the `.env` file in the root of this project, change the `PROVIDER_URL` to the same RPC URL you just added to hardhat.config.js.
+- Your `.env` file should look like this.
+```
+PROVIDER_URL="http://127.0.0.1:9656/ext/bc/.../rpc" (RPC URL from your terminal information)
+PRIVATE_KEY=ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+ACCOUNT=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+MAW_CONTRACT_ADDRESS=0x5FbDB2315678afecb367f032d93F642f64180aa3
+MAW_START=0
+WS_PORT=7070
+```
+
+#### Deploy and Check Tutorial
+In a new terminal, in the root of the MaW project:
+- Deploy the contract: `npm run deploy:local_subnet`
+- Run the server: `npm run server`
+- Start the bots: `npm run ai`
+- Your server should be running and the AI should be able to make real moves on the subnet. 
+- Congratulations, you have deployed a local subnet.
+---
+<br>
 ## Game Design Comments
 
 One of the biggest issues with this game is the fact that you have to confirm every move. This is the nature of blockchain. Anything tracked on the blockchain must but be verified by the smart contract, this requires a signature and a gas fee. However, you don't necessarily need to track every single move a player makes. You can centralize some aspects that may not be economically important. The point of decentralization should be to protect a player's assets and the point of crypto currencies in games should be to monetize their assets or make payments between the dev and player smooth.
@@ -257,7 +422,9 @@ Good luck with your dApp.
 
 Codie Petersen - [Asteres Technologies LLC](https://www.linkedin.com/company/asteres-technologies)
 
-Loc Le [huylocit14054](https://github.com/huylocit14054)
+Loc Le - [huylocit14054](https://github.com/huylocit14054)
+
+CodeLink Limited - [CodeLink.io](https://www.codelink.io/our-team)
 
 <br>
 
@@ -270,13 +437,13 @@ Loc Le [huylocit14054](https://github.com/huylocit14054)
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE.txt file for details
+This project is licensed under the MIT License - see the MIT-LICENSE.txt file for details
 
 <br>
 
 ## Acknowledgments
 
-This game was inspired by two games from the [Automonous Worlds.](https://autonomousworlds.com/) for their blockchain [Xaya](https://xaya.io).
+This game was inspired by two games from [Automonous Worlds](https://autonomousworlds.com/) for their blockchain [Xaya](https://xaya.io).
 
 - [Hunter Coin](https://xaya.io/huntercoin)
 - [Mover Demo](https://github.com/xaya/xaya_tutorials/wiki/Unity-Mover-Tutorial)

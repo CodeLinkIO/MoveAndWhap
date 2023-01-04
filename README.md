@@ -10,7 +10,7 @@ You can attack a player if you are adjacent, facing them, AND they are not facin
 
 The red boarder exists for simplicity, but it also denotes the spawn zone on the contract. When a player enters the game, they can spawn anywhere in the 256x256 center of the map. All players, regardless of frontend or other custom implementations, must spawn within this zone. You can modify the _join_ function on the contract if you want to make multiple join locations or expand or shrink the current one. Or, as long as it is within the -128,127 range, you can modify the frontend to have multiple spawn areas within the main spawn zone.
 
-### Game Contract Logic Recap
+#### Game Contract Logic Recap
 
 - Players can join anywhere within the -128,127 for x and y.
 - Players can move North (0), East (1), South (2), and West (3) one space.
@@ -19,7 +19,6 @@ The red boarder exists for simplicity, but it also denotes the spawn zone on the
 - Players can attack adjacent victims if the player is facing them and the victim is not facing the player.
 - You must rejoin after you die.
 
----
 <br>
 
 ## Getting Started
@@ -35,12 +34,16 @@ This is a simple diagram of the information flow between the different parts of 
 
 ![MoveAndWhapLayout](https://user-images.githubusercontent.com/19739051/209604148-c276e4e0-d2b3-47b2-8297-9f80ba723d7f.png)
 
+<br>
+
 ### Dependencies
 
 - QuickNode Free Account (not needed but recommended)
 - NVM
 - NPM
 - Node 19.0.0
+
+<br>
 
 ### Technologies Being Used
 
@@ -58,6 +61,8 @@ This project is pretty light on packages and NPM handles all of them in the back
   - React is used for all of the front end development.
 - PixiJs
   - PixiJs is responsible for rendering the 2D game graphics.
+
+<br>
 
 ### Installing
 
@@ -84,7 +89,6 @@ cd webapp
 npm install yarn
 ```
 
----
 <br>
 
 ### Hardhat Config
@@ -119,8 +123,6 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
     - This will be used to make automatic moves.
   - **ACCOUNT**: The address to the private key.
 
-<br>
-
 #### Launching Hardhat and Deploying the MaW Contract Locally
 
 - In a terminal in the root of the project, start a hardhat node. We've made a simple command you can use:
@@ -141,8 +143,6 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
     - This is your **MAW_CONTRACT_ADDRESS** and where the contract has been deployed to, add it to your _.env_ file.
   - In the terminal that you started the node with, you should also see some new lines letting you know a contract has been deployed.
 
-<br>
-
 #### Running the Backend Locally
 
 - Next we will launch the server. Type the following command in a free terminal:
@@ -161,7 +161,6 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
   - You should see a bunch of text notifying you of AI join positions and movements.
 - At this point, your local instance and backend is fully setup and you can start playing with it. Head to the [webapp README.md](/webapp/README.md) to launch the front end. 
 
----
 <br>
 
 ### Avalanche Testnet (Fuji) Environment Setup
@@ -184,8 +183,6 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
     - This will be used to make automatic moves.
   - **ACCOUNT**: The address to the private key.
 
-<br>
-
 #### Funding an Account on Fuji
 
 - In the local instance, Hardhat automatically creditted coins to all of the accounts. On the Fuji net, this will not happen for you. In order to deploy the contract you will need to go to a faucet and request funds from the faucet owner. This is an automatic process and only takes a few moments. You'll need this to deploy the contract.
@@ -203,8 +200,6 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
 - You should see a private key. Copy it and add it inside your _.env_ file as **PRIVATE_KEY**.
   - **NOTE**: Be careful with this key. It is a signature that will grant any one authority over that account. If you leak it accidently in a repo, share it in a video stream, or hardcode it in web browsers or programs that are served to a user, it could lead attackers to stealing and controlling the funds of the account.
 
-<br>
-
 #### Deploying The MaW Contract to Fuji
 
 - Now we can finally deploy the contract to the network.
@@ -218,9 +213,7 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
   - Navigate to [SnowTrace's Testnet Explorer](https://testnet.snowtrace.io/) to find information on your contract.
     - If you search for your contract address, you will see information about which block it was deployed at and how many transactions there have been for it. 
     - The first transaction (and likely only at this point) will be block it was deployed on. This is the **MAW_START** block, add it to your _.env_ file.
-
-<br>
-
+    
 #### Running the Backend Locally Using the Fuji Net
 
 - Next we will launch the server. Type the following command in a free terminal:
@@ -237,8 +230,7 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
   - It is done syncing when you see a "Listening for live moves."
   - If you want to have AI running on the blockchain, you will have to gather private keys from your wallet, add them to the _./examples/randomWalkerAI.mjs_ script, and send coins to every address. You can do that if you want, but it is not really necessary. The fact that the faucet requires a wait period of 1 day makes that process even more tedious. You can see those bots in action on the local Hardhat instance.
   - At this point though, your contract is live on the network and you can start playing with it. Head to the [webapp README.md](/webapp/README.md) to launch the front end.
-  
----
+
 <br>
 
 ## Subnet Deploy
@@ -249,6 +241,8 @@ This section is specifically geared towards deploying contracts on Avalanche Sub
 - [Thorough Overview of Subnets - Giacomo Barbieri, Avascan 41 minutes. (Recommended)](https://www.youtube.com/watch?v=qAkJN0UBgSE&ab_channel=Avalanche)
 - [Subnet Overview Documentation](https://docs.avax.network/subnets)
 - [Subnet Justification Article](https://docs.avax.network/subnets/when-to-use-subnet-vs-c-chain)
+
+<br>
 
 ### Local Subnet Deploy
 
@@ -391,7 +385,7 @@ In a new terminal, in the root of the MaW project:
 - Start the bots: `npm run ai`
 - Your server should be running and the AI should be able to make real moves on the subnet. 
 - Congratulations, you have deployed a local subnet.
----
+
 <br>
 
 ## Game Design Comments

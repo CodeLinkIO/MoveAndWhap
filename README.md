@@ -433,5 +433,5 @@ This project is licensed under the MIT License - see the MIT-LICENSE.txt file fo
 
 This game was inspired by two games from [Automonous Worlds](https://autonomousworlds.com/) for their blockchain [Xaya](https://xaya.io).
 
-- [Hunter Coin](https://xaya.io/huntercoin)
+- [Huntercoin](https://xaya.io/huntercoin)
 - [Mover Demo](https://github.com/xaya/xaya_tutorials/wiki/Unity-Mover-Tutorial)

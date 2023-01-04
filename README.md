@@ -388,7 +388,10 @@ In a new terminal, in the root of the MaW project:
 - In another terminal, start the bots: `npm run ai`
 - Your server should be running and the AI should be able to make real moves on the subnet. 
 - Congratulations, you have deployed a local subnet.
-- If you are done and don't want to play around with it anymore make sure to stop the network with `avalanche network stop`.
+- If you are done and don't want to play around with it anymore make sure to stop everything:
+  - In the server terminal, press Ctrl+C or close the terminal.
+  - In the AI terminal, press Ctrl+C or close the terminal.
+  - In a terminal, to stop the Avalanche network type: `avalanche network stop`.
 <br>
 
 ## Game Design Comments

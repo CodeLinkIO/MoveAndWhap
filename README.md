@@ -330,22 +330,13 @@ These instructions are for a Unix environment. If you have been doing this proje
     ```
     Deploying [mawNet] to Local Network
     VMs ready.
-    Blockchain has been deployed. Wait until network acknowledges...
-    .....
+    Blockchain has been deployed. Wait until network acknowledges........
     Network ready to use. Local network node endpoints:
-    +-------+--------+-------------------------------------------------------------------------------------+
-    | NODE |  VM  |                     URL                     |
-    +-------+--------+-------------------------------------------------------------------------------------+
-    | node2 | mawNet | http://127.0.0.1:9652/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc |
-    +-------+--------+-------------------------------------------------------------------------------------+
-    | node3 | mawNet | http://127.0.0.1:9654/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc |
-    +-------+--------+-------------------------------------------------------------------------------------+
-    | node4 | mawNet | http://127.0.0.1:9656/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc |
-    +-------+--------+-------------------------------------------------------------------------------------+
-    | node5 | mawNet | http://127.0.0.1:9658/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc |
-    +-------+--------+-------------------------------------------------------------------------------------+
-    | node1 | mawNet | http://127.0.0.1:9650/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc |
-    +-------+--------+-------------------------------------------------------------------------------------+
+    node2 mawNet http://127.0.0.1:9652/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
+    node3 mawNet http://127.0.0.1:9654/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
+    node4 mawNet http://127.0.0.1:9656/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
+    node5 mawNet http://127.0.0.1:9658/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
+    node1 mawNet http://127.0.0.1:9650/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
     Browser Extension connection details (any node URL from above works):
     RPC URL:     http://127.0.0.1:9650/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
     Network name:   mawNet

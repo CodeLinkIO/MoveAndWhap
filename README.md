@@ -340,7 +340,6 @@ These instructions are for a Unix environment. If you have been doing this proje
     Chain ID:     13123
     Currency Symbol: MAW
     ```
-<br>
 - Keep this window open for connection details or copy them into a note pad.
 
 #### Add the Subnet to Your Wallet

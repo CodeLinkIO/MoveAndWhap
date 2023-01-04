@@ -307,7 +307,7 @@ These instructions are for a Unix environment. If you have been doing this proje
     - You have completed a full subnet configuration and you should see the ceremonious text of:
         - `Successfully created subnet configuration`
     - Verify this before deploying the subnet by entering:
-        - `avalanche subnet describe`
+        - `avalanche subnet describe mawNet`
         - You should see a bunch of infromation and ascii art regarding the network configuration you just created.
 
 #### Deploy Subnet with Configuration

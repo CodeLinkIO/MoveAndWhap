@@ -246,7 +246,7 @@ This section is specifically geared towards deploying contracts on Avalanche Sub
 
 ### Local Subnet Deploy
 
-These instructions are for a Unix environment. If you have been doing this project in Windows up until this point, you'll need make sure you set up your own WSL environment and then install of the necessary prerequisites in the WSL environment as well. These are the install [instructions](https://learn.microsoft.com/en-us/windows/wsl/install) for WSL 1 as well as how to upgrade it to WSL 2. Additionally, Sequence only supports subnets for their paid developer tier, so you will need to make sure you are using Metamask. 
+These instructions are for a Unix environment. If you have been doing this project in Windows up until this point, you'll need to make sure you set up your own WSL environment and then install the necessary prerequisites in the WSL environment as well. These are the install [instructions](https://learn.microsoft.com/en-us/windows/wsl/install) for WSL 1 as well as how to upgrade it to WSL 2. Additionally, Sequence only supports subnets for their paid developer tier, so you will need to make sure you are using Metamask. 
 
 #### Install Avalanche CLI
 - Open a terminal.

@@ -30,7 +30,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start:hardhat": "bash change-env.sh hardhat && yarn start",
-    "start:fuji": "bash change-env.sh fuji && yarn start"
+    "start:fuji": "bash change-env.sh fuji && yarn start",
+    "start:mawSubnet": "bash change-env.sh mawSubnet && yarn start"
+  
   },
   "eslintConfig": {
     "extends": [

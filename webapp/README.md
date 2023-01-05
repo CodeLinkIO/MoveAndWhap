@@ -53,6 +53,11 @@ yarn install
 
     If you are using a different connector, you will need to modify logic in `webapp/src/providers/walletProvider.js`. More details on [@userdapp connector](https://usedapp-docs.netlify.app/docs/Guides/Connecting/Wallet%20Connectors).
 
+  - REACT_APP_SUBNET_CHAIN_ID: Your new avalanche subnet chain that you have created and deployed. <br /> \***\*NOTE 1\*\***: This is only required if you are using avalanche subnet. <br/> \***\*NOTE 2\*\***: This and `REACT_APP_CHAIN_ID` must have the same value. <br/>
+    <br />
+  - REACT_APP_SUBNET_RPC_URLS: Your new avalanche subnet rpc url. <br/> \***\*NOTE\*\***: This is only required if you are using avalanche subnet. <br/>
+    <br />
+
 ### Run on local machine
 
 - You can read more about how to run the FE with specific network (HardHat or FUJI) in the next section.
@@ -66,7 +71,9 @@ yarn start
 
 The app will run on `http://localhost:3000`.
 
-### Config to run with HardHat in Local:
+<br />
+
+### **Config to run with HardHat in Local:**
 
 - **NOTE**: Make sure you have already deployed the contract on HardHat local network, run the backend server. <br>
   If you have not done that yet, please follow the instruction in the root README.md file.
@@ -87,7 +94,9 @@ The app will run on `http://localhost:3000`.
 - The app will copy everything in .env.hardhat to .env and run the app with the new .env file.
 - The app will run on `http://localhost:3000`.
 
-### Config to run with FUJI testnet in local:
+</br >
+
+### **Config to run with FUJI testnet in local:**
 
 - **NOTE**: Make sure you have already deployed the contract on FUJI testnet, run the backend server. <br>
   If you have not done it yet, please follow the instruction in the root README.md file.
@@ -109,7 +118,44 @@ The app will run on `http://localhost:3000`.
 
 - The app will run on `http://localhost:3000`.
 
-### Connect and join with Metamask and HardHat local network
+<br />
+
+### **Config to run with Avalanche Subnet in local:**
+
+**Note:** Make sure you have already created and deployed an Avalanche subnet and deployed the contract on the subnet. If you have not done it yet, please follow the instruction in the root README.md file.
+
+Create a new env file named `.env.mawSubnet` in the webapp folder:
+
+- **REACT_APP_MAW_CONTRACT_ADDRESS**: Your deployed contract address on the Avalanche subnet. <br> This must be the same as **MAW_CONTRACT_ADDRESS** in the root .env file. <br/>
+  In our example it is: `0x5FbDB2315678afecb367f032d93F642f64180aa3`
+
+- **REACT_APP_CHAIN_ID**: Your new avalanche subnet chain ID that you have created and deployed. <br/>
+  In our example it is: `13123`
+
+- **REACT_APP_WS_URL**: `ws://localhost:7070` (Backend websocket url, this value is based on the ws port in the root folder .env file)
+
+- **REACT_APP_CONNECTOR_TYPE**: `metamask` (Only support metamask for local network Avalanche Subnet)
+
+- **REACT_APP_SUBNET_CHAIN_ID**: Your new avalanche subnet chain that you have created and deployed. subnet. <br/>
+  ****NOTE****: This and `REACT_APP_CHAIN_ID` must have the same value. <br/>
+  In our example it is: `13123`
+
+- **REACT_APP_SUBNET_RPC_URLS**: Your new avalanche subnet rpc url. <br/>
+  In our example it is: `http://127.0.0.1:9652/ext/bc/2gS3BV4MrzKAbytYbwTihi8okiVmgGrsKV2X1pxNHTJgJuRDya/rpc`
+
+- Run the app with:
+
+  ```
+    yarn start:mawSubnet
+  ```
+
+- The app will copy everything in .env.mawSubnet to .env and run the app with the new .env file.
+
+- The app will run on `http://localhost:3000`.
+
+<br />
+
+### **_Connect and join with Metamask and HardHat local network:_**
 
 **Import a Hardhat account to Metamask**
 
@@ -146,7 +192,7 @@ The app will run on `http://localhost:3000`.
 
 **Reset metamask account**
 
-- If you restart your local Hardhat instance, Metamask will raise a `can not calculate nonce error` and our webapp will be stuck on the loading screen. This is because Metamask does not actively sync how many transactions you have made and only increments it when you make a new transaction. To fix this, you can reset the account. If you are interested in the importance of the `nonce` value, you can read more [here](https://betterprogramming.pub/sending-web3-transactions-in-node-js-nonce-hell-f3ba82edbf3d#:~:text=A%20nonce%20is%20a%20number,(%2B1)%20for%20subsequent%20transactions.).
+- If you restart your local Hardhat instance, Metamask will raise a `can not calculate nonce error` and our webapp will be stuck on the loading screen. This is because Metamask does not actively sync how many transactions you have made and only increments it when you make a new transaction. To fix this, you can reset the account. If you are interested in the importance of the `nonce` value, you can read more [here](<https://betterprogramming.pub/sending-web3-transactions-in-node-js-nonce-hell-f3ba82edbf3d#:~:text=A%20nonce%20is%20a%20number,(%2B1)%20for%20subsequent%20transactions.>).
 
 - If you want to reset the account, you can click on the account name on the top right corner of Metamask.
 

@@ -11,6 +11,8 @@ import { contractAddressTruncate } from "../utils/string";
 import HowToPlay from "./HowToPlay";
 import LoadingScreen from "./LoadingScreen";
 import Button from "./Button";
+import OurGitHubLink from "./OurGitHubLink";
+import OurWebsiteLink from "./OurWebsiteLink";
 
 const MIN_INIT_POSITION = CENTER_POSITION - DISTANCE_FROM_CENTER;
 const MAX_INIT_POSITION = CENTER_POSITION + DISTANCE_FROM_CENTER;
@@ -90,6 +92,10 @@ const WalletConnect = () => {
         </div>
 
         <HowToPlay />
+        <div className=" fixed bottom-0 max-w-[120px] min-w-[80%] flex items-center justify-between">
+          <OurGitHubLink />
+          <OurWebsiteLink />
+        </div>
       </div>
     </Background>
   );

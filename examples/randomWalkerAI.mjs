@@ -8,8 +8,8 @@ config();
 var services = [];
 var contracts = [];
 const directions = ["north", "east", "south", "west"];
-const waitMin = 2000;
-const waitMax = 5000;
+const waitMin = 10000;
+const waitMax = 15000;
 const mawAbi = [
   "constructor()",
   "function join(int8 x, int8 y, uint8 dir)",

@@ -1,6 +1,6 @@
 # Move And Whap (MaW)
 
-A game demo showcasing how to build a simple, multiplayer game where all user actions are on-chain. The game is playable and running [here](https://move-and-whap.netlify.app/), with plans to implement the game on a subnet. 
+A game demo showcasing how to build a simple, multiplayer game where all user actions are on-chain. The game is playable and running [here](https://move-and-whap.netlify.app/), with plans to implement the game on a subnet.
 
 ## Description
 
@@ -27,7 +27,7 @@ The red boarder exists for simplicity, but it also denotes the spawn zone on the
 
 There are several pieces to this project, primarily **backend** and **webapp** which is the frontend. The backend is responsible for monitoring and maintaining an accurate representation of the smart contract state and serving that state to the frontend. In this particular case, the state is just player positional data. This can easily be tracked fully on chain and the player data can be emitted on contract update. So, all our server does is look for event data and update an in-memory database.
 
-The frontend is responsible for interacting with the on-chain contract via a wallet, listening to changes about the state of the contract from the 
+The frontend is responsible for interacting with the on-chain contract via a wallet, listening to changes about the state of the contract from the
 MaW server, then dispaying the data as something interesting to viewers. There is some frontend logic that makes sure the user can't make certain moves. Even though the user can't make these moves in the contract and the contract will properly check for and handle it, it's a better experience if your player never has to think about the contract rules and the frontend just implies and enforces them.
 
 This is a simple diagram of the information flow between the different parts of the system.
@@ -54,7 +54,7 @@ This project is pretty light on packages and NPM handles all of them in the back
 - EthersJs
   - All blockchain scripts are based on EthersJs, but if you were to replace references in EventTrackingService and MawServices, you can change it to Web3Js if you wanted to.
 - PouchDb
-  - PouchDb is only used in mawServer.msj but MawServices assumes the database being handed to it is a PouchDB object.  If you wish to use a different database you will need to refactor some of the functions that accept PouchDB objects as arguments.
+  - PouchDb is only used in mawServer.msj but MawServices assumes the database being handed to it is a PouchDB object. If you wish to use a different database you will need to refactor some of the functions that accept PouchDB objects as arguments.
 - Hardhat
   - Hardhat is used for all of the local blockchain simulation.
 - React
@@ -100,7 +100,7 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
     - You don't need a lot of keys but you do need at least one.
     - Make sure the key is funded. It is the account that deploys the contract so it needs to have a balance. Shouldn't need much.
     - Don't use the one in there, it is fake.
-    - **DEFINITELY DO NOT PUSH YOUR HARDHAT CONFIG JS FILE. IF YOU HAVE CONFIGURED IT PROPERLY IT SHOULD HAVE YOUR PRIVATE KEYS IN IT. JUST BECAUSE IT IS ON THE TESTNET DOES NOT MEAN IT IS SAFE. IF YOU HAVE THE PRIVATE KEY TO THE TESTNET, OR EVEN THE LOCAL HARDHAT, YOU HAVE THE KEYS TO THE MAINNET.** 
+    - **DEFINITELY DO NOT PUSH YOUR HARDHAT CONFIG JS FILE. IF YOU HAVE CONFIGURED IT PROPERLY IT SHOULD HAVE YOUR PRIVATE KEYS IN IT. JUST BECAUSE IT IS ON THE TESTNET DOES NOT MEAN IT IS SAFE. IF YOU HAVE THE PRIVATE KEY TO THE TESTNET, OR EVEN THE LOCAL HARDHAT, YOU HAVE THE KEYS TO THE MAINNET.**
     - For safety, you can add hardhat.config.js to the git ignore if you plan on using this project as a basis for something.
 
 <br>
@@ -109,6 +109,7 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
 
 - In the root of the project, make a file called _.env_
 - Add these initial parameters:
+
   - **PROVIDER_URL**=http://127.0.0.1:8545/
     - Unless you have configured your Hardhat differently, this should be the default port that you can use to communicate with Hardhat.
   - **WS_PORT**=7070
@@ -159,7 +160,7 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
 - Next, to make sure everything is running and to populate the world, we'll launch the AI script to see some activity on the MAW server and network. In a new terminal, type in this command:
   - `node ./examples/randomWalkerAI.mjs`
   - You should see a bunch of text notifying you of AI join positions and movements.
-- At this point, your local instance and backend is fully setup and you can start playing with it. Head to the [webapp README.md](/webapp/README.md) to launch the front end. 
+- At this point, your local instance and backend is fully setup and you can start playing with it. Head to the [webapp README.md](/webapp/README.md) to launch the front end.
 
 <br>
 
@@ -167,6 +168,7 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
 
 - In the root of the project, make a file called _.env_
 - Add these initial parameters:
+
   - **PROVIDER_URL**: Your Avalanche provider URL.
     - You can use the Avalanche public RPCs but for the examples you'll need to adjust the EventTrackingService chunkTime to a higher number. In the examples it is set to 0.1 seconds for Quicknode paid service. You'll need to change them to 1-2 second wait times, otherwise you could be banned from the node for 12 hours.
     - You can signup with a Quicknode free account and get 250ms rate limit. We used Quicknode for the entire development of this project.
@@ -211,9 +213,9 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
     - _creates: '0x5FbDB2315678afecb367f032d93F642f64180aa3',_
     - This is your **MAW_CONTRACT_ADDRESS** and where the contract has been deployed to, add it to your _.env_ file.
   - Navigate to [SnowTrace's Testnet Explorer](https://testnet.snowtrace.io/) to find information on your contract.
-    - If you search for your contract address, you will see information about which block it was deployed at and how many transactions there have been for it. 
+    - If you search for your contract address, you will see information about which block it was deployed at and how many transactions there have been for it.
     - The first transaction (and likely only at this point) will be block it was deployed on. This is the **MAW_START** block, add it to your _.env_ file.
-    
+
 #### Running the Backend Locally Using the Fuji Net
 
 - Next we will launch the server. Type the following command in a free terminal:
@@ -246,98 +248,132 @@ This section is specifically geared towards deploying contracts on Avalanche Sub
 
 ### Local Subnet Deploy
 
-These instructions are for a Unix environment. If you have been doing this project in Windows up until this point, you'll need to make sure you set up your own WSL environment and then install the necessary prerequisites in the WSL environment as well. These are the install [instructions](https://learn.microsoft.com/en-us/windows/wsl/install) for WSL 1 as well as how to upgrade it to WSL 2. Additionally, Sequence only supports subnets for their paid developer tier, so you will need to make sure you are using Metamask. 
+These instructions are for a Unix environment. If you have been doing this project in Windows up until this point, you'll need to make sure you set up your own WSL environment and then install the necessary prerequisites in the WSL environment as well. These are the install [instructions](https://learn.microsoft.com/en-us/windows/wsl/install) for WSL 1 as well as how to upgrade it to WSL 2. Additionally, Sequence only supports subnets for their paid developer tier, so you will need to make sure you are using Metamask.
 
 #### Install Avalanche CLI
+
 - Open a terminal.
 - Type: `cd ~` if you are not already there.
 - Download and run the Avalanche CLI install script.
-    - `curl -sSfL https://raw.githubusercontent.com/ava-labs/avalanche-cli/main/scripts/install.sh | sh -s`
+  - `curl -sSfL https://raw.githubusercontent.com/ava-labs/avalanche-cli/main/scripts/install.sh | sh -s`
 - Depending on your shell, type the following.
-    - `export PATH=~/bin:$PATH >> .bashrc` (Ubuntu and WSL)
-    - `export PATH=~/bin:$PATH >> .zshrc` (Mac)
+  - `export PATH=~/bin:$PATH >> .bashrc` (Ubuntu and WSL)
+  - `export PATH=~/bin:$PATH >> .zshrc` (Mac)
 - Restart your terminal.
 - Test your Avalanche CLI install.
-    - `avalanche --version`
-    - We've tested this with version `1.0.4`. If you have problems with other versions, please make an issue and let us know with which version you are having the particular issue.
+  - `avalanche --version`
+  - We've tested this with version `1.0.4`. If you have problems with other versions, please make an issue and let us know with which version you are having the particular issue.
+
+#### Install AvalancheGO
+
+- Open a terminal
+- Type: `cd ~` if you are not already there.
+- Download and run the AvalancheGO install script.
+  - `wget -nd -m https://raw.githubusercontent.com/ava-labs/avalanche-docs/master/scripts/avalanchego-installer.sh;\` <br />
+    `chmod 755 avalanchego-installer.sh;\` <br />
+    `./avalanchego-installer.sh`
+- The installer script will ask for running configuration for your node
+- It is recommended to turn on `state sync bootstrapping` to increase bootstrapping speed
 
 #### Create a Subnet Configuration
 
 - Start the subnet creation process by typing:
-    - `avalanche subnet create mawNet`
+  - `avalanche subnet create mawNet`
 - An in-terminal menu will prompt you with configuration options:
-    - **Choose your VM**:
-        - Select `Subnet-EVM`
-        - This is an Ethereum based VM and is needed to run contracts like the one we have created.
-    - **Enter your subnet's ChainId. It can be any positive integer.**
-        - Enter ChainID: `13123`
-        - This can be any unique number that is not already taken in the Avalanche ecosystem. For this tutorial just keep this number so you don't accidently forget that you made your own number in down stream instructions.
-    - **Select a symbol for your subnet's native token**
-        - Enter Token Symbol: `MAW`
-        - This is the currency ticker that will show up in your wallet when you connect to it.
-    - **What version of Subnet-EVM would you like?**
-        - Select `Use latest version`
-    - **How would you like to set fees:**
-        - Select  `Low disk use / Low Throughput 1.5 mil gas/s (C-Chain's setting)`
-        - This, and the other two named options, is a preset that defines the characteristics of your chain.
-        - It determines parameters for users and validators. You can play around with them later, but for this tutorial it doesn't really matter. In a real environment though, they will determine transaction speeds, transaction costs, and validator hardware requirements.
-    - **How would you like to distribute funds:**
-        - Click the down arrow to select `Customize your airdrop`. 
-        - **Address to airdrop to:** `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266`
-            - This is the account you should have imported into your wallet to test in the Hardhat environment.
-            - If you did not do that, there are instructions to add it at the end.
-        - **Amount to airdrop (in AVAX units):** `10000`
-            - This is the same amount hardhat gives to this account, but you can add more.
-        - **Would you like to airdrop more tokens?:**
-            - Click the down arrow to select `Yes` .
-        - Repeat this process for all of these remaining addresses.
-            - `0x70997970C51812dc3A010C7d01b50e0d17dc79C8`
-            - `0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC`
-            - `0x90F79bf6EB2c4f870365E785982E1f101E93b906`
-            - `0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65`
-            - `0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc`
-            - These addresses all belong to the private keys in the randomWalkerAI.mjs example.
-    - **Advanced:** Would you like to add a custom precompile to modify the EVM?:
-        - Select `No`.
-    - You have completed a full subnet configuration and you should see the ceremonious text of:
-        - `Successfully created subnet configuration`
-    - Verify this before deploying the subnet by entering:
-        - `avalanche subnet describe mawNet`
-        - You should see a bunch of infromation and ascii art regarding the network configuration you just created.
+  - **Choose your VM**:
+    - Select `Subnet-EVM`
+    - This is an Ethereum based VM and is needed to run contracts like the one we have created.
+  - **Enter your subnet's ChainId. It can be any positive integer.**
+    - Enter ChainID: `13123`
+    - This can be any unique number that is not already taken in the Avalanche ecosystem. For this tutorial just keep this number so you don't accidently forget that you made your own number in down stream instructions.
+  - **Select a symbol for your subnet's native token**
+    - Enter Token Symbol: `MAW`
+    - This is the currency ticker that will show up in your wallet when you connect to it.
+  - **What version of Subnet-EVM would you like?**
+    - Select `Use latest version`
+  - **How would you like to set fees:**
+    - Select `Low disk use / Low Throughput 1.5 mil gas/s (C-Chain's setting)`
+    - This, and the other two named options, is a preset that defines the characteristics of your chain.
+    - It determines parameters for users and validators. You can play around with them later, but for this tutorial it doesn't really matter. In a real environment though, they will determine transaction speeds, transaction costs, and validator hardware requirements.
+  - **How would you like to distribute funds:**
+    - Click the down arrow to select `Customize your airdrop`.
+    - **Address to airdrop to:** `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266`
+      - This is the account you should have imported into your wallet to test in the Hardhat environment.
+      - If you did not do that, there are instructions to add it at the end.
+    - **Amount to airdrop (in AVAX units):** `10000`
+      - This is the same amount hardhat gives to this account, but you can add more.
+    - **Would you like to airdrop more tokens?:**
+      - Click the down arrow to select `Yes` .
+    - Repeat this process for all of these remaining addresses.
+      - `0x70997970C51812dc3A010C7d01b50e0d17dc79C8`
+      - `0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC`
+      - `0x90F79bf6EB2c4f870365E785982E1f101E93b906`
+      - `0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65`
+      - `0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc`
+      - These addresses all belong to the private keys in the randomWalkerAI.mjs example.
+  - **Advanced:** Would you like to add a custom precompile to modify the EVM?:
+    - Select `No`.
+  - You have completed a full subnet configuration and you should see the ceremonious text of:
+    - `Successfully created subnet configuration`
+  - Verify this before deploying the subnet by entering:
+    - `avalanche subnet describe mawNet`
+    - You should see a bunch of infromation and ascii art regarding the network configuration you just created.
 
 #### Deploy Subnet with Configuration
+
+## Using avalanche CLI builtin node network (Option 1)
+
 - Start the local network:
-    - `avalanche network start`
-    - You should see something like this:
-    ```
-    Starting previously deployed and stopped snapshot 
-    Booting Network. Wait until healthy.
-    ```
+  - `avalanche network start`
+  - You should see something like this:
+  ```
+  Starting previously deployed and stopped snapshot
+  Booting Network. Wait until healthy.
+  ```
+
+## Manually run a node (Option 2)
+
+- The installer script automatically create and turn on `avalanchego` service, to update the subnet-evm VM version, we will need to turn this off
+
+  - Open up a session on your terminal
+  - Type: `systemctl stop avalanchego`, you will need to add `sudo` to the start of the command base on your session.
+  - To check if the service is off, type: `systemctl status avalanchego`.
+
 - Deploy the configuration:
-    - `avalanche subnet deploy mawNet`
-- An in-terminal menu should have popped up.
-    - Choose a network to deploy on:
-        - Select `Local Network`
-    - You should see something like this:
-    ```
-    Deploying [mawNet] to Local Network
-    VMs ready.
-    Blockchain has been deployed. Wait until network acknowledges.
-    Network ready to use. Local network node endpoints:
-    node2 mawNet http://127.0.0.1:9652/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
-    node3 mawNet http://127.0.0.1:9654/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
-    node4 mawNet http://127.0.0.1:9656/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
-    node5 mawNet http://127.0.0.1:9658/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
-    node1 mawNet http://127.0.0.1:9650/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
-    Browser Extension connection details (any node URL from above works):
-    RPC URL:     http://127.0.0.1:9650/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
-    Network name:   mawNet
-    Chain ID:     13123
-    Currency Symbol: MAW
-    ```
+  - `avalanche subnet deploy mawNet`
+- An in-terminal menu should have popped up. (If you chose option 1)
+  - Choose a network to deploy on:
+    - Select `Local Network`
+  - You should see something like this:
+  ```
+  Deploying [mawNet] to Local Network
+  VMs ready.
+  Blockchain has been deployed. Wait until network acknowledges.
+  Network ready to use. Local network node endpoints:
+  node2 mawNet http://127.0.0.1:9652/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
+  node3 mawNet http://127.0.0.1:9654/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
+  node4 mawNet http://127.0.0.1:9656/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
+  node5 mawNet http://127.0.0.1:9658/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
+  node1 mawNet http://127.0.0.1:9650/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
+  Browser Extension connection details (any node URL from above works):
+  RPC URL:     http://127.0.0.1:9650/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
+  Network name:   mawNet
+  Chain ID:     13123
+  Currency Symbol: MAW
+  ```
 - Keep this window open for connection details or copy them into a note pad.
 
+- Install the subnet-evm VM to the avalanchego folder by following the step 1 from this tutorial online
+
+  - https://www.leewayhertz.com/create-a-custom-blockchain-on-avalanche/
+
+- Open up the terminal, manually navigate to the avalanchego folder and turn on the node using the command <br />
+  `cd ~/avalanche-node \` <br />
+  `avalanchego --network-id=fuji --track-subnets=<the newly created subnet-id>`
+  `
+
 #### Add the Subnet to Your Wallet
+
 - Open your Metamask Wallet.
 - Click the account profile icon in the top right.
 - Click **Settings**.
@@ -351,12 +387,13 @@ These instructions are for a Unix environment. If you have been doing this proje
 - Click **Save**.
 
 #### Import Main Account
+
 - If you haven't already, import the first key we airdropped MAW to.
 - Open your Metamask Wallet.
 - Click the account profile icon in the top right.
 - Click **Import Account**
-    - **Enter your private key string here:**
-    - Copy and paste: `ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80`
+  - **Enter your private key string here:**
+  - Copy and paste: `ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80`
 - Click **Save**
 - You've imported address `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266`.
 - You should see `10000 MAW` in the account balance.
@@ -364,13 +401,15 @@ These instructions are for a Unix environment. If you have been doing this proje
 #### Subnet Environment Setup for MaW Tutorial
 
 You should have a fully deployed subnet at this point, now we need to test it and see the fruits of your labor.
+
 - In the root of the MaW project, in your `hardhat.config.js` under `networks` locate `local_subnet`. This is a config option for hardhat to know which network to deploy contracts to. In your own code you can name it anything you want, but we've named it `local_subnet` and our scripts are using it, so don't change the name of this one.
 - For the `url` change the existing one to the same RPC URL you used to setup your Metmask Wallet.
 - Under `accounts` make sure it is still `["ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"]`
-    - You can add as many as you want, but it isn't necessary for this tutorial.
+  - You can add as many as you want, but it isn't necessary for this tutorial.
 - After this, save `hardhat.config.js`.
 - In the `.env` file in the root of this project, change the `PROVIDER_URL` to the same RPC URL you just added to hardhat.config.js.
 - Your `.env` file should look like this:
+
 ```
 PROVIDER_URL="http://127.0.0.1:9656/ext/bc/.../rpc" (RPC URL from your terminal information)
 PRIVATE_KEY=ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
@@ -379,20 +418,23 @@ MAW_CONTRACT_ADDRESS=0x5FbDB2315678afecb367f032d93F642f64180aa3
 MAW_START=0
 WS_PORT=7070
 ```
+
 - Save your `.env` file.
 
 #### Deploy and Check Tutorial
+
 In a new terminal, in the root of the MaW project:
+
 - Deploy the contract: `npm run deploy:local_subnet`
 - Run the server: `npm run server`
 - In another terminal, start the bots: `npm run ai`
-- Your server should be running and the AI should be able to make real moves on the subnet. 
+- Your server should be running and the AI should be able to make real moves on the subnet.
 - Congratulations, you have deployed a local subnet.
 - If you are done and don't want to play around with it anymore make sure to stop everything:
   - In the server terminal, press Ctrl+C or close the terminal.
   - In the AI terminal, press Ctrl+C or close the terminal.
   - In a terminal, to stop the Avalanche network type: `avalanche network stop`.
-<br>
+    <br>
 
 ## Game Design Comments
 

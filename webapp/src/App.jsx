@@ -10,6 +10,7 @@ import { Chain } from "./providers/walletProvider";
 const App = () => {
   const [loadingAccount, setLoadingAccount] = useState(true);
   const { active, isLoading, account, chainId } = useEthers();
+  console.log(Chain);
   const location = useLocation();
 
   useEffect(() => {

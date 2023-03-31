@@ -46,10 +46,30 @@ export const LocalMawSubnet = {
     `${FUJI_BLOCK_EXPLORER}/tx/${transactionHash}`,
 };
 
+export const FujiMawSubnet = {
+  chainId: parseInt(process.env.REACT_APP_SUBNET_CHAIN_ID) || "NOT_SUPPORTED",
+  chainName: "MAW Subnet",
+  isTestChain: true,
+  isLocalChain: false,
+  nativeCurrency: {
+    name: "MAW",
+    symbol: "MAW",
+    decimals: 18,
+  },
+  multicallAddress: "0x0000000000000000000000000000000000000000",
+  rpcUrls: process.env.REACT_APP_SUBNET_RPC_URLS || "NOT_SUPPORTED",
+  blockExplorerUrls: FUJI_BLOCK_EXPLORER,
+  getExplorerAddressLink: (address) =>
+    `${FUJI_BLOCK_EXPLORER}/address/${address}`,
+  getExplorerTransactionLink: (transactionHash) =>
+    `${FUJI_BLOCK_EXPLORER}/tx/${transactionHash}`,
+};
+
 const CHAIN_LIST = {
   [Fuji.chainId]: Fuji,
   [Hardhat.chainId]: Hardhat,
   [LocalMawSubnet.chainId]: LocalMawSubnet,
+  [FujiMawSubnet.chainId]: FujiMawSubnet,
 };
 
 export const sequenceConnector = new SequenceConnector({
@@ -59,7 +79,7 @@ export const sequenceConnector = new SequenceConnector({
 
 export const Chain =
   CHAIN_LIST[parseInt(process.env.REACT_APP_CHAIN_ID)] ||
-  CHAIN_LIST[Hardhat.chainId];
+  CHAIN_LIST[FujiMawSubnet.chainId];
 
 const FujiWalletProviderConfig = {
   readOnlyChainId: Fuji.chainId,
@@ -89,9 +109,18 @@ const localMawSubnetWalletProviderConfig = {
   networks: [LocalMawSubnet],
 };
 
+const fujiMawSubnetWalletProviderConfig = {
+  readOnlyChainId: FujiMawSubnet.chainId,
+  readOnlyUrls: {
+    [FujiMawSubnet.chainId]: FujiMawSubnet.rpcUrls,
+  },
+  networks: [FujiMawSubnet],
+};
+
 const WalletConfigList = {
   [Fuji.chainId]: FujiWalletProviderConfig,
   [Hardhat.chainId]: localhostWalletProviderConfig,
+  [FujiMawSubnet.chainId]: fujiMawSubnetWalletProviderConfig,
   [LocalMawSubnet.chainId]: localMawSubnetWalletProviderConfig,
 };
 

@@ -321,7 +321,7 @@ These instructions are for a Unix environment. If you have been doing this proje
 
 #### Deploy Subnet with Configuration
 
-## Using avalanche CLI builtin node network (Option 1)
+## Deploy Subnet Locally (Option 1)
 
 - Start the local network:
   - `avalanche network start`
@@ -330,16 +330,7 @@ These instructions are for a Unix environment. If you have been doing this proje
   Starting previously deployed and stopped snapshot
   Booting Network. Wait until healthy.
   ```
-
-## Manually run a node (Option 2)
-
-- The installer script automatically create and turn on `avalanchego` service, to update the subnet-evm VM version, we will need to turn this off
-
-  - Open up a session on your terminal
-  - Type: `systemctl stop avalanchego`, you will need to add `sudo` to the start of the command base on your session.
-  - To check if the service is off, type: `systemctl status avalanchego`.
-
-- Deploy the configuration:
+  - Deploy the configuration:
   - `avalanche subnet deploy mawNet`
 - An in-terminal menu should have popped up. (If you chose option 1)
   - Choose a network to deploy on:
@@ -363,14 +354,28 @@ These instructions are for a Unix environment. If you have been doing this proje
   ```
 - Keep this window open for connection details or copy them into a note pad.
 
-- Install the subnet-evm VM to the avalanchego folder by following the step 1 from this tutorial online
+## Run a Node and Deploy to Fuji (Option 2)
 
-  - https://www.leewayhertz.com/create-a-custom-blockchain-on-avalanche/
+- First you'll need to setup a node manually:
+   - [Run an Avalanche Node Manually](https://docs.avax.network/nodes/build/run-avalanche-node-manually#connect-to-fuji-testnet)
+- Run through this tutorial to get all of the information you need about keys and deployment settings:
+   - [Deploy a Permissioned Subnet on Testnet](https://docs.avax.network/subnets/create-a-fuji-subnet#fuji-testnet)
+   - Finish up to **Add a Validator**
+- Next you will beed to become a validator:
+   - [Add Node as Validator on Fuji via the Web Wallet](https://docs.avax.network/nodes/build/launch-an-avalanche-validator-on-aws-with-one-click#add-node-as-validator-on-fuji-via-the-web-wallet)
+- Then, you'll need to add the validator:
+   - [Add a Validator](https://docs.avax.network/subnets/create-a-fuji-subnet#add-a-validator)
+   - The wording in **Join a Subnet** is very poor and makes it sound like you only need to do this step if you are doing something with another node, that is not the case. **You do need to do it for your own current node as well.** So make sure you complete that step as well.
+- Finally, you'll need to update your subnet evm.
+  - Open up a session on your terminal
+  - Type: `systemctl stop avalanchego`, you will need to add `sudo` to the start of the command base on your session.
+  - To check if the service is off, type: `systemctl status avalanchego`.
+  - Install the subnet-evm VM to the avalanchego folder by following the step 1 from this tutorial online
+    - https://www.leewayhertz.com/create-a-custom-blockchain-on-avalanche/
 
 - Open up the terminal, manually navigate to the avalanchego folder and turn on the node using the command <br />
-  `cd ~/avalanche-node \` <br />
+  `cd ~/avalanche-node `
   `avalanchego --network-id=fuji --track-subnets=<the newly created subnet-id>`
-  `
 
 #### Add the Subnet to Your Wallet
 

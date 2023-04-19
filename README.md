@@ -189,7 +189,7 @@ Hardhat has it's own configuration method and you will need to adjust it accordi
 
 - In the local instance, Hardhat automatically creditted coins to all of the accounts. On the Fuji net, this will not happen for you. In order to deploy the contract you will need to go to a faucet and request funds from the faucet owner. This is an automatic process and only takes a few moments. You'll need this to deploy the contract.
 - First, in your MetaMask wallet, make sure you are connected to the Fuji Network.
-- Next, navigate to [Avalanche's Testnet Faucet](https://faucet.avax.network/).random
+- Next, navigate to [Avalanche's Testnet Faucet](https://faucet.avax.network/)
   - If you are interested, you can look at all of the other test coins and networks they support, but keep them at their defaults for this tutorial.
 - Connect your wallet, or manually copy one of your account's addresses into the input area that says _Hexidecimal Address (0x...)_.
   - It is good practice to return the coins that you have not used back to the faucet. At the bottom of the page you can see the faucet address. When you are done with your experimentation, make sure you send them back. They have no monetary value so there is no point keeping them. This will reduce any likelihood of having to reset the testnetwork or alter how much the faucet can give out.

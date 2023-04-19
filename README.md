@@ -1,6 +1,6 @@
 # Move And Whap (MaW)
 
-A game demo showcasing how to build a simple, multiplayer game where all user actions are on-chain. The game is playable and running [here](https://move-and-whap.netlify.app/), with plans to implement the game on a subnet.
+A game demo showcasing how to build a simple, multiplayer game where all user actions are on-chain. The game is playable and running [on our MaWnet subnet](https://mnw.room40.network:3001).
 
 ## Description
 

@@ -357,7 +357,7 @@ These instructions are for a Unix environment. If you have been doing this proje
 ##### Run a Node and Deploy Subnet to Fuji (Option 2)
 
 - First you'll need to setup a node manually:
-   - [Run an Avalanche Node Manually](https://docs.avax.network/nodes/build/run-avalanche-node-manually#connect-to-fuji-testnet)
+   - [Run an Avalanche Node Manually](https://docs.avax.network/nodes/build/run-avalanche-node-manually#run-an-avalanche-node)
 - Run through this tutorial to get all of the information you need about keys and deployment settings:
    - [Deploy a Permissioned Subnet on Testnet](https://docs.avax.network/subnets/create-a-fuji-subnet#fuji-testnet)
    - Finish up to **Add a Validator**

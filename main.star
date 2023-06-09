@@ -1,7 +1,7 @@
 avalanche_module = import_module("github.com/kurtosis-tech/avalanche-package/main.star")
 
 #Backend Info
-MNW_BE="mnw-be:latest"
+MNW_BE="trileeee/movenwhap-be:0.0.1"
 BE_WS_PORT=7070
 PRIVATE_KEY="56289e99c94b6912bfc12adc093c9b51124f0dc54ac7a766b2bc5ccf558d8027"
 ACCOUNT="0x8db97c7cece249c2b98bdc0226cc4c2a57bf52fc"

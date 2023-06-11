@@ -301,7 +301,7 @@ These instructions are for a Unix environment. If you have been doing this proje
 #### Control backend
 
 - Using Kurtosis, a smart contract for the game has already been deployed to the subnet, you can look for the address of it in the output log after running Kurtosis.
-- To interact with the backend, attach the shell to the container named `mnw-be`.
+- To interact with the backend, simply attach the shell to the container named `mnw-be`.
 - To bring down everything, run  
   `kurtosis clean -a`
 

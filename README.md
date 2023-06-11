@@ -248,129 +248,29 @@ This section is specifically geared towards deploying contracts on Avalanche Sub
 
 ### Local Subnet Deploy
 
+To startup a local subnet, we will use Kurtosis. For this, Kurtosis and Docker is required beforehand.
+
+- Install Kurtosis https://docs.kurtosis.com/install
+
 These instructions are for a Unix environment. If you have been doing this project in Windows up until this point, you'll need to make sure you set up your own WSL environment and then install the necessary prerequisites in the WSL environment as well. These are the install [instructions](https://learn.microsoft.com/en-us/windows/wsl/install) for WSL 1 as well as how to upgrade it to WSL 2. Additionally, Sequence only supports subnets for their paid developer tier, so you will need to make sure you are using Metamask.
 
-#### Install Avalanche CLI
+#### Use Kurtosis to create subnet and deploy a smart contract and turn up the game backend
 
-- Open a terminal.
-- Type: `cd ~` if you are not already there.
-- Download and run the Avalanche CLI install script.
-  - `curl -sSfL https://raw.githubusercontent.com/ava-labs/avalanche-cli/main/scripts/install.sh | sh -s`
-- Depending on your shell, type the following.
-  - `export PATH=~/bin:$PATH >> .bashrc` (Ubuntu and WSL)
-  - `export PATH=~/bin:$PATH >> .zshrc` (Mac)
-- Restart your terminal.
-- Test your Avalanche CLI install.
-  - `avalanche --version`
-  - We've tested this with version `1.0.4`. If you have problems with other versions, please make an issue and let us know with which version you are having the particular issue.
-
-#### Install AvalancheGO
-
-- Open a terminal
-- Type: `cd ~` if you are not already there.
-- Download and run the AvalancheGO install script.
-  - `wget -nd -m https://raw.githubusercontent.com/ava-labs/avalanche-docs/master/scripts/avalanchego-installer.sh;\` <br />
-    `chmod 755 avalanchego-installer.sh;\` <br />
-    `./avalanchego-installer.sh`
-- The installer script will ask for running configuration for your node
-- It is recommended to turn on `state sync bootstrapping` to increase bootstrapping speed
-
-#### Create a Subnet Configuration
-
-- Start the subnet creation process by typing:
-  - `avalanche subnet create mawNet`
-- An in-terminal menu will prompt you with configuration options:
-  - **Choose your VM**:
-    - Select `Subnet-EVM`
-    - This is an Ethereum based VM and is needed to run contracts like the one we have created.
-  - **Enter your subnet's ChainId. It can be any positive integer.**
-    - Enter ChainID: `13123`
-    - This can be any unique number that is not already taken in the Avalanche ecosystem. For this tutorial just keep this number so you don't accidently forget that you made your own number in down stream instructions.
-  - **Select a symbol for your subnet's native token**
-    - Enter Token Symbol: `MAW`
-    - This is the currency ticker that will show up in your wallet when you connect to it.
-  - **What version of Subnet-EVM would you like?**
-    - Select `Use latest version`
-  - **How would you like to set fees:**
-    - Select `Low disk use / Low Throughput 1.5 mil gas/s (C-Chain's setting)`
-    - This, and the other two named options, is a preset that defines the characteristics of your chain.
-    - It determines parameters for users and validators. You can play around with them later, but for this tutorial it doesn't really matter. In a real environment though, they will determine transaction speeds, transaction costs, and validator hardware requirements.
-  - **How would you like to distribute funds:**
-    - Click the down arrow to select `Customize your airdrop`.
-    - **Address to airdrop to:** `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266`
-      - This is the account you should have imported into your wallet to test in the Hardhat environment.
-      - If you did not do that, there are instructions to add it at the end.
-    - **Amount to airdrop (in AVAX units):** `10000`
-      - This is the same amount hardhat gives to this account, but you can add more.
-    - **Would you like to airdrop more tokens?:**
-      - Click the down arrow to select `Yes` .
-    - Repeat this process for all of these remaining addresses.
-      - `0x70997970C51812dc3A010C7d01b50e0d17dc79C8`
-      - `0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC`
-      - `0x90F79bf6EB2c4f870365E785982E1f101E93b906`
-      - `0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65`
-      - `0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc`
-      - These addresses all belong to the private keys in the randomWalkerAI.mjs example.
-  - **Advanced:** Would you like to add a custom precompile to modify the EVM?:
-    - Select `No`.
-  - You have completed a full subnet configuration and you should see the ceremonious text of:
-    - `Successfully created subnet configuration`
-  - Verify this before deploying the subnet by entering:
-    - `avalanche subnet describe mawNet`
-    - You should see a bunch of infromation and ascii art regarding the network configuration you just created.
-
-#### Deploy Subnet with Configuration
-
-## Using avalanche CLI builtin node network (Option 1)
-
-- Start the local network:
-  - `avalanche network start`
-  - You should see something like this:
-  ```
-  Starting previously deployed and stopped snapshot
-  Booting Network. Wait until healthy.
-  ```
-
-## Manually run a node (Option 2)
-
-- The installer script automatically create and turn on `avalanchego` service, to update the subnet-evm VM version, we will need to turn this off
-
-  - Open up a session on your terminal
-  - Type: `systemctl stop avalanchego`, you will need to add `sudo` to the start of the command base on your session.
-  - To check if the service is off, type: `systemctl status avalanchego`.
-
-- Deploy the configuration:
-  - `avalanche subnet deploy mawNet`
-- An in-terminal menu should have popped up. (If you chose option 1)
-  - Choose a network to deploy on:
-    - Select `Local Network`
-  - You should see something like this:
-  ```
-  Deploying [mawNet] to Local Network
-  VMs ready.
-  Blockchain has been deployed. Wait until network acknowledges.
-  Network ready to use. Local network node endpoints:
-  node2 mawNet http://127.0.0.1:9652/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
-  node3 mawNet http://127.0.0.1:9654/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
-  node4 mawNet http://127.0.0.1:9656/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
-  node5 mawNet http://127.0.0.1:9658/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
-  node1 mawNet http://127.0.0.1:9650/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
-  Browser Extension connection details (any node URL from above works):
-  RPC URL:     http://127.0.0.1:9650/ext/bc/2U4PS9xt9d8RKQxc2TLvcz8XAja1TmvWFmiusgJv1tDfk4Pjvf/rpc
-  Network name:   mawNet
-  Chain ID:     13123
-  Currency Symbol: MAW
-  ```
-- Keep this window open for connection details or copy them into a note pad.
-
-- Install the subnet-evm VM to the avalanchego folder by following the step 1 from this tutorial online
-
-  - https://www.leewayhertz.com/create-a-custom-blockchain-on-avalanche/
-
-- Open up the terminal, manually navigate to the avalanchego folder and turn on the node using the command <br />
-  `cd ~/avalanche-node \` <br />
-  `avalanchego --network-id=fuji --track-subnets=<the newly created subnet-id>`
-  `
+- Clone the project by running  
+  `git clone git@github.com:CodeLinkIO/MoveAndWhap.git`
+- Then run `cd MoveAndWhap`
+- Switch to the branch with Kurtosis package  
+  `git checkout trile/mnw-be-kurtosis-package`
+- To make sure nothing run yet, clear everything by running  
+  `kurtosis clean -a`
+- At the root folder, run  
+  `kurtosis run . '{"ephemeral_ports": true,"node_count": 1}' --enclave mnw`
+- At the end, you will see info like contract_address, and most importantly, the forwarded port of RPC URL and our BE websocket
+- For the whole RPC URL string, you will need to scroll up the log a bit until you see something like this  
+  `http://172.16.1.3:9650/ext/bc/NAL3xKipcGFTxKrzQZAtXStmZqN7QCqh2AZ88j9iZqmvtgtUA/rpc`  
+  you will need to update the IP with the IP 127.0.0.1 and the forwarded port you see above
+- For airdropping, right now we only support running the default airdrop of 1.000.000 into the address  
+  `0x8db97c7cece249c2b98bdc0226cc4c2a57bf52fc`
 
 #### Add the Subnet to Your Wallet
 
@@ -393,48 +293,17 @@ These instructions are for a Unix environment. If you have been doing this proje
 - Click the account profile icon in the top right.
 - Click **Import Account**
   - **Enter your private key string here:**
-  - Copy and paste: `ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80`
+  - Copy and paste: `56289e99c94b6912bfc12adc093c9b51124f0dc54ac7a766b2bc5ccf558d8027`
 - Click **Save**
-- You've imported address `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266`.
-- You should see `10000 MAW` in the account balance.
+- You've imported address `0x8db97c7cece249c2b98bdc0226cc4c2a57bf52fc`.
+- You should see `1000000 MAW` in the account balance.
 
-#### Subnet Environment Setup for MaW Tutorial
+#### Control backend
 
-You should have a fully deployed subnet at this point, now we need to test it and see the fruits of your labor.
-
-- In the root of the MaW project, in your `hardhat.config.js` under `networks` locate `local_subnet`. This is a config option for hardhat to know which network to deploy contracts to. In your own code you can name it anything you want, but we've named it `local_subnet` and our scripts are using it, so don't change the name of this one.
-- For the `url` change the existing one to the same RPC URL you used to setup your Metmask Wallet.
-- Under `accounts` make sure it is still `["ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"]`
-  - You can add as many as you want, but it isn't necessary for this tutorial.
-- After this, save `hardhat.config.js`.
-- In the `.env` file in the root of this project, change the `PROVIDER_URL` to the same RPC URL you just added to hardhat.config.js.
-- Your `.env` file should look like this:
-
-```
-PROVIDER_URL="http://127.0.0.1:9656/ext/bc/.../rpc" (RPC URL from your terminal information)
-PRIVATE_KEY=ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
-ACCOUNT=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-MAW_CONTRACT_ADDRESS=0x5FbDB2315678afecb367f032d93F642f64180aa3
-MAW_START=0
-WS_PORT=7070
-```
-
-- Save your `.env` file.
-
-#### Deploy and Check Tutorial
-
-In a new terminal, in the root of the MaW project:
-
-- Deploy the contract: `npm run deploy:local_subnet`
-- Run the server: `npm run server`
-- In another terminal, start the bots: `npm run ai`
-- Your server should be running and the AI should be able to make real moves on the subnet.
-- Congratulations, you have deployed a local subnet.
-- If you are done and don't want to play around with it anymore make sure to stop everything:
-  - In the server terminal, press Ctrl+C or close the terminal.
-  - In the AI terminal, press Ctrl+C or close the terminal.
-  - In a terminal, to stop the Avalanche network type: `avalanche network stop`.
-    <br>
+- Using Kurtosis, a smart contract for the game has already been deployed to the subnet, you can look for the address of it in the output log after running Kurtosis.
+- To interact with the backend, attach the shell to the container named `mnw-be`.
+- To bring down everything, run  
+  `kurtosis clean -a`
 
 ## Game Design Comments
 

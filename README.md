@@ -259,8 +259,6 @@ These instructions are for a Unix environment. If you have been doing this proje
 - Clone the project by running  
   `git clone git@github.com:CodeLinkIO/MoveAndWhap.git`
 - Then run `cd MoveAndWhap`
-- Switch to the branch with Kurtosis package  
-  `git checkout trile/mnw-be-kurtosis-package`
 - To make sure nothing run yet, clear everything by running  
   `kurtosis clean -a`
 - At the root folder, run  

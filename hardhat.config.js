@@ -1,6 +1,8 @@
 /** @type import('hardhat/config').HardhatUserConfig */
 require("@nomiclabs/hardhat-ethers");
 
+var local_rpc_uri = process.env.RPC_URI || "http://127.0.0.1:9650/ext/bc/C/rpc"
+
 module.exports = {
   solidity: "0.8.17",
   paths:{

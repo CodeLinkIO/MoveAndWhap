@@ -1,83 +1,41 @@
-avalanche_module = import_module("github.com/kurtosis-tech/avalanche-package/main.star")
-
-#Backend Info
-MNW_BE="trileeee/movenwhap-be:0.0.1"
-BE_WS_PORT=7070
-PRIVATE_KEY="56289e99c94b6912bfc12adc093c9b51124f0dc54ac7a766b2bc5ccf558d8027"
-ACCOUNT="0x8db97c7cece249c2b98bdc0226cc4c2a57bf52fc"
-
+eth_network_package = import_module("github.com/kurtosis-tech/eth-network-package/main.star")
+# this import works from any Kurtosis pacakge or script anywhere
+hardhat_module = import_module("github.com/kurtosis-tech/web3-tools/hardhat.star")
 
 def run(plan, args):
-    rpc_urls, subnet_id, chain_rpc_url = init_chain_connection(plan, args)
-    plan.print(rpc_urls)
-    contract_address = deploy_contract(plan,chain_rpc_url)
-    be_ip = setup_be(plan, chain_rpc_url, contract_address)
-    plan.print("Contract Address: {}".format(contract_address))
+    # Etheruem network setup
+    participants, _ = eth_network_package.run(plan, args)
+    el_client_rpc_ip_addr = participants[0].el_client_context.ip_addr
+    el_client_rpc_port = participants[0].el_client_context.rpc_port_num
+    rpc_url = "http://{0}:{1}".format(el_client_rpc_ip_addr, el_client_rpc_port)
 
-# Start up a local subnet
-def init_chain_connection(plan, args):
-    plan.print("Spinning up a local Avalanche chain and connecting to it")
-    output = avalanche_module.run(plan, args)
+    # we pass the rpc URL of any of the ethereum nodes inside Docker as environment variables
+    # look at smart-contract-example/hardhat.config.ts to see how the variable is read and passed further
+    hardhat_env_vars = {
+        "RPC_URI": rpc_url
+    }
+    # this can be any folder containing the hardhat.config.ts and other hardhat files
+    # this has to be a part of a Kurtosis package (needs a kurtosis.yml) at root
+    hardhat_project = "github.com/CodelinkIO/MoveAndWhap"
 
-    rpc_urls = output["rpc-urls"]
-    subnet_id = output["subnet id"]
-    chain_id = output["chain id"]
-    vm_id= output["vm id"]
-    validator_ids = output["validator ids"]
-    chain_rpc_url = output["chain-rpc-url"]
-    chain_id = output["chain genesis id"]
-    return rpc_urls, subnet_id, chain_rpc_url
+    # we initialize the hardhat module passing the hardhat_project & hardhat_env_vars
+    # the hardhat_env_vars argument is optional and defaults to None
+    hardhat = hardhat_module.init(plan, hardhat_project, hardhat_env_vars)
+    
+    # we run the `balances` task in the hardhat.config.ts; note that the default network is `local`
+    # we override it to localnet here
+    hardhat_module.task(plan, "balances", "localnet")
 
-# Deploy the game contract to the subnet
-def deploy_contract(plan, chain_rpc_url):
-    service_name="contract-deployer"
-    plan.print(chain_rpc_url)
-    plan.add_service(
-        name=service_name,
-        config=ServiceConfig(
-            image=MNW_BE,
-            env_vars={
-                "PROVIDER_URL": chain_rpc_url
-            },
-            cmd=["tail", "-f", "/dev/null"]
-        )
-    )
+    # this runs npx hardhat compile in the hardhat_project mentioned above
+    hardhat_module.compile(plan)
 
-    prepare_exec_data = ExecRecipe(command = ["sh", "-c", "npx hardhat test"])
-    prepare_result = plan.exec(
-        service_name=service_name,
-        recipe=prepare_exec_data,
-    )
+    # this runs npx hardhat run scripts/deploy.ts --network localnet
+    # note that the "localnet" is optional; if it wasn't passed it would have defaulted to local
+    hardhat_module.run(plan, "contracts/scripts/deployer.ts", "localnet")
 
-    result_command = "npx hardhat run --network local_subnet ./contracts/scripts/deployer2.js"
-    exec_data = ExecRecipe(command = ["sh", "-c", result_command])
-    result = plan.exec(
-        service_name=service_name,
-        recipe=exec_data,
-    )
-    contract_address = result["output"]
-    plan.print(contract_address)
-    plan.remove_service(service_name)
-    return contract_address
-
-# Start up Backend
-def setup_be(plan, chain_rpc_url, contract_address):
-    be_service = plan.add_service(
-        name="mnw-be",
-        config=ServiceConfig(
-            image=MNW_BE,
-            env_vars={
-                "PROVIDER_URL": chain_rpc_url,
-                "MAW_CONTRACT_ADDRESS": contract_address,
-                "MAW_START":str(0),
-                "WS_PORT": str(BE_WS_PORT),
-                "PRIVATE_KEY": PRIVATE_KEY,
-                "ACCOUNT": ACCOUNT
-            },
-            ports = {
-                "websocket": PortSpec(number = BE_WS_PORT, transport_protocol = "TCP", wait = None),
-            }
-        )
-    )
-    be_ip = be_service.ip_address
-    return be_ip
+    # this runs npx hardhat test test/chiptoken.js --network localnet
+    # note that the "localnet" is optional; if it wasn't passed it would have defaulted to local
+    # hardhat_module.run(plan, "test/chiptoken.js", "localnet")
+    
+    # this just removes the started container
+    hardhat_module.cleanup(plan)

@@ -254,6 +254,14 @@ To startup a local subnet, we will use Kurtosis. For this, Kurtosis and Docker i
 
 These instructions are for a Unix environment. If you have been doing this project in Windows up until this point, you'll need to make sure you set up your own WSL environment and then install the necessary prerequisites in the WSL environment as well. These are the install [instructions](https://learn.microsoft.com/en-us/windows/wsl/install) for WSL 1 as well as how to upgrade it to WSL 2. Additionally, Sequence only supports subnets for their paid developer tier, so you will need to make sure you are using Metamask.
 
+#### Using Kurtosis Hardhat Package
+
+- Clone the project by running  
+  `git clone git@github.com:CodeLinkIO/MoveAndWhap.git`
+- Then run `kurtosis run . --enclave mnw` to startup a local hardhat subnet, compile and deploy the contract inside the contracts folder
+- At the ouput log, look for the `RPC` and `WS` entry and use this to connect to the wallet or update the `.env` file inside `webapp` folder to connect frontend the this subnet
+- For account, navigate to `hardhat.config.js` and choose any accounts inside the accounts list of local_subnet config
+
 #### Use Kurtosis to create subnet and deploy a smart contract and turn up the game backend
 
 - Clone the project by running  

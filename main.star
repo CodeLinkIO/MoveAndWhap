@@ -24,14 +24,14 @@ def run(plan, args):
     
     # we run the `balances` task in the hardhat.config.ts; note that the default network is `local`
     # we override it to localnet here
-    hardhat_module.task(plan, "balances", "localnet")
+    # hardhat_module.task(plan, "balances", "local_subnet")
 
     # this runs npx hardhat compile in the hardhat_project mentioned above
     hardhat_module.compile(plan)
 
     # this runs npx hardhat run scripts/deploy.ts --network localnet
     # note that the "localnet" is optional; if it wasn't passed it would have defaulted to local
-    hardhat_module.run(plan, "contracts/scripts/deployer.ts", "localnet")
+    hardhat_module.run(plan, "contracts/scripts/deployer.js", "local_subnet")
 
     # this runs npx hardhat test test/chiptoken.js --network localnet
     # note that the "localnet" is optional; if it wasn't passed it would have defaulted to local

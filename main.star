@@ -16,7 +16,7 @@ def run(plan, args):
     }
     # this can be any folder containing the hardhat.config.ts and other hardhat files
     # this has to be a part of a Kurtosis package (needs a kurtosis.yml) at root
-    hardhat_project = "github.com/CodelinkIO/MoveAndWhap"
+    hardhat_project = "github.com/CodelinkIO/MoveAndWhap/tree/trile/mnw-be-kurtosis-package"
 
     # we initialize the hardhat module passing the hardhat_project & hardhat_env_vars
     # the hardhat_env_vars argument is optional and defaults to None

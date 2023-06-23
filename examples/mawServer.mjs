@@ -10,8 +10,8 @@ config();
 //Initialization variables
 const run = async () => {
   const serverPort = parseInt(process.env.WS_PORT || "8080");
-  const providerURL = process.env.PROVIDER_URL;
-  const mawAddress = process.env.MAW_CONTRACT_ADDRESS;
+  const providerURL = String(process.env.PROVIDER_URL).replace(/[",' ',\n]+/g, '');
+  const mawAddress = String(process.env.MAW_CONTRACT_ADDRESS).replace(/[",' ',\n]+/g, '');
   const mawDestination = "./database/MAW"; //You'll need to delete this folder when you rerun this script.
   const startBlock = parseInt(process.env.MAW_START);
   const abi =

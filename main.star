@@ -9,7 +9,7 @@ def run(plan, args):
         "RPC_URI": chain_rpc_url
     }
     # # We will update this to "github.com/CodelinkIO/MoveAndWhap" when this branch is merged and main.star is seen in the default branch
-    hardhat_project = "github.com/CodelinkIO/MoveAndWhap/tree/trile/mnw-be-kurtosis-package"
+    hardhat_project = "github.com/CodelinkIO/MoveAndWhap"
 
     hardhat = hardhat_module.init(plan, hardhat_project, hardhat_env_vars)
     hardhat_module.compile(plan)
@@ -22,5 +22,6 @@ def init_chain_connection(plan, args):
 
     rpc_urls = output["rpc-urls"]
     chain_id = output["chain id"]
+    subnet_id = output["subnet id"]
     chain_rpc_url = output["chain-rpc-url"]
     return rpc_urls, subnet_id, chain_rpc_url

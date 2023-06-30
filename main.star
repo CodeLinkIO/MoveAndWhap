@@ -13,7 +13,7 @@ def run(plan, args):
 
     hardhat = hardhat_module.init(plan, hardhat_project, hardhat_env_vars)
     hardhat_module.compile(plan)
-    hardhat_module.run(plan, "contracts/scripts/deployer.js", "local_subnet")
+    hardhat_module.run(plan, "contracts/scripts/deployer2.js", "local_subnet")
     hardhat_module.cleanup(plan)
 
 def init_chain_connection(plan, args):

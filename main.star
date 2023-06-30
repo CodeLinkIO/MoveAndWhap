@@ -9,7 +9,7 @@ def run(plan, args):
         "RPC_URI": chain_rpc_url
     }
     # # We will update this to "github.com/CodelinkIO/MoveAndWhap" when this branch is merged and main.star is seen in the default branch
-    hardhat_project = "github.com/CodelinkIO/MoveAndWhap"
+    hardhat_project = "github.com/CodelinkIO/MoveAndWhap/kurtosis-package"
 
     hardhat = hardhat_module.init(plan, hardhat_project, hardhat_env_vars)
     hardhat_module.compile(plan)
